@@ -12,7 +12,7 @@
             android:id="@+id/main_header"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Chess Online"
+            android:text="@string/app_name"
             android:textColor="@color/header_color"
             android:textSize="@dimen/main_header"
             android:layout_centerHorizontal="true"
@@ -27,7 +27,7 @@
             android:layout_marginTop="@dimen/header_height">
                 <Button
                     android:id="@+id/start_game"
-                    android:padding="@dimen/buttons_padding"
+                    android:padding="@dimen/main_buttons_padding"
                     android:background="@color/buttons_color"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -37,7 +37,7 @@
                     />
                 <Button
                     android:id="@+id/settings"
-                    android:padding="@dimen/buttons_padding"
+                    android:padding="@dimen/main_buttons_padding"
                     android:background="@color/buttons_color"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -48,7 +48,7 @@
 
                 <Button
                     android:id="@+id/exit"
-                    android:padding="@dimen/buttons_padding"
+                    android:padding="@dimen/main_buttons_padding"
                     android:background="@color/buttons_color"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
