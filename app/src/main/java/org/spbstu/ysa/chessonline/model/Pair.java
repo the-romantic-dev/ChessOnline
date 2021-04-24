@@ -1,5 +1,5 @@
 package org.spbstu.ysa.chessonline.model;
-
+//test push
 public class Pair<X, Y> {
     private X x;
     private Y y;
