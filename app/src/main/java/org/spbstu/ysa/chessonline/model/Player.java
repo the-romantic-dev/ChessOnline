@@ -1,5 +1,5 @@
 package org.spbstu.ysa.chessonline.model;
-
+//test
 import org.spbstu.ysa.chessonline.model.pieces.Piece;
 
 public class Player {
