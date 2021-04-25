@@ -1,4 +1,22 @@
 package org.spbstu.ysa.chessonline.model.pieces;
 
-public class King {
+import org.spbstu.ysa.chessonline.model.Pair;
+
+import java.util.Set;
+
+public class King extends Piece {
+
+    public King(boolean color) {
+        super(color);
+    }
+
+    @Override
+    public Set<Pair<Integer, Integer>> allowedMove(int x, int y) {
+        return null;
+    }
+
+    @Override
+    public String getName() {
+        return null;
+    }
 }

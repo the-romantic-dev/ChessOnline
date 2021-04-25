@@ -42,4 +42,10 @@ public class Pair<X, Y> {
                 this.y.equals(pair.getY());
     }
 
+    @Override
+    public String toString() {
+        return "{ x=" + x +
+                ", y=" + y +
+                '}';
+    }
 }

@@ -14,4 +14,9 @@ public class Pawn extends Piece {
     public Set<Pair<Integer, Integer>> allowedMove(int x, int y) {
         return null;
     }
+
+    @Override
+    public String getName() {
+        return null;
+    }
 }

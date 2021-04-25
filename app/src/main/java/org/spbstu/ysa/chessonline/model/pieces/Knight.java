@@ -7,7 +7,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Knight extends Piece {
-    Knight(boolean color) {
+    public Knight(boolean color) {
         super(color);
     }
 
@@ -26,6 +26,11 @@ public class Knight extends Piece {
         }
 
         return res;
+    }
+
+    @Override
+    public String getName() {
+        return null;
     }
 
     private boolean coordinatesAllow(int x, int y) {

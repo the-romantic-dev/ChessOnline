@@ -8,7 +8,7 @@ import java.util.Set;
 
 public class Rook extends Piece {
 
-    Rook(boolean color) {
+    public Rook(boolean color) {
         super(color);
     }
 
@@ -55,5 +55,10 @@ public class Rook extends Piece {
         }
 
         return res;
+    }
+
+    @Override
+    public String getName() {
+        return null;
     }
 }

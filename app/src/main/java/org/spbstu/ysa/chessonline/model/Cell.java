@@ -2,6 +2,8 @@ package org.spbstu.ysa.chessonline.model;
 
 import org.spbstu.ysa.chessonline.model.pieces.Piece;
 
+import java.util.Objects;
+
 public class Cell {
     /**
      * Клетка(Cell)
@@ -20,11 +22,15 @@ public class Cell {
         this.piece = piece;
     }
 
-    public int getCoordinatesX() {
+    public Cell(int x, int y) {
+        coordinates = new Pair<>(x,y);
+    }
+
+    public int getX() {
         return coordinates.getX();
     }
 
-    public int getCoordinatesY() {
+    public int getY() {
         return coordinates.getY();
     }
 
@@ -32,8 +38,32 @@ public class Cell {
         return this.piece;
     }
 
-    public void putPiece(Piece piece){
+    public void setPiece(Piece piece){
         this.piece = piece;
     }
 
+    public void removePiece() {
+        this.piece = null;
+    }
+
+    @Override
+    public String toString() {
+        return "Cell{" +
+                "coordinates=" + coordinates +
+                ", piece=" + piece +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Cell cell = (Cell) o;
+        return coordinates.equals(cell.coordinates);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(coordinates);
+    }
 }
