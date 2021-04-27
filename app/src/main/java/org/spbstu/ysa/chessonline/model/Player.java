@@ -1,18 +1,13 @@
 package org.spbstu.ysa.chessonline.model;
 
-import org.spbstu.ysa.chessonline.model.pieces.Bishop;
-import org.spbstu.ysa.chessonline.model.pieces.King;
-import org.spbstu.ysa.chessonline.model.pieces.Knight;
-import org.spbstu.ysa.chessonline.model.pieces.Pawn;
-import org.spbstu.ysa.chessonline.model.pieces.Piece;
-import org.spbstu.ysa.chessonline.model.pieces.Queen;
-import org.spbstu.ysa.chessonline.model.pieces.Rook;
+import org.spbstu.ysa.chessonline.model.pieces.*;
 
 import java.util.Set;
 
 public class Player {
     private boolean color;
     private final Cell[][] board = new Cell[7][7];
+    private Set<Cell> allowedMoves = null ;
 
     public Player(boolean color) {
         this.color = color;
@@ -52,10 +47,20 @@ public class Player {
         return this.board;
     }
 
-    public Set<Pair<Integer, Integer>> captureChess(Cell cell) {
+    public Set<Cell> captureChess(Cell cell) {
         int x = cell.getX();
         int y = cell.getY();
         Piece capturePiece = cell.getPiece();
-        return capturePiece.getAllowedCells(x, y, this.board);
+        Set<Cell> allowedMoves = capturePiece.getAllowedCells(x, y, this.board);
+        this.allowedMoves = allowedMoves;
+        return allowedMoves;
+    }
+
+    public boolean putChess(Cell cell){
+        if(!allowedMoves.contains(cell)) return false;
+
+
+
+
     }
 }

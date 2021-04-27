@@ -14,24 +14,27 @@ public class Cell {
      * Поставить фигуру
      */
 
-    private final Pair<Integer, Integer> coordinates;
+    private final int x;
+    private final int y;
     private Piece piece;
 
     public Cell(int x, int y, Piece piece){
-        coordinates = new Pair<>(x,y);
+        this.x = x;
+        this.y = y;
         this.piece = piece;
     }
 
     public Cell(int x, int y) {
-        coordinates = new Pair<>(x,y);
+        this.x = x;
+        this.y = y;
     }
 
     public int getX() {
-        return coordinates.getX();
+        return x;
     }
 
     public int getY() {
-        return coordinates.getY();
+        return y;
     }
 
     public Piece getPiece(){
@@ -46,11 +49,13 @@ public class Cell {
         this.piece = null;
     }
 
+
+
     @Override
     public String toString() {
         return "Cell{" +
-                "coordinates=" + coordinates +
-                ", piece=" + piece +
+                "coordinates=" + "(" + x + " ; " + y +
+                ") piece=" + piece +
                 '}';
     }
 
@@ -59,11 +64,11 @@ public class Cell {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Cell cell = (Cell) o;
-        return coordinates.equals(cell.coordinates);
+        return (this.x == cell.getX() && this.y == cell.getY());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(coordinates);
+        return Objects.hash(x, y);
     }
 }

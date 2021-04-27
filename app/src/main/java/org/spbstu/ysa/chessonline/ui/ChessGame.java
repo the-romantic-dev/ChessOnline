@@ -11,7 +11,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import org.spbstu.ysa.chessonline.model.Cell;
-import org.spbstu.ysa.chessonline.model.Pair;
 import org.spbstu.ysa.chessonline.model.pieces.*;
 
 import java.util.HashMap;

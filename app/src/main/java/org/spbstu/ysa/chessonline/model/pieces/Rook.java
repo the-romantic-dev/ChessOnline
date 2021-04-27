@@ -1,7 +1,5 @@
 package org.spbstu.ysa.chessonline.model.pieces;
 
-import org.spbstu.ysa.chessonline.model.Pair;
-
 import java.util.HashSet;
 import java.util.Set;
 
