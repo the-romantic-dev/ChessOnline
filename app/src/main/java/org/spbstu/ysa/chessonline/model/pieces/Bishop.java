@@ -12,6 +12,8 @@ public class Bishop extends Piece {
 
     @Override
     public Set<Cell> getAllowedCells(int x, int y, Cell[][] board) {
+        int curX = x;
+        int cutY = y;
         return null;
     }
 

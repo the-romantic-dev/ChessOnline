@@ -6,7 +6,7 @@ import java.util.Set;
 
 public class Player {
     private boolean color;
-    private final Cell[][] board = new Cell[7][7];
+    private final Cell[][] board = new Cell[8][8];
     private Cell currentCell = null;
     private Set<Cell> allowedMoves = null ;
 
