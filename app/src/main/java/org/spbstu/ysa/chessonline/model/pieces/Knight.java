@@ -13,7 +13,7 @@ public class Knight extends Piece {
 
     @Override
     public Set<Pair<Integer, Integer>> allowedMove(int x, int y) {
-        Set<Pair<Integer, Integer>> res = new HashSet();
+        Set<Pair<Integer, Integer>> res = new HashSet<>();
 
         for (int i = 1; i < 3; i++) {
             for (int j = 0; j < 2; j++) {

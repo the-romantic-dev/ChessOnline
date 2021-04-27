@@ -83,16 +83,13 @@ public class ChessboardSquare extends Rectangle {
         return border;
     }
 
-    public void draw() {
+    public Pixmap getPixmap() {
         Pixmap pixmap = new Pixmap(sideLength, sideLength, Pixmap.Format.RGBA8888);
         pixmap.drawPixmap(square, 0, 0);
 
         if (piece != null) pixmap.drawPixmap(piece, 0, 0);
         if(selected) pixmap.drawPixmap(getBorderPixmap(), 0, 0);
-
-        Texture texture = new Texture(pixmap);
-        sb.draw(texture, x, y);
-
+        return pixmap;
     }
 
     @Override

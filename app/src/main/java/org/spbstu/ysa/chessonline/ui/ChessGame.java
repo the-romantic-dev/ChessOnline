@@ -9,8 +9,14 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
 
 import org.spbstu.ysa.chessonline.model.Cell;
 import org.spbstu.ysa.chessonline.model.pieces.Bishop;
@@ -27,26 +33,23 @@ public class ChessGame extends ApplicationAdapter {
     private int startX;
     private int startY = 100;
 
-
     SpriteBatch batch;
-    FileHandle chessImg;
     ChessboardSquare[][] boardArray;
+    Pixmap boardPixmap;
     boolean isThisPlayerWhite = true;
 
     Map<Pieces, Pixmap> whitePiecesPM;
     Map<Pieces, Pixmap> blackPiecesPM;
 
-
-
-
-    Map<Rectangle, Cell> collideToCell = ChessHelper.getCellToCollider();
+    int fraps = 0;
     @Override
     public void create () {
-        Gdx.gl.glClearColor(0.4f , 0.6f, 1, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        Log.d("LIFECYCLE", "CREATE");
+        Gdx.graphics.setContinuousRendering(false);
         Gdx.input.setInputProcessor(new InputAdapter() {
             @Override
             public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+                //Gdx.graphics.requestRendering();
                 tapOnScreen(screenX, Gdx.graphics.getHeight() - screenY);
                 return super.touchDown(screenX, screenY, pointer, button);
             }
@@ -61,42 +64,60 @@ public class ChessGame extends ApplicationAdapter {
         blackPiecesPM = new HashMap<>();
         initPiecesPixmaps();
         startFilling();
-        batch.begin();
-        drawBoard(boardArray);
-        batch.end();
+        boardPixmap = getBoardPixmap(boardArray);
+
     }
 
     @Override
     public void render () {
-        int x = -1;
-        int y = -1;
-        if (Gdx.input.isTouched()) {
+        Log.d("LIFECYCLE", "RENDER " + fraps);
+        fraps++;
+        Gdx.gl.glClearColor(0.4f , 0.6f, 1, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        batch.begin();
+        batch.draw(new Texture(boardPixmap), startX, startY);
+        batch.end();
+
+
+/*        if (Gdx.input.justTouched()) {
             x = Gdx.input.getX();
             y = Gdx.graphics.getHeight() - Gdx.input.getY();
             Log.d("Coords:", x + ";" + y);
-        }
-        /*ChessboardSquare test = new ChessboardSquare(batch, new Cell(0,0), 200, 200);
-        test.setPiece(new Pixmap(chessImg));
-        test.setSelected(true);
-        test.draw();*/
+        }*/
+    }
 
+    @Override
+    public void resume() {
+        Log.d("LIFECYCLE", "RESUME");
+
+        super.resume();
     }
 
     @Override
     public void dispose () {
         batch.dispose();
-       // img.dispose();
     }
 
-    private void drawBoard(ChessboardSquare[][] boardArray) {
+    private Pixmap getBoardPixmap(ChessboardSquare[][] boardArray) {
+        Pixmap boardPixmap = new Pixmap(ChessboardSquare.sideLength * 8, ChessboardSquare.sideLength * 8, Pixmap.Format.RGBA8888);
+
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                boardArray[i][j].draw();
+                boardPixmap.drawPixmap(boardArray[i][j].getPixmap(), j * ChessboardSquare.sideLength, (7- i) * ChessboardSquare.sideLength);
             }
         }
+        return boardPixmap;
+        //batch.draw(new Texture(boardPixmap), startX, startY,ChessboardSquare.sideLength * 8, ChessboardSquare.sideLength * 8);
+    }
+
+    private Pixmap changeSquarePixmap(Pixmap board, ChessboardSquare square) {
+        int x = square.getCell().getY();
+        int y = square.getCell().getX();
+        board.drawPixmap(square.getPixmap(), x * ChessboardSquare.sideLength, (7 -y) * ChessboardSquare.sideLength);
+        return board;
     }
     private ChessboardSquare[][] createBoardArray(SpriteBatch batch, int startX, int startY) {
-        int nextX = startX;
+        int nextX;
         int nextY = startY - ChessboardSquare.sideLength;
         ChessboardSquare[][] result = new ChessboardSquare[8][8];
         for (int i = 0; i < 8; i++) {
@@ -122,58 +143,36 @@ public class ChessGame extends ApplicationAdapter {
     ChessboardSquare lastSquare;
     private void tapOnScreen(int x, int y) {
         ChessboardSquare currentSquare = getCurrentSquare(boardArray, x, y);
-       /* if (currentSquare == null && lastSquare != null) {
-            lastSquare.unselect();
-        }
-        else if (currentSquare != null) {
-
-            if (currentSquare.isSelected()) {
-                currentSquare.unselect();
-            }
-            else {
-                currentSquare.select();
-                if (lastSquare != null) lastSquare.unselect();
-            }
-            batch.begin();
-            currentSquare.draw();
-            if (lastSquare != null) lastSquare.draw();
-            batch.end();
-            if (lastSquare != null && !lastSquare.equals(currentSquare)) lastSquare = currentSquare;
-            else lastSquare = null;*/
        if (currentSquare != null) {
            if (!currentSquare.isSelected()) {
                currentSquare.select();
-               batch.begin();
-               currentSquare.draw();
-               batch.end();
+               //currentSquare.draw();
+               changeSquarePixmap(boardPixmap, currentSquare);
                if (lastSquare != null )  {
                    lastSquare.unselect();
-                   batch.begin();
-                   lastSquare.draw();
-                   batch.end();
+                   //lastSquare.draw();
+                   changeSquarePixmap(boardPixmap, lastSquare);
                }
                lastSquare = currentSquare;
            } else {
                currentSquare.unselect();
-               batch.begin();
-               currentSquare.draw();
-               batch.end();
+               //currentSquare.draw();
+               changeSquarePixmap(boardPixmap, currentSquare);
                lastSquare = null;
            }
 
         } else {
            if (lastSquare != null) {
-
                lastSquare.unselect();
-               batch.begin();
-               lastSquare.draw();
-               batch.end();
+               //lastSquare.draw();
+               changeSquarePixmap(boardPixmap, lastSquare);
                lastSquare = null;
            }
-
-
        }
+       //if (currentSquare != null) changeSquarePixmap(boardPixmap, currentSquare);
+       //if (lastSquare != null) changeSquarePixmap(boardPixmap, lastSquare);
 
+        //drawBoard(boardArray);
 
     }
 
