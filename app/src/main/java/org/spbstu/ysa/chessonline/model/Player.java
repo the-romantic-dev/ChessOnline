@@ -7,6 +7,7 @@ import java.util.Set;
 public class Player {
     private boolean color;
     private final Cell[][] board = new Cell[7][7];
+    private Cell currentCell = null;
     private Set<Cell> allowedMoves = null ;
 
     public Player(boolean color) {
@@ -47,7 +48,8 @@ public class Player {
         return this.board;
     }
 
-    public Set<Cell> captureChess(Cell cell) {
+    public Set<Cell> capturePiece(Cell cell) {
+        this.currentCell = cell;
         int x = cell.getX();
         int y = cell.getY();
         Piece capturePiece = cell.getPiece();
@@ -56,11 +58,12 @@ public class Player {
         return allowedMoves;
     }
 
-    public boolean putChess(Cell cell){
+    public boolean putPiece(Cell cell){
         if(!allowedMoves.contains(cell)) return false;
 
-
-
-
+        Piece capturedPiece = currentCell.getPiece();
+        currentCell.removePiece();
+        cell.setPiece(capturedPiece);
+        return true;
     }
 }

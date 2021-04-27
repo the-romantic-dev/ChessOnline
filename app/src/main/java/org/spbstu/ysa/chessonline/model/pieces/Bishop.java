@@ -1,5 +1,7 @@
 package org.spbstu.ysa.chessonline.model.pieces;
 
+import org.spbstu.ysa.chessonline.model.Cell;
+
 import java.util.Set;
 
 public class Bishop extends Piece {
@@ -9,8 +11,7 @@ public class Bishop extends Piece {
     }
 
     @Override
-    public Set<Pair<Integer, Integer>> getAllowedCells(int x, int y) {
-
+    public Set<Cell> getAllowedCells(int x, int y, Cell[][] board) {
         return null;
     }
 

@@ -29,8 +29,9 @@ public class Knight extends Piece {
 
     @Override
     public String getName() {
-        return null;
+        return "Knight";
     }
+
 
     private boolean coordinatesAllow(int x, int y, Cell[][] board) {
         return x >= 0 && x <= 7 && y >= 0 && y <= 7
