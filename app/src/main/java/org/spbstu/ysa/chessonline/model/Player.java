@@ -6,6 +6,6 @@ public class Player {
     private boolean color;
 
     public void captureChess(int x, int y){
-        Piece capturePiece = Board.getData()[x][y].takePiece();
+        Piece capturePiece = Board.getData()[x][y].getPiece();
     }
 }

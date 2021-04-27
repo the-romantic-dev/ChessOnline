@@ -15,7 +15,7 @@ public abstract class Piece {
         return this.color;
     }
 
-    public abstract Set<Pair<Integer, Integer>> allowedMove(int x, int y);
+    public abstract Set<Pair<Integer, Integer>> getAllowedCells(int x, int y);
 
     public abstract String getName();
 

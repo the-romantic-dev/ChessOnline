@@ -12,7 +12,7 @@ public class Knight extends Piece {
     }
 
     @Override
-    public Set<Pair<Integer, Integer>> allowedMove(int x, int y) {
+    public Set<Pair<Integer, Integer>> getAllowedCells(int x, int y) {
         Set<Pair<Integer, Integer>> res = new HashSet<>();
 
         for (int i = 1; i < 3; i++) {
@@ -35,7 +35,7 @@ public class Knight extends Piece {
 
     private boolean coordinatesAllow(int x, int y) {
         return x >= 0 && x <= 7 && y >= 0 && y <= 7
-                && (Board.getData()[x][y].takePiece() == null
-                || Board.getData()[x][y].takePiece().getColor() != this.getColor());
+                && (Board.getData()[x][y].getPiece() == null
+                || Board.getData()[x][y].getPiece().getColor() != this.getColor());
     }
 }

@@ -13,12 +13,12 @@ public class Rook extends Piece {
     }
 
     @Override
-    public Set<Pair<Integer, Integer>> allowedMove(int x, int y) {
-        Set<Pair<Integer, Integer>> res = new HashSet();
+    public Set<Pair<Integer, Integer>> getAllowedCells(int x, int y) {
+        Set<Pair<Integer, Integer>> res = new HashSet<>();
 
         if (x < 7) {
             for (int i = x + 1; i < 8; i++) {
-                Piece curPiece = Board.getData()[i][y].takePiece();
+                Piece curPiece = Board.getData()[i][y].getPiece();
                 if (curPiece.getColor() == this.getColor()) break;
                 res.add(Pair.pairOf(i, y));
                 if (curPiece == null) continue;
@@ -27,7 +27,7 @@ public class Rook extends Piece {
         }
         if (x > 0) {
             for (int i = x - 1; i >= 0 ; i--) {
-                Piece curPiece = Board.getData()[i][y].takePiece();
+                Piece curPiece = Board.getData()[i][y].getPiece();
                 if (curPiece.getColor() == this.getColor()) break;
                 res.add(Pair.pairOf(i, y));
                 if (curPiece == null) continue;
@@ -37,7 +37,7 @@ public class Rook extends Piece {
 
         if (y < 7) {
             for (int i = y + 1; i < 8; i++) {
-                Piece curPiece = Board.getData()[x][i].takePiece();
+                Piece curPiece = Board.getData()[x][i].getPiece();
                 if (curPiece.getColor() == this.getColor()) break;
                 res.add(Pair.pairOf(x, i));
                 if (curPiece == null) continue;
@@ -46,7 +46,7 @@ public class Rook extends Piece {
         }
         if (y > 0) {
             for (int i = y - 1; i >= 0 ; i--) {
-                Piece curPiece = Board.getData()[i][y].takePiece();
+                Piece curPiece = Board.getData()[i][y].getPiece();
                 if (curPiece.getColor() == this.getColor()) break;
                 res.add(Pair.pairOf(i, y));
                 if (curPiece == null) continue;

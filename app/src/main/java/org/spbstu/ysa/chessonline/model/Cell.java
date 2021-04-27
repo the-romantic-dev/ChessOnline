@@ -34,7 +34,7 @@ public class Cell {
         return coordinates.getY();
     }
 
-    public Piece takePiece(){
+    public Piece getPiece(){
         return this.piece;
     }
 

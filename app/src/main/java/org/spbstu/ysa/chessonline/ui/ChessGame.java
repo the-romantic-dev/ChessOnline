@@ -5,29 +5,24 @@ import android.util.Log;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.badlogic.gdx.utils.viewport.StretchViewport;
 
 import org.spbstu.ysa.chessonline.model.Cell;
+import org.spbstu.ysa.chessonline.model.Pair;
 import org.spbstu.ysa.chessonline.model.pieces.Bishop;
 import org.spbstu.ysa.chessonline.model.pieces.King;
 import org.spbstu.ysa.chessonline.model.pieces.Knight;
 import org.spbstu.ysa.chessonline.model.pieces.Pawn;
+import org.spbstu.ysa.chessonline.model.pieces.Piece;
 import org.spbstu.ysa.chessonline.model.pieces.Queen;
 import org.spbstu.ysa.chessonline.model.pieces.Rook;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class ChessGame extends ApplicationAdapter {
     private int startX;
@@ -42,6 +37,9 @@ public class ChessGame extends ApplicationAdapter {
     Map<Pieces, Pixmap> blackPiecesPM;
 
     int fraps = 0;
+
+    ChessboardSquare currentSquare;
+    ChessboardSquare lastSquare;
     @Override
     public void create () {
         Log.d("LIFECYCLE", "CREATE");
@@ -49,8 +47,11 @@ public class ChessGame extends ApplicationAdapter {
         Gdx.input.setInputProcessor(new InputAdapter() {
             @Override
             public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-                //Gdx.graphics.requestRendering();
-                tapOnScreen(screenX, Gdx.graphics.getHeight() - screenY);
+                selectPiece(screenX, Gdx.graphics.getHeight() - screenY);
+                //нужна корректная реализация доступных ходов в модели
+                /*if (currentSquare != null) {
+                    selectAllowedSquares(getAllowedSquares(currentSquare.getCell()));
+                }*/
                 return super.touchDown(screenX, screenY, pointer, button);
             }
         });
@@ -107,7 +108,6 @@ public class ChessGame extends ApplicationAdapter {
             }
         }
         return boardPixmap;
-        //batch.draw(new Texture(boardPixmap), startX, startY,ChessboardSquare.sideLength * 8, ChessboardSquare.sideLength * 8);
     }
 
     private Pixmap changeSquarePixmap(Pixmap board, ChessboardSquare square) {
@@ -140,23 +140,44 @@ public class ChessGame extends ApplicationAdapter {
         return null;
     }
 
-    ChessboardSquare lastSquare;
-    private void tapOnScreen(int x, int y) {
-        ChessboardSquare currentSquare = getCurrentSquare(boardArray, x, y);
+    private ChessboardSquare[] getAllowedSquares(Cell cell) {
+        int x = cell.getX();
+        int y = cell.getY();
+        Set<Pair<Integer, Integer>> pairs = cell.getPiece().getAllowedCells(x, y);
+        ChessboardSquare[] result = new ChessboardSquare[pairs.size()];
+        int k = 0;
+        for (Pair<Integer, Integer> pair : pairs) {
+            result[k] = boardArray[pair.getX()][pair.getY()];
+            k++;
+        }
+        return result;
+    }
+
+    private void selectAllowedSquares(ChessboardSquare[] squares) {
+        for (ChessboardSquare square: squares) {
+            square.select();
+        }
+    }
+    private void unselectAllowedSquares(ChessboardSquare[] squares) {
+        for (ChessboardSquare square: squares) {
+            square.unselect();
+        }
+    }
+
+    private void selectPiece(int x, int y) {
+        currentSquare = getCurrentSquare(boardArray, x, y);
+        if (currentSquare != null && currentSquare.getCell().getPiece() == null) return;
        if (currentSquare != null) {
            if (!currentSquare.isSelected()) {
                currentSquare.select();
-               //currentSquare.draw();
                changeSquarePixmap(boardPixmap, currentSquare);
                if (lastSquare != null )  {
                    lastSquare.unselect();
-                   //lastSquare.draw();
                    changeSquarePixmap(boardPixmap, lastSquare);
                }
                lastSquare = currentSquare;
            } else {
                currentSquare.unselect();
-               //currentSquare.draw();
                changeSquarePixmap(boardPixmap, currentSquare);
                lastSquare = null;
            }
@@ -164,16 +185,11 @@ public class ChessGame extends ApplicationAdapter {
         } else {
            if (lastSquare != null) {
                lastSquare.unselect();
-               //lastSquare.draw();
                changeSquarePixmap(boardPixmap, lastSquare);
                lastSquare = null;
            }
        }
-       //if (currentSquare != null) changeSquarePixmap(boardPixmap, currentSquare);
-       //if (lastSquare != null) changeSquarePixmap(boardPixmap, lastSquare);
-
-        //drawBoard(boardArray);
-
+       //return currentSquare != null ? currentSquare.getCell() : null;
     }
 
     private void initPiecesPixmaps() {
@@ -195,7 +211,6 @@ public class ChessGame extends ApplicationAdapter {
     private Pixmap getPixmapByImageName(String name) {
         return new Pixmap(Gdx.files.internal(name));
     }
-
     private void startFilling () {
         boardArray[0][0].setPiece(new Rook(true), whitePiecesPM.get(Pieces.ROOK));
         boardArray[0][7].setPiece(new Rook(true), whitePiecesPM.get(Pieces.ROOK));
