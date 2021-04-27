@@ -12,13 +12,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import org.spbstu.ysa.chessonline.model.Cell;
 import org.spbstu.ysa.chessonline.model.Pair;
-import org.spbstu.ysa.chessonline.model.pieces.Bishop;
-import org.spbstu.ysa.chessonline.model.pieces.King;
-import org.spbstu.ysa.chessonline.model.pieces.Knight;
-import org.spbstu.ysa.chessonline.model.pieces.Pawn;
-import org.spbstu.ysa.chessonline.model.pieces.Piece;
-import org.spbstu.ysa.chessonline.model.pieces.Queen;
-import org.spbstu.ysa.chessonline.model.pieces.Rook;
+import org.spbstu.ysa.chessonline.model.pieces.*;
 
 import java.util.HashMap;
 import java.util.Map;
