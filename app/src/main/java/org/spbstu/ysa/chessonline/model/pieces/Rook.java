@@ -13,8 +13,8 @@ public class Rook extends Piece {
 
     @Override
     public Set<Cell> getAllowedCells(int x, int y, Cell[][] board) {
-        Set<Cell> res = new HashSet<>();
 
+        Set<Cell> res = new HashSet<>();
 
         for (int i = x + 1; i < 8; i++) {
             Piece curPiece = board[i][y].getPiece();
