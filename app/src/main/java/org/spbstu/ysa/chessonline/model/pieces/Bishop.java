@@ -20,7 +20,7 @@ public class Bishop extends Piece {
         for (int i = 0; i < 2; i++) {
             for (int j = 0; j < 2; j++) {
                 while (curX >= 0 && curX < 8 && curY >=0 && curY < 8 ){
-                    Piece curPiece = board[curX][curY].getPiece();
+                    Piece curPiece = board[curY][curX].getPiece();
                     if (curPiece == null) res.add(new Cell(curX, curY));
                     else {
                         if (curPiece.getColor() != this.getColor()) res.add(new Cell(curX, curY));
