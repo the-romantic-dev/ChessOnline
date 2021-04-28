@@ -9,6 +9,7 @@ import org.spbstu.ysa.chessonline.model.Cell;
 import org.spbstu.ysa.chessonline.model.Player;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -22,7 +23,10 @@ public class Chessboard {
     SpriteBatch batch;
 
     ChessboardSquare currentSquare;
+    ChessboardSquare[] currentAllowedSquares;
+
     ChessboardSquare lastSquare;
+    ChessboardSquare[] lastAllowedSquares;
 
 
     Map<Pieces, Pixmap> whitePiecesPM;
@@ -130,43 +134,41 @@ public class Chessboard {
 
     public void selectPiece(int x, int y) {
         currentSquare = getCurrentSquare(squaresArray, x, y);
+        currentAllowedSquares = getAllowedSquares(currentSquare);
         if (currentSquare != null && currentSquare.getCell().getPiece() == null) return;
         if (currentSquare != null) {
             if (!currentSquare.isSelected()) {
-                currentSquare.select();
-                redrawBoard(currentSquare);
-                if (lastSquare != null )  {
-                    lastSquare.unselect();
-                    redrawBoard( lastSquare);
+                selecetOrUnselectPieceAndMoves(currentSquare, currentAllowedSquares, true);
+                if (lastSquare != null && lastAllowedSquares != null)  {
+                    selecetOrUnselectPieceAndMoves(lastSquare, lastAllowedSquares, false);
                 }
                 lastSquare = currentSquare;
+                lastAllowedSquares = currentAllowedSquares;
             } else {
-                currentSquare.unselect();
-                redrawBoard(currentSquare);
+                selecetOrUnselectPieceAndMoves(currentSquare, currentAllowedSquares, false);
                 lastSquare = null;
+                lastAllowedSquares = null;
             }
 
         } else {
-            if (lastSquare != null) {
-                lastSquare.unselect();
-                redrawBoard(lastSquare);
+            if (lastSquare != null && lastAllowedSquares != null) {
+                selecetOrUnselectPieceAndMoves(lastSquare, lastAllowedSquares, false);
                 lastSquare = null;
+                lastAllowedSquares = null;
             }
         }
-        //временно
-        if (currentSquare != null && currentSquare.getCell().getPiece().getName() == "Knight") {
-            selectAllowedSquares(getAllowedSquares(currentSquare));
-        }
+    }
 
-        if(lastSquare != null/* && lastSquare.getCell().getPiece().getName() == "Knight"*/) {
-            unselectAllowedSquares(getAllowedSquares(lastSquare));
-        }
+    private void selecetOrUnselectPieceAndMoves(ChessboardSquare square, ChessboardSquare[] allowedSquares, boolean doSelect) {
+        if (doSelect) square.select();
+        else square.unselect();
+
+        redrawBoard(square);
+        selectOrUnselectAllowedSquares(allowedSquares, doSelect);
+
     }
     public ChessboardSquare[] getAllowedSquares(ChessboardSquare square) {
-        Cell currentCell = square.getCell();
-        int x = currentCell.getX();
-        int y = currentCell.getY();
-        Set<Cell> cells = player.capturePiece(currentCell);
+        Set<Cell> cells = player.capturePiece(square.getCell());
         ChessboardSquare[] result = new ChessboardSquare[cells.size()];
         int k = 0;
         for (Cell cell : cells) {
@@ -176,15 +178,10 @@ public class Chessboard {
         return result;
     }
 
-    public void selectAllowedSquares(ChessboardSquare[] allowedSquares) {
+    private void selectOrUnselectAllowedSquares(ChessboardSquare[] allowedSquares, boolean doSelect) {
         for (ChessboardSquare square : allowedSquares) {
-            square.select();
-            redrawBoard(square);
-        }
-    }
-    public void unselectAllowedSquares(ChessboardSquare[] allowedSquares) {
-        for (ChessboardSquare square : allowedSquares) {
-            square.unselect();
+            if (doSelect) square.select();
+            else square.unselect();
             redrawBoard(square);
         }
     }
