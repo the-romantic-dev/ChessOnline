@@ -24,13 +24,8 @@ public class ChessGame extends ApplicationAdapter {
     Player player;
     Chessboard chessboard;
     boolean isThisPlayerWhite = true;
-
-
-
     int fraps = 0;
 
-    /*ChessboardSquare currentSquare;
-    ChessboardSquare lastSquare;*/
     @Override
     public void create () {
         Log.d("LIFECYCLE", "CREATE");
@@ -39,10 +34,6 @@ public class ChessGame extends ApplicationAdapter {
             @Override
             public boolean touchDown(int screenX, int screenY, int pointer, int button) {
                 chessboard.selectPiece(screenX, Gdx.graphics.getHeight() - screenY);
-                //нужна корректная реализация доступных ходов в модели
-                /*if (currentSquare != null) {
-                    selectAllowedSquares(getAllowedSquares(currentSquare.getCell()));
-                }*/
                 return super.touchDown(screenX, screenY, pointer, button);
             }
         });
@@ -68,24 +59,12 @@ public class ChessGame extends ApplicationAdapter {
     @Override
     public void resume() {
         Log.d("LIFECYCLE", "RESUME");
-
         super.resume();
     }
 
     @Override
     public void dispose () {
         batch.dispose();
-    }
-
-    private void selectAllowedSquares(ChessboardSquare[] squares) {
-        for (ChessboardSquare square: squares) {
-            square.select();
-        }
-    }
-    private void unselectAllowedSquares(ChessboardSquare[] squares) {
-        for (ChessboardSquare square: squares) {
-            square.unselect();
-        }
     }
 
 
