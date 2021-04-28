@@ -35,7 +35,7 @@ public class Knight extends Piece {
 
     private boolean coordinatesAllow(int x, int y, Cell[][] board) {
         return x >= 0 && x <= 7 && y >= 0 && y <= 7
-                && (board[x][y].getPiece() == null
-                || board[x][y].getPiece().getColor() != this.getColor());
+                && (board[y][x].getPiece() == null
+                || board[y][x].getPiece().getColor() != this.getColor());
     }
 }

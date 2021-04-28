@@ -22,23 +22,23 @@ public class Player {
                 new Queen(false), new King(false), new Bishop(false),
                 new Knight(false), new Rook(false), new Pawn(false)
         };
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 7; j++) {
-                switch (j) {
+        for (int y = 0; y < 8; y++) {
+            for (int x = 0; x < 8; x++) {
+                switch (y) {
                     case 0:
-                        board[j][i] = new Cell(j, i, whitePieces[j]);
+                        board[y][x] = new Cell(x, y, whitePieces[x]);
                         break;
                     case 1:
-                        board[j][i] = new Cell(j,i,whitePieces[8]);
+                        board[y][x] = new Cell(x,y,whitePieces[8]);
                         break;
                     case 6:
-                        board[j][i] = new Cell(j,i,blackPieces[8]);
+                        board[y][x] = new Cell(x,y,blackPieces[8]);
                         break;
                     case 7:
-                        board[j][i] = new Cell(j, i, blackPieces[j]);
+                        board[y][x] = new Cell(x, y, blackPieces[x]);
                         break;
                     default:
-                        board[j][i] = new Cell(j,i);
+                        board[y][x] = new Cell(x,y);
                 }
             }
         }
