@@ -21,7 +21,7 @@ public class Pawn extends Piece {
         int curY = y + i;
         if (curY >= 0 && curY < 8 && board[curY][x].getPiece() == null){
             res.add(new Cell(x, curY));
-            if (!this.isMoved && board[curY + 1][x].getPiece() == null)  res.add(new Cell(x, curY + 1));
+            if (!this.isMoved && board[curY + i][x].getPiece() == null)  res.add(new Cell(x, curY + i));
         }
 
 
