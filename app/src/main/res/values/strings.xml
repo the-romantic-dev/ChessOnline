@@ -9,4 +9,6 @@
     <string name="change_chessmen_color">Цвет шахматных фигур</string>
     <string name="change_chessboard_color">Цвет шахматной доски</string>
     <string name="back_to_menu">Назад</string>
+    <string name="makeRoom">Создать</string>
+    <string name="newRoom">Задайте пароль комнаты</string>
 </resources>
