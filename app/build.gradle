@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
+
 
 ext {
     appName = "AndroidLibgdx"
@@ -8,7 +10,6 @@ ext {
     ashleyVersion = '1.7.0'
     aiVersion = '1.8.0'
 }
-
 android {
     compileSdkVersion 29
     buildToolsVersion '29.0.3'
@@ -45,6 +46,8 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'androidx.preference:preference:1.1.1'
+    implementation 'com.google.firebase:firebase-database:19.7.0'
+
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
@@ -73,6 +76,7 @@ dependencies {
 
     implementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
     implementation "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
+
 }
 
 
