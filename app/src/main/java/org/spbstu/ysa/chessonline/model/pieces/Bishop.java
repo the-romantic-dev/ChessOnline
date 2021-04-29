@@ -1,7 +1,8 @@
 package org.spbstu.ysa.chessonline.model.pieces;
 
-import org.spbstu.ysa.chessonline.model.Pair;
+import org.spbstu.ysa.chessonline.model.Cell;
 
+import java.util.HashSet;
 import java.util.Set;
 
 public class Bishop extends Piece {
@@ -11,13 +12,33 @@ public class Bishop extends Piece {
     }
 
     @Override
-    public Set<Pair<Integer, Integer>> allowedMove(int x, int y) {
+    public Set<Cell> getAllowedCells(int x, int y, Cell[][] board) {
 
-        return null;
+        int curX = x + 1;
+        int curY = y + 1;
+        Set<Cell> res = new HashSet<>();
+        for (int i = 0; i < 2; i++) {
+            for (int j = 0; j < 2; j++) {
+                while (curX >= 0 && curX < 8 && curY >=0 && curY < 8 ){
+                    Piece curPiece = board[curY][curX].getPiece();
+                    if (curPiece == null) res.add(new Cell(curX, curY));
+                    else {
+                        if (curPiece.getColor() != this.getColor()) res.add(new Cell(curX, curY));
+                        break;
+                    }
+                    curX = (int) (curX + 1 * Math.pow(-1.0, i));
+                    curY = (int) (curY + 1 * Math.pow(-1.0, j));
+                }
+            }
+
+        }
+
+        return res;
     }
+
 
     @Override
     public String getName() {
-        return "bishop";
+        return "Bishop";
     }
 }

@@ -1,7 +1,6 @@
 package org.spbstu.ysa.chessonline.model.pieces;
 
-import org.spbstu.ysa.chessonline.model.Board;
-import org.spbstu.ysa.chessonline.model.Pair;
+import org.spbstu.ysa.chessonline.model.Cell;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -13,52 +12,55 @@ public class Rook extends Piece {
     }
 
     @Override
-    public Set<Pair<Integer, Integer>> allowedMove(int x, int y) {
-        Set<Pair<Integer, Integer>> res = new HashSet();
+    public Set<Cell> getAllowedCells(int x, int y, Cell[][] board) {
 
-        if (x < 7) {
-            for (int i = x + 1; i < 8; i++) {
-                Piece curPiece = Board.getData()[i][y].takePiece();
-                if (curPiece.getColor() == this.getColor()) break;
-                res.add(Pair.pairOf(i, y));
-                if (curPiece == null) continue;
-                else break;
-            }
-        }
-        if (x > 0) {
-            for (int i = x - 1; i >= 0 ; i--) {
-                Piece curPiece = Board.getData()[i][y].takePiece();
-                if (curPiece.getColor() == this.getColor()) break;
-                res.add(Pair.pairOf(i, y));
-                if (curPiece == null) continue;
-                else break;
+        Set<Cell> res = new HashSet<>();
+
+        for (int i = x + 1; i < 8; i++) {
+            Piece curPiece = board[y][i].getPiece();
+            if (curPiece == null) res.add(new Cell(i, y)) ;
+            else {
+                if (curPiece.getColor() != this.getColor()) res.add(new Cell(i, y));
+                break;
             }
         }
 
-        if (y < 7) {
-            for (int i = y + 1; i < 8; i++) {
-                Piece curPiece = Board.getData()[x][i].takePiece();
-                if (curPiece.getColor() == this.getColor()) break;
-                res.add(Pair.pairOf(x, i));
-                if (curPiece == null) continue;
-                else break;
+
+        for (int i = x - 1; i >= 0; i--) {
+            Piece curPiece = board[y][i].getPiece();
+            if (curPiece == null) res.add(new Cell(i, y)) ;
+            else {
+                if (curPiece.getColor() != this.getColor()) res.add(new Cell(i, y));
+                break;
             }
         }
-        if (y > 0) {
-            for (int i = y - 1; i >= 0 ; i--) {
-                Piece curPiece = Board.getData()[i][y].takePiece();
-                if (curPiece.getColor() == this.getColor()) break;
-                res.add(Pair.pairOf(i, y));
-                if (curPiece == null) continue;
-                else break;
+
+
+        for (int i = y + 1; i < 8; i++) {
+            Piece curPiece = board[i][x].getPiece();
+            if (curPiece == null) res.add(new Cell(x, i));
+            else {
+                if (curPiece.getColor() != this.getColor()) res.add(new Cell(x, i));
+                break;
             }
         }
+
+
+        for (int i = y - 1; i >= 0; i--) {
+            Piece curPiece = board[i][x].getPiece();
+            if (curPiece == null) res.add(new Cell(x, i)) ;
+            else {
+                if (curPiece.getColor() != this.getColor()) res.add(new Cell(x, i));
+                break;
+            }
+        }
+
 
         return res;
     }
 
     @Override
     public String getName() {
-        return null;
+        return "Rook";
     }
 }
