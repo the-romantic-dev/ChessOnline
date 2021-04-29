@@ -20,7 +20,7 @@ public class Rook extends Piece {
             Piece curPiece = board[y][i].getPiece();
             if (curPiece == null) res.add(new Cell(i, y)) ;
             else {
-                if (curPiece.getColor() != this.getColor()) res.add(new Cell(i, y));
+                if (curPiece.isWhite() != this.isWhite()) res.add(new Cell(i, y));
                 break;
             }
         }
@@ -30,7 +30,7 @@ public class Rook extends Piece {
             Piece curPiece = board[y][i].getPiece();
             if (curPiece == null) res.add(new Cell(i, y)) ;
             else {
-                if (curPiece.getColor() != this.getColor()) res.add(new Cell(i, y));
+                if (curPiece.isWhite() != this.isWhite()) res.add(new Cell(i, y));
                 break;
             }
         }
@@ -40,7 +40,7 @@ public class Rook extends Piece {
             Piece curPiece = board[i][x].getPiece();
             if (curPiece == null) res.add(new Cell(x, i));
             else {
-                if (curPiece.getColor() != this.getColor()) res.add(new Cell(x, i));
+                if (curPiece.isWhite() != this.isWhite()) res.add(new Cell(x, i));
                 break;
             }
         }
@@ -50,7 +50,7 @@ public class Rook extends Piece {
             Piece curPiece = board[i][x].getPiece();
             if (curPiece == null) res.add(new Cell(x, i)) ;
             else {
-                if (curPiece.getColor() != this.getColor()) res.add(new Cell(x, i));
+                if (curPiece.isWhite() != this.isWhite()) res.add(new Cell(x, i));
                 break;
             }
         }

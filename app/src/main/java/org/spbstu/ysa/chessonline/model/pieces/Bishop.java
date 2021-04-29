@@ -23,7 +23,7 @@ public class Bishop extends Piece {
                     Piece curPiece = board[curY][curX].getPiece();
                     if (curPiece == null) res.add(new Cell(curX, curY));
                     else {
-                        if (curPiece.getColor() != this.getColor()) res.add(new Cell(curX, curY));
+                        if (curPiece.isWhite() != this.isWhite()) res.add(new Cell(curX, curY));
                         break;
                     }
                     curX = (int) (curX + 1 * Math.pow(-1.0, i));

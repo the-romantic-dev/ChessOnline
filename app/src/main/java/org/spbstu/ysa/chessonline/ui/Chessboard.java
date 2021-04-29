@@ -9,7 +9,6 @@ import org.spbstu.ysa.chessonline.model.Cell;
 import org.spbstu.ysa.chessonline.model.Player;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -57,7 +56,7 @@ public class Chessboard {
             nextY += ChessboardSquare.sideLength;
             for (int j = 0; j < 8; j++) {
                 addedCell = player.getBoard()[i][j];
-                if (addedCell.getPiece() != null) result[i][j] = new ChessboardSquare(addedCell, nextX, nextY, getPiecePixmap(addedCell.getPiece().getName(), addedCell.getPiece().getColor()));
+                if (addedCell.getPiece() != null) result[i][j] = new ChessboardSquare(addedCell, nextX, nextY, getPiecePixmap(addedCell.getPiece().getName(), addedCell.getPiece().isWhite()));
                 else result[i][j] = new ChessboardSquare(addedCell, nextX, nextY);
                 nextX += ChessboardSquare.sideLength;
             }

@@ -12,7 +12,10 @@ public class Queen extends Piece{
 
     @Override
     public Set<Cell> getAllowedCells(int x, int y, Cell[][] board) {
-        return new HashSet<>();
+        Set<Cell> res = new HashSet<>();
+        res.addAll(new Rook(this.isWhite()).getAllowedCells(x,y,board));
+        res.addAll(new Bishop(this.isWhite()).getAllowedCells(x,y,board));
+        return res;
     }
 
     @Override

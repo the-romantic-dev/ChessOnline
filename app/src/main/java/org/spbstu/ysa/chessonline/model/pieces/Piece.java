@@ -10,7 +10,7 @@ public abstract class Piece {
         this.color = color;
     }
 
-    public boolean getColor(){
+    public boolean isWhite(){
         return this.color;
     }
 
