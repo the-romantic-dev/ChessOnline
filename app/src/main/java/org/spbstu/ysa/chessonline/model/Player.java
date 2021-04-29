@@ -2,6 +2,7 @@ package org.spbstu.ysa.chessonline.model;
 
 import org.spbstu.ysa.chessonline.model.pieces.*;
 
+import java.util.HashSet;
 import java.util.Set;
 
 public class Player {
@@ -52,6 +53,7 @@ public class Player {
         this.currentCell = cell;
         int x = cell.getX();
         int y = cell.getY();
+        if (cell.getPiece() == null) return new HashSet<>();
         Piece capturePiece = cell.getPiece();
         Set<Cell> allowedMoves = capturePiece.getAllowedCells(x, y, this.board);
         this.allowedMoves = allowedMoves;

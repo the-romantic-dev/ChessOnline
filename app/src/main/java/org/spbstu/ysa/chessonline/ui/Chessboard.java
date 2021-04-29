@@ -135,6 +135,7 @@ public class Chessboard {
         currentSquare = getCurrentSquare(squaresArray, x, y);
         currentAllowedSquares = getAllowedSquares(currentSquare);
         if (currentSquare != null && currentSquare.getCell().getPiece() == null) return;
+        if (currentSquare != null && currentSquare.getCell().getPiece() == null) return;
         if (currentSquare != null) {
             if (!currentSquare.isSelected()) {
                 selecetOrUnselectPieceAndMoves(currentSquare, currentAllowedSquares, true);
@@ -167,6 +168,7 @@ public class Chessboard {
 
     }
     public ChessboardSquare[] getAllowedSquares(ChessboardSquare square) {
+        if (square == null) return new ChessboardSquare[0];
         Set<Cell> cells = player.capturePiece(square.getCell());
         ChessboardSquare[] result = new ChessboardSquare[cells.size()];
         int k = 0;

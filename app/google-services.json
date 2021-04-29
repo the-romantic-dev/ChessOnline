@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "495290583114",
+    "firebase_url": "https://chessonline-62c6e-default-rtdb.firebaseio.com",
+    "project_id": "chessonline-62c6e",
+    "storage_bucket": "chessonline-62c6e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:495290583114:android:6372ca780f1a644a5bfeb3",
+        "android_client_info": {
+          "package_name": "org.spbstu.ysa.chessonline"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "495290583114-iu0luf3pjnb053fokcdbr8dnp80q6huh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAaNFOb6a6ozQ7C5_kjy5pvArGJVzmpWEc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "495290583114-iu0luf3pjnb053fokcdbr8dnp80q6huh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
