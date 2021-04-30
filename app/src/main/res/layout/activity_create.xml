@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:background="@drawable/pink_gradient">
+
+    <TextView
+        android:id="@+id/main_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/app_name"
+        android:textColor="@color/header_color"
+        android:textSize="@dimen/main_header"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="20dp"
+        />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="@dimen/header_height">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="@string/newRoom"
+            android:textColor="@color/header_color"
+            android:textSize="25sp" />
+
+        <EditText
+            android:id="@+id/newRoomPass"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="#E8E2E2"
+            android:ems="10"
+            android:hint="@string/roomPass"
+            android:inputType="textPersonName"/>
+
+        <Button
+            android:id="@+id/createRoom"
+            android:padding="@dimen/main_buttons_padding"
+            android:background="@color/buttons_color"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/makeRoom"
+            android:textSize="@dimen/button_text"
+            android:layout_marginTop="@dimen/margin_between_buttons"/>
+
+    </LinearLayout>
+
+</RelativeLayout>
