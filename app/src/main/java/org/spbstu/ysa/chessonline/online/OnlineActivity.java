@@ -9,6 +9,7 @@ import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.spbstu.ysa.chessonline.R;
+import org.spbstu.ysa.chessonline.ui.MainActivity;
 
 public class OnlineActivity extends AppCompatActivity {
     private Button createRoom;
@@ -40,8 +41,14 @@ public class OnlineActivity extends AppCompatActivity {
     }
 
     private void setViews() {
-        createRoom = findViewById(R.id.connect_room);
-        connectToRoom = findViewById(R.id.create_room);
+        createRoom = findViewById(R.id.create_room);
+        connectToRoom = findViewById(R.id.connect_room);
+    }
+
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(OnlineActivity.this, MainActivity.class));
+        finish();
     }
 
 }
