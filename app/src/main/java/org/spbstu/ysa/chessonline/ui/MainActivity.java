@@ -7,16 +7,15 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
 import org.spbstu.ysa.chessonline.R;
+import org.spbstu.ysa.chessonline.online.OnlineActivity;
 
 public class MainActivity extends AppCompatActivity {
 
     Button startGameButton;
     Button settingsButton;
     Button exitButton;
+    Button onlineButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,15 +23,20 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         setViews();
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference().child("What?");
-        myRef.push().setValue("add?");
-
         startGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent startGameActivity = new Intent(MainActivity.this, GameActivity.class);
                 startActivity(startGameActivity);
+                finish();
+            }
+        });
+
+        onlineButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent startSettingsActivity = new Intent(MainActivity.this, OnlineActivity.class);
+                startActivity(startSettingsActivity);
                 finish();
             }
         });
@@ -58,5 +62,6 @@ public class MainActivity extends AppCompatActivity {
         startGameButton = findViewById(R.id.start_game);
         settingsButton = findViewById(R.id.settings);
         exitButton = findViewById(R.id.exit);
+        onlineButton = findViewById(R.id.online);
     }
 }
