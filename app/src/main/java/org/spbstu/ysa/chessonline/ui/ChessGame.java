@@ -6,14 +6,9 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import org.spbstu.ysa.chessonline.model.Cell;
 import org.spbstu.ysa.chessonline.model.Player;
-
-import java.util.Set;
 
 public class ChessGame extends ApplicationAdapter {
     private int startX;
@@ -33,14 +28,15 @@ public class ChessGame extends ApplicationAdapter {
         Gdx.input.setInputProcessor(new InputAdapter() {
             @Override
             public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-                chessboard.selectPiece(screenX, Gdx.graphics.getHeight() - screenY);
-                return super.touchDown(screenX, screenY, pointer, button);
+                chessboard.setCurrentSquare(screenX, Gdx.graphics.getHeight() - screenY);
+                chessboard.tap();
+                return true;
             }
         });
 
         startX = (Gdx.graphics.getWidth() - ChessboardSquare.sideLength * 8) / 2;
         batch = new SpriteBatch();
-        player = new Player(!isThisPlayerWhite);
+        player = new Player(isThisPlayerWhite);
         chessboard = new Chessboard(player, batch, startX, startY);
 
     }
