@@ -3,6 +3,7 @@
     <string name="game_button">Играть</string>
     <string name="settings_button">Настройки</string>
     <string name="exit_buttton">Выход</string>
+    <string name="online_button">онлайн</string>
 
 
     <string name="title_activity_settings">Настройки</string>
@@ -10,5 +11,9 @@
     <string name="change_chessboard_color">Цвет шахматной доски</string>
     <string name="back_to_menu">Назад</string>
     <string name="makeRoom">Создать</string>
-    <string name="newRoom">Задайте пароль комнаты</string>
+    <string name="newRoom">Введите код комнаты</string>
+    <string name="roomPass">Password</string>
+    <string name="connectRoom">Войти</string>
+    <string name="connect">Подключиться</string>
+    <string name="create">Создать комнату</string>
 </resources>
