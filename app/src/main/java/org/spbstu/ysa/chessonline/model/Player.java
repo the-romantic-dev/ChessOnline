@@ -9,19 +9,19 @@ public class Player {
     private boolean color;
     private final Cell[][] board = new Cell[8][8];
     private Cell currentCell = null;
-    private Set<Cell> allowedMoves = null ;
+    private Set<Cell> allowedMoves = null;
 
     public Player(boolean color) {
         this.color = color;
         Piece[] whitePieces = new Piece[]{
                 new Rook(true), new Knight(true), new Bishop(true),
                 new Queen(true), new King(true), new Bishop(true),
-                new Knight(true), new Rook(true), new Pawn(true)
+                new Knight(true), new Rook(true)
         };
         Piece[] blackPieces = new Piece[]{
                 new Rook(false), new Knight(false), new Bishop(false),
                 new Queen(false), new King(false), new Bishop(false),
-                new Knight(false), new Rook(false), new Pawn(false)
+                new Knight(false), new Rook(false)
         };
         for (int y = 0; y < 8; y++) {
             for (int x = 0; x < 8; x++) {
@@ -30,16 +30,16 @@ public class Player {
                         board[y][x] = new Cell(x, y, whitePieces[x]);
                         break;
                     case 1:
-                        board[y][x] = new Cell(x,y,whitePieces[8]);
+                        board[y][x] = new Cell(x, y, new Pawn(true, x, y));
                         break;
                     case 6:
-                        board[y][x] = new Cell(x,y,blackPieces[8]);
+                        board[y][x] = new Cell(x, y, new Pawn(false, x, y));
                         break;
                     case 7:
                         board[y][x] = new Cell(x, y, blackPieces[x]);
                         break;
                     default:
-                        board[y][x] = new Cell(x,y);
+                        board[y][x] = new Cell(x, y);
                 }
             }
         }

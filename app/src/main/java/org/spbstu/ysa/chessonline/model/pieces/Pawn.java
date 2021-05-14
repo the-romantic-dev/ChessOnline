@@ -8,11 +8,14 @@ import java.util.Set;
 public class Pawn extends Piece {
 
     private final int BORDER_COORDINATE = this.isWhite() ? 7 : 1;
-    private boolean isMoved = false;
+    private Cell startCell;
 
-    public Pawn(boolean color) {
+    public Pawn(boolean color, int x, int y) {
         super(color);
+        startCell = new Cell(x, y);
+
     }
+
 
     @Override
     public Set<Cell> getAllowedCells(int x, int y, Cell[][] board) {
@@ -21,7 +24,7 @@ public class Pawn extends Piece {
         int curY = y + i;
         if (curY >= 0 && curY < 8 && board[curY][x].getPiece() == null){
             res.add(new Cell(x, curY));
-            if (!this.isMoved && board[curY + i][x].getPiece() == null)  res.add(new Cell(x, curY + i));
+            if (x == startCell.getX() && y == startCell.getY() && board[curY + i][x].getPiece() == null) res.add(new Cell(x, curY + i));
         }
 
         //реализация на проходе:

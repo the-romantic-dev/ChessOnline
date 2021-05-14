@@ -26,8 +26,8 @@ public class Bishop extends Piece {
                         if (curPiece.isWhite() != this.isWhite()) res.add(new Cell(curX, curY));
                         break;
                     }
-                    curX = (int) (curX + 1 * Math.pow(-1.0, i));
-                    curY = (int) (curY + 1 * Math.pow(-1.0, j));
+                    curX = (int) (curX + Math.pow(-1.0, i));
+                    curY = (int) (curY + Math.pow(-1.0, j));
                 }
             }
 
