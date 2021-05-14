@@ -81,8 +81,8 @@ public class ChessboardSquare extends Rectangle {
         border.setColor(borderColor);
         border.fillRectangle(0,0, sideLength, borderWidth);
         border.fillRectangle(sideLength - borderWidth, 0, borderWidth, sideLength);
-        border.fillRectangle(0,0, borderWidth, sideLength);
-        border.fillRectangle(0,sideLength - borderWidth, sideLength, borderWidth);
+        border.fillRectangle(0, 0, borderWidth, sideLength);
+        border.fillRectangle(0, sideLength - borderWidth, sideLength, borderWidth);
 
         return border;
     }
@@ -92,7 +92,16 @@ public class ChessboardSquare extends Rectangle {
         pixmap.drawPixmap(square, 0, 0);
 
         if (piece != null) pixmap.drawPixmap(piece, 0, 0);
-        if(selected) pixmap.drawPixmap(getBorderPixmap(), 0, 0);
+        if (selected) pixmap.drawPixmap(getBorderPixmap(), 0, 0);
+        return pixmap;
+    }
+
+    public Pixmap getPixmap(Pixmap piecePixmap) {
+        Pixmap pixmap = new Pixmap(sideLength, sideLength, Pixmap.Format.RGBA8888);
+        pixmap.drawPixmap(square, 0, 0);
+
+        if (piecePixmap != null) pixmap.drawPixmap(piecePixmap, 0, 0);
+        if (selected) pixmap.drawPixmap(getBorderPixmap(), 0, 0);
         return pixmap;
     }
 

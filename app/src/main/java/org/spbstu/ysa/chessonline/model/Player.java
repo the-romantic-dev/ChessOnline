@@ -60,12 +60,28 @@ public class Player {
         return allowedMoves;
     }
 
-    public boolean putPiece(Cell cell){
-        if(!allowedMoves.contains(cell)) return false;
+    public boolean putPiece(Cell cell) {
+        if (!allowedMoves.contains(cell)) return false;
 
         Piece capturedPiece = currentCell.getPiece();
         currentCell.removePiece();
         cell.setPiece(capturedPiece);
         return true;
+    }
+
+    public void setCurrentCell(Cell currentCell) {
+        this.currentCell = currentCell;
+    }
+
+    public Cell getCurrentCell() {
+        return currentCell;
+    }
+
+    public boolean isWhite() {
+        return color;
+    }
+
+    public void setColor(boolean color) {
+        this.color = color;
     }
 }

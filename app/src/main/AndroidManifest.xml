@@ -13,6 +13,13 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".ui.SettingsActivity"
             android:screenOrientation="portrait"/>
+
+        <activity android:name=".online.OnlineActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".online.ConnectToRoomActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".online.CreateRoomActivity"
+            android:screenOrientation="portrait"/>
         <activity android:name=".ui.MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>
