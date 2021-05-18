@@ -1,5 +1,7 @@
 package org.spbstu.ysa.chessonline.ui;
 
+import android.util.Log;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -8,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import org.spbstu.ysa.chessonline.model.Cell;
 import org.spbstu.ysa.chessonline.model.Player;
 import org.spbstu.ysa.chessonline.model.pieces.Piece;
+import org.w3c.dom.Text;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,6 +24,7 @@ public class Chessboard {
     private ChessboardSquare[][] squaresArray;
     private Pixmap overallPixmap;
     private SpriteBatch batch;
+    private Texture overallTexture;
 
     private ChessboardSquare currentSquare;
     private ChessboardSquare[] currentAllowedSquares;
@@ -48,12 +52,23 @@ public class Chessboard {
     }
 
     public void draw() {
-        batch.draw(new Texture(overallPixmap), startX, startY);
+        if (overallTexture != null) overallTexture.dispose();
+        overallTexture = new Texture(overallPixmap);
+        batch.draw(overallTexture, startX, startY);
     }
 
     public void redrawSquare(ChessboardSquare square) {
-        int x = square.getCell().getX();
-        int y = square.getCell().getY();
+        int x;
+        int y;
+        if (player.isWhite()) {
+            x = square.getCell().getX();
+            y = square.getCell().getY();
+
+        } else {
+            x = 7 - square.getCell().getX();
+            y = 7 - square.getCell().getY();
+        }
+
         Piece piece = square.getCell().getPiece();
         if (piece != null) {
             Pixmap piecePM = getPiecePixmap(piece.getName(), piece.isWhite());
@@ -90,6 +105,7 @@ public class Chessboard {
     }
 
     private void makeMove() {
+        player.setTurn(false);
         player.putPiece(currentSquare.getCell());
         redrawSquare(lastSquare);
         redrawSquare(currentSquare);
@@ -97,6 +113,7 @@ public class Chessboard {
 
 
     public void tap() {
+        if (!player.getTurn()) return;
         boolean isSelected = false;
         if (currentSquare != null) isSelected = currentSquare.isSelected();
         unselectAll();
@@ -144,7 +161,12 @@ public class Chessboard {
         ChessboardSquare[] result = new ChessboardSquare[cells.size()];
         int k = 0;
         for (Cell cell : cells) {
-            result[k] = squaresArray[cell.getY()][cell.getX()];
+            if (player.isWhite()) {
+                result[k] = squaresArray[cell.getY()][cell.getX()];
+            } else {
+                result[k] = squaresArray[7 - cell.getY()][7 - cell.getX()];
+            }
+
             k++;
         }
         return result;
@@ -166,7 +188,12 @@ public class Chessboard {
             nextX = startX;
             nextY += ChessboardSquare.sideLength;
             for (int j = 0; j < 8; j++) {
-                addedCell = player.getBoard()[i][j];
+                if (player.isWhite()) {
+                    addedCell = player.getBoard()[i][j];
+                } else {
+                    addedCell = player.getBoard()[7 - i][7 - j];
+                }
+
                 if (addedCell.getPiece() != null)
                     result[i][j] = new ChessboardSquare(addedCell, nextX, nextY, getPiecePixmap(addedCell.getPiece().getName(), addedCell.getPiece().isWhite()));
                 else result[i][j] = new ChessboardSquare(addedCell, nextX, nextY);
