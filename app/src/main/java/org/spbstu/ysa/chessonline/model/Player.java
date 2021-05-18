@@ -10,6 +10,8 @@ public class Player {
     private final Cell[][] board = new Cell[8][8];
     private Cell currentCell = null;
     private Set<Cell> allowedMoves = null;
+    private boolean turn = true;
+
 
     public Player(boolean color) {
         this.color = color;
@@ -83,5 +85,17 @@ public class Player {
 
     public void setColor(boolean color) {
         this.color = color;
+    }
+
+    public boolean isCheckmate() {
+        return true;
+    }
+
+    public boolean getTurn() {
+        return turn;
+    }
+
+    public void setTurn(boolean turn) {
+        this.turn = turn;
     }
 }

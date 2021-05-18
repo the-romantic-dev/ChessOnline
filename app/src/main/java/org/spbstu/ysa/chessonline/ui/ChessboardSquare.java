@@ -53,11 +53,7 @@ public class ChessboardSquare extends Rectangle {
         this.piece = piecePixmap;
         this.cell.setPiece(pieceObject);
     }
-    /*public boolean removePiece() {
-        this.piece = null;
-        this.cell.removePiece();
-        return true;
-    }*/
+
 
     public Cell getCell() {
         return cell;

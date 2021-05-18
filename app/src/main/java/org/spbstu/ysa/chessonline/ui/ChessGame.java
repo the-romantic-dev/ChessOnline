@@ -7,6 +7,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.google.firebase.database.DatabaseReference;
 
 import org.spbstu.ysa.chessonline.model.Player;
 
@@ -14,16 +15,19 @@ public class ChessGame extends ApplicationAdapter {
     private int startX;
     private int startY = 100;
 
+    String state;
     SpriteBatch batch;
 
     Player player;
     Chessboard chessboard;
-    boolean isThisPlayerWhite = true;
+    boolean isThisPlayerWhite;
     int fraps = 0;
 
+    DatabaseReference ref;
+
     @Override
-    public void create () {
-        Log.d("LIFECYCLE", "CREATE");
+    public void create() {
+        Log.d("LIFECYCLE", "CREATE" + state);
         Gdx.graphics.setContinuousRendering(false);
         Gdx.input.setInputProcessor(new InputAdapter() {
             @Override
@@ -36,6 +40,9 @@ public class ChessGame extends ApplicationAdapter {
 
         startX = (Gdx.graphics.getWidth() - ChessboardSquare.sideLength * 8) / 2;
         batch = new SpriteBatch();
+/*        if (state.equals("online")) {
+
+        }*/
         player = new Player(isThisPlayerWhite);
         chessboard = new Chessboard(player, batch, startX, startY);
 
@@ -59,8 +66,13 @@ public class ChessGame extends ApplicationAdapter {
     }
 
     @Override
-    public void dispose () {
+    public void dispose() {
         batch.dispose();
+    }
+
+    public ChessGame(String state, boolean color) {
+        this.state = state;
+        this.isThisPlayerWhite = color;
     }
 
 
