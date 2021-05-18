@@ -28,11 +28,21 @@
         android:orientation="vertical">
 
         <TextView
+            android:id="@+id/hello"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:text="@string/newRoom"
             android:textColor="@color/header_color"
             android:textSize="25sp" />
+
+        <TextView
+            android:id="@+id/loading"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="@string/game_find"
+            android:textColor="@color/header_color"
+            android:textSize="25sp"
+            android:visibility="invisible" />
 
         <EditText
             android:id="@+id/RoomPass"

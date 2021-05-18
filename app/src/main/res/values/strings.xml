@@ -16,4 +16,5 @@
     <string name="connectRoom">Войти</string>
     <string name="connect">Подключиться</string>
     <string name="create">Создать комнату</string>
+    <string name="game_find">Поиск игры…</string>
 </resources>
