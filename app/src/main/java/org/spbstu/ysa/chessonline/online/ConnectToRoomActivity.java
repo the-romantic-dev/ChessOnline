@@ -27,7 +27,7 @@ public class ConnectToRoomActivity extends AppCompatActivity {
     private TextView helloText;
     private TextView loadingText;
     private DatabaseReference mDatabase;
-    private final String[] roomKey = {null};
+    private String roomKey;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,10 +54,10 @@ public class ConnectToRoomActivity extends AppCompatActivity {
                             for (DataSnapshot ds: dataSnapshot.getChildren()) {
                                 Room room = ds.getValue(Room.class);
                                 Log.d("myTag", "Room pass: " + room.getPassword());
-                                Log.d("myTag", "Room key in progress" + roomKey[0]);
+                                Log.d("myTag", "Room key in progress" + roomKey);
                                 if (room.getPassword().equals(pass) && !room.getConnection()) {
                                     doResult(ds.getKey());
-                                    Log.d("myTag", "Key was found:" + roomKey[0]);
+                                    Log.d("myTag", "Key was found:" + roomKey);
                                 }
                             }
                         }
@@ -68,11 +68,11 @@ public class ConnectToRoomActivity extends AppCompatActivity {
                         }
                     };
                     mDatabase.addValueEventListener(roomsListener);
-                    Log.d("myTag", "Room key: " + roomKey[0]);
+                    Log.d("myTag", "Room key: " + roomKey);
 
-                    if (roomKey[0] != null) {
+                    if (roomKey != null) {
                         Toast.makeText(getApplicationContext(), "Игра найдена", Toast.LENGTH_SHORT).show();
-                        Log.d("myTag", "Final room key:" + roomKey[0]);
+                        Log.d("myTag", "Final room key:" + roomKey);
                         mDatabase.removeEventListener(roomsListener);
                         //startGameActivity
                     } else {
@@ -88,8 +88,8 @@ public class ConnectToRoomActivity extends AppCompatActivity {
     }
 
     private void doResult(String result) {
-        roomKey[0] = result;
-        Log.i("myTag", "Key was found " + roomKey[0]);
+        roomKey = result;
+        Log.i("myTag", "KEY: " + roomKey);
     }
 
     private void setViews() {
