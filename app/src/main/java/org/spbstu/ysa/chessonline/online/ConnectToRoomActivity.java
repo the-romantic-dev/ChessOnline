@@ -56,7 +56,7 @@ public class ConnectToRoomActivity extends AppCompatActivity {
                                 Log.d("myTag", "Room pass: " + room.getPassword());
                                 Log.d("myTag", "Room key in progress" + roomKey);
                                 if (room.getPassword().equals(pass) && !room.getConnection()) {
-                                    doResult(ds.getKey());
+                                    roomKey = ds.getKey();
                                     Log.d("myTag", "Key was found:" + roomKey);
                                 }
                             }
@@ -85,11 +85,6 @@ public class ConnectToRoomActivity extends AppCompatActivity {
 
             }
         });
-    }
-
-    private void doResult(String result) {
-        roomKey = result;
-        Log.i("myTag", "KEY: " + roomKey);
     }
 
     private void setViews() {
