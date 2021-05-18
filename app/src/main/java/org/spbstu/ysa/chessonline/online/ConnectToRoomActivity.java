@@ -27,6 +27,7 @@ public class ConnectToRoomActivity extends AppCompatActivity {
     private Button connectToRoomButton;
     private EditText edRoomPass;
     private DatabaseReference mDatabase;
+    private String[] roomKey = new String[1];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,14 +40,37 @@ public class ConnectToRoomActivity extends AppCompatActivity {
         connectToRoomButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String pass = edRoomPass.getText().toString();
+                final String pass = edRoomPass.getText().toString();
                 edRoomPass.setText("");
 
                 if (!TextUtils.isEmpty(pass)) {
-                    String key = findRoomListener(pass);
+                    ValueEventListener roomsListener = new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            for (DataSnapshot ds: dataSnapshot.getChildren()) {
+                                Room room = ds.getValue(Room.class);
+                                Log.d("myTag", "Room pass: " + room.getPassword());
+                                Log.d("myTag", "Room key in progress" + roomKey[0]);
+                                if (room.getPassword().equals(pass)) {
+                                    roomKey[0] = ds.getKey();
+                                    Log.d("myTag", "Key was found:" + roomKey[0]);
+                                }
+                            }
+                        }
 
-                    if (key != null) {
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            Log.w("dbLog", "findRoomListener:onCancelled", databaseError.toException());
+                        }
+                    };
+                    mDatabase.addValueEventListener(roomsListener);
+                    Log.d("myTag", "Room key: " + roomKey[0]);
+
+                    if (roomKey[0] != null) {
                         Toast.makeText(getApplicationContext(), "Игра найдена", Toast.LENGTH_SHORT).show();
+                        Log.d("myTag", "Final room key:" + roomKey[0]);
+                        mDatabase.removeEventListener(roomsListener);
+                        //startGameActivity
                     } else {
                         Toast.makeText(getApplicationContext(), "Игра не найдена", Toast.LENGTH_SHORT).show();
                     }
@@ -62,31 +86,6 @@ public class ConnectToRoomActivity extends AppCompatActivity {
     private void setViews() {
         connectToRoomButton = findViewById(R.id.connectToRoom);
         edRoomPass = findViewById(R.id.RoomPass);
-    }
-
-    private String findRoomListener(final String password) {
-        final String[] key = {null};
-        ValueEventListener roomsListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot ds: dataSnapshot.getChildren()) {
-                    Room room = ds.getValue(Room.class);
-                    Log.d("myTag", "Room pass: " + room.getPassword());
-                    if (room.getPassword().equals(password)) {
-                        key[0] = ds.getKey();
-                        Log.d("myTag", "Room key: " + ds.getKey());
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.w("dbLog", "findRoomListener:onCancelled", databaseError.toException());
-            }
-        };
-        mDatabase.addListenerForSingleValueEvent(roomsListener);
-        Log.d("myTag", "Room key: " + key[0]);
-        return key[0];
     }
 
     private void roomNodeListener() {
