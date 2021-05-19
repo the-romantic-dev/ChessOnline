@@ -1,5 +1,6 @@
 package org.spbstu.ysa.chessonline.model.pieces;
 
+import org.spbstu.ysa.chessonline.model.Board;
 import org.spbstu.ysa.chessonline.model.Cell;
 
 import java.util.Set;
@@ -14,7 +15,7 @@ public abstract class Piece {
         return this.color;
     }
 
-    public abstract Set<Cell> getAllowedCells(int x, int y, Cell[][] board);
+    public abstract Set<Cell> getAllowedCells(int x, int y, Board board);
 
     public abstract String getName();
 

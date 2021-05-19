@@ -47,13 +47,17 @@ public class Board {
         }
     }
 
+    public Cell[][] getData(){
+        return board;
+    }
+
     public Set<Cell> capturePiece(Cell cell) {
         this.currentCell = cell;
         int x = cell.getX();
         int y = cell.getY();
         if (cell.getPiece() == null) return new HashSet<>();
         Piece capturePiece = cell.getPiece();
-        Set<Cell> allowedMoves = capturePiece.getAllowedCells(x, y, this.board);
+        Set<Cell> allowedMoves = capturePiece.getAllowedCells(x, y, this);
         this.allowedMoves = allowedMoves;
         return allowedMoves;
     }

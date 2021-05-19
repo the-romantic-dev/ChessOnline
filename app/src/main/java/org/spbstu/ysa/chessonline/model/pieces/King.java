@@ -1,5 +1,6 @@
 package org.spbstu.ysa.chessonline.model.pieces;
 
+import org.spbstu.ysa.chessonline.model.Board;
 import org.spbstu.ysa.chessonline.model.Cell;
 
 import java.util.ArrayList;
@@ -14,8 +15,10 @@ public class King extends Piece {
     }
 
     @Override
-    public Set<Cell> getAllowedCells(int x, int y, Cell[][] board) {
+    public Set<Cell> getAllowedCells(int x, int y, Board boardClass) {
         Set<Cell> res = new HashSet<>();
+
+        Cell[][] board = boardClass.getData();
 
         List<Integer> listOfIterator = new ArrayList<>();
         listOfIterator.add(-1);

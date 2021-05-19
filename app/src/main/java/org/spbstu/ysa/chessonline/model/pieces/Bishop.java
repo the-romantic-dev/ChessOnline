@@ -1,5 +1,6 @@
 package org.spbstu.ysa.chessonline.model.pieces;
 
+import org.spbstu.ysa.chessonline.model.Board;
 import org.spbstu.ysa.chessonline.model.Cell;
 
 import java.util.HashSet;
@@ -12,9 +13,11 @@ public class Bishop extends Piece {
     }
 
     @Override
-    public Set<Cell> getAllowedCells(int x, int y, Cell[][] board) {
+    public Set<Cell> getAllowedCells(int x, int y, Board boardClass) {
         
         Set<Cell> res = new HashSet<>();
+
+        Cell[][] board = boardClass.getData();
         for (int i = 0; i < 2; i++) {
             for (int j = 0; j < 2; j++) {
                 int curX = (int) (x + Math.pow(-1.0, i));

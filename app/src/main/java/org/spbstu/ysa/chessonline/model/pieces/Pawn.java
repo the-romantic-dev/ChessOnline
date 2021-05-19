@@ -1,5 +1,6 @@
 package org.spbstu.ysa.chessonline.model.pieces;
 
+import org.spbstu.ysa.chessonline.model.Board;
 import org.spbstu.ysa.chessonline.model.Cell;
 
 import java.util.HashSet;
@@ -17,8 +18,11 @@ public class Pawn extends Piece {
 
 
     @Override
-    public Set<Cell> getAllowedCells(int x, int y, Cell[][] board) {
+    public Set<Cell> getAllowedCells(int x, int y, Board boardClass) {
         Set<Cell> res = new HashSet<>();
+
+        Cell[][] board = boardClass.getData();
+
         int i = this.isWhite() ? 1 : -1;
         int curY = y + i;
         if (curY >= 0 && curY < 8 && board[curY][x].getPiece() == null) {

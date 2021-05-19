@@ -1,5 +1,6 @@
 package org.spbstu.ysa.chessonline.model.pieces;
 
+import org.spbstu.ysa.chessonline.model.Board;
 import org.spbstu.ysa.chessonline.model.Cell;
 
 import java.util.HashSet;
@@ -11,10 +12,13 @@ public class Queen extends Piece{
     }
 
     @Override
-    public Set<Cell> getAllowedCells(int x, int y, Cell[][] board) {
+    public Set<Cell> getAllowedCells(int x, int y, Board boardClass) {
         Set<Cell> res = new HashSet<>();
-        res.addAll(new Rook(this.isWhite()).getAllowedCells(x,y,board));
-        res.addAll(new Bishop(this.isWhite()).getAllowedCells(x,y,board));
+
+        Cell[][] board = boardClass.getData();
+
+        res.addAll(new Rook(this.isWhite()).getAllowedCells(x,y,boardClass));
+        res.addAll(new Bishop(this.isWhite()).getAllowedCells(x,y,boardClass));
         return res;
     }
 

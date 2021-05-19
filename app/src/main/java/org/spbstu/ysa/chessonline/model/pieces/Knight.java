@@ -1,5 +1,6 @@
 package org.spbstu.ysa.chessonline.model.pieces;
 
+import org.spbstu.ysa.chessonline.model.Board;
 import org.spbstu.ysa.chessonline.model.Cell;
 
 import java.util.HashSet;
@@ -11,8 +12,10 @@ public class Knight extends Piece {
     }
 
     @Override
-    public Set<Cell> getAllowedCells(int x, int y, Cell[][] board) {
+    public Set<Cell> getAllowedCells(int x, int y, Board boardClass) {
         Set<Cell> res = new HashSet<>();
+
+        Cell[][] board = boardClass.getData();
 
         for (int i = 1; i < 3; i++) {
             for (int j = 0; j < 2; j++) {

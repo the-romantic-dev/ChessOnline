@@ -1,5 +1,6 @@
 package org.spbstu.ysa.chessonline.model.pieces;
 
+import org.spbstu.ysa.chessonline.model.Board;
 import org.spbstu.ysa.chessonline.model.Cell;
 
 import java.util.HashSet;
@@ -12,9 +13,11 @@ public class Rook extends Piece {
     }
 
     @Override
-    public Set<Cell> getAllowedCells(int x, int y, Cell[][] board) {
+    public Set<Cell> getAllowedCells(int x, int y, Board boardClass) {
 
         Set<Cell> res = new HashSet<>();
+
+        Cell[][] board = boardClass.getData();
 
         for (int i = x + 1; i < 8; i++) {
             Piece curPiece = board[y][i].getPiece();
