@@ -1,5 +1,7 @@
 package org.spbstu.ysa.chessonline.model;
 
+import android.util.Log;
+
 import org.spbstu.ysa.chessonline.model.pieces.*;
 
 import java.util.HashSet;
@@ -11,7 +13,7 @@ public class Board {
     private Set<Cell> allowedMoves = null;
 
 
-    public Board(){
+    public Board() {
         Piece[] whitePieces = new Piece[]{
                 new Rook(true), new Knight(true), new Bishop(true),
                 new Queen(true), new King(true), new Bishop(true),
@@ -47,27 +49,108 @@ public class Board {
         }
     }
 
-    public Cell[][] getData(){
+    public Board(Cell[][] array) {
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                board[i][j] = array[i][j];
+            }
+        }
+    }
+
+    public Cell[][] getData() {
         return board;
     }
 
-    public Set<Cell> capturePiece(Cell cell) {
+    public void setCurrentCell(Cell cell) {
         this.currentCell = cell;
-        int x = cell.getX();
-        int y = cell.getY();
+    }
+
+    public void setAllowedMoves(Set<Cell> set) {
+        this.allowedMoves = set;
+    }
+
+    public Set<Cell> capturePiece(Cell cell) {
+        setCurrentCell(cell);
         if (cell.getPiece() == null) return new HashSet<>();
         Piece capturePiece = cell.getPiece();
-        Set<Cell> allowedMoves = capturePiece.getAllowedCells(x, y, this);
-        this.allowedMoves = allowedMoves;
+        Set<Cell> allowedMoves = null;
+        try {
+            allowedMoves = capturePiece.filterAllowedMoves(cell,this);
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        setAllowedMoves(allowedMoves);
+        //Log.d("PIECES",board[0][6].toString());
         return allowedMoves;
     }
 
     public boolean putPiece(Cell cell) {
+
         if (!allowedMoves.contains(cell)) return false;
 
         Piece capturedPiece = currentCell.getPiece();
         currentCell.removePiece();
         cell.setPiece(capturedPiece);
+
         return true;
+    }
+
+    public boolean isCheck(boolean isPlayerWhite) {
+        Cell kingCell = this.findKingCell(isPlayerWhite);
+
+        for (Cell[] column : board) {
+            for (Cell cell : column) {
+                if (cell.getPiece() != null) {
+                    Set<Cell> allowedMoves = findAllOpponentsMoves(!isPlayerWhite);
+                    if (allowedMoves.contains(kingCell)) return true;
+                }
+
+
+            }
+        }
+        return false;
+    }
+
+    public Cell findKingCell(boolean isPlayerWhite) {
+        Set<Cell> pieces = this.setOfCellsWithPiecesOneColor(isPlayerWhite);
+        for (Cell cell : pieces) {
+            if (cell.getPiece().getName().equals("King")) return cell;
+        }
+
+        return null;
+    }
+
+    private Set<Cell> setOfCellsWithPiecesOneColor(boolean isPlayerWhite) {
+        Set<Cell> res = new HashSet();
+
+        for (Cell[] column : board) {
+            for (Cell cell : column) {
+                Piece piece = cell.getPiece();
+                if (piece != null && piece.isWhite() == isPlayerWhite) res.add(cell);
+            }
+        }
+        return res;
+    }
+
+    private Set<Cell> findAllOpponentsMoves(boolean isOpponentWhite){
+        Set<Cell> setOfOpponentsCells = setOfCellsWithPiecesOneColor(isOpponentWhite);
+        Set<Cell> res = new HashSet();
+         for (Cell cell: setOfOpponentsCells){
+             res.addAll(cell.getPiece().getAllowedCells(cell, this));
+         }
+         return res;
+    }
+
+    @Override
+    public Board clone() throws CloneNotSupportedException {
+        Cell[][] curBoardData = this.getData();
+        Cell[][] cloneBoardData = new Cell[8][8];
+
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                cloneBoardData[i][j] = curBoardData[i][j].clone();
+            }
+        }
+        return new Board(cloneBoardData);
     }
 }
