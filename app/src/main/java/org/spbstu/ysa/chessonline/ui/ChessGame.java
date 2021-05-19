@@ -71,7 +71,7 @@ public class ChessGame extends ApplicationAdapter {
         parameter.color = Color.RED;
         font = generator.generateFont(parameter);
         glyph = new GlyphLayout();
-        glyph.setText(font, "ШАХ");
+
 
         //здесь при создании доски она сразу отправляется на дб. По идее можешь отправлять не Chessboard, потмоу что
         //там много графики и тяжело будет передаваться. Лучше получить массив клеток
@@ -87,11 +87,13 @@ public class ChessGame extends ApplicationAdapter {
         Gdx.gl.glClearColor(0.4f, 0.6f, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
-        if (player.isCheck()) {
+        if (player.isCheck() && !player.isCheckmate()) {
+            glyph.setText(font, "ШАХ");
             font.draw(batch, glyph, Gdx.graphics.getWidth() / 2 - glyph.width / 2, Gdx.graphics.getHeight() - 400);
             Log.d("CHAH", "ШАХ");
         }
         if (player.isCheckmate()) {
+            glyph.setText(font, "Игра\nокончена");
             font.draw(batch, glyph, Gdx.graphics.getWidth() / 2 - glyph.width / 2, Gdx.graphics.getHeight() - 400);
             Log.d("CHAH", "Игра окончена");
         }

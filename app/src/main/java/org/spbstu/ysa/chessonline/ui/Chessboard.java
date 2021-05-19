@@ -110,9 +110,12 @@ public class Chessboard {
 
     private void makeMove() {
         player.setTurn(false);
-        player.putPiece(currentSquare.getCell());
+        Cell changedCell = player.putPiece(currentSquare.getCell());
+        ChessboardSquare changedSquare = squaresArray[changedCell.getY()][changedCell.getX()];
         redrawSquare(lastSquare);
         redrawSquare(currentSquare);
+        if (!changedSquare.equals(currentSquare)) redrawSquare(changedSquare);
+
         if (!isOnline) {
             player.setTurn(true);
             player.setColor(!player.isWhite());
