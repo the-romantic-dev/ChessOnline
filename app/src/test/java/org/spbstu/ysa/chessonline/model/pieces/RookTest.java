@@ -4,6 +4,7 @@ import junit.framework.TestCase;
 
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
+import org.spbstu.ysa.chessonline.model.Board;
 import org.spbstu.ysa.chessonline.model.Cell;
 
 import java.util.HashSet;
@@ -34,7 +35,8 @@ public class RookTest extends TestCase {
         set.add(new Cell(2 , 3));
         set.add(new Cell(3 , 0));
         set.add(new Cell(2 , 1));
-        assertEquals(board[2][0].getPiece().getAllowedCells(2,0, board), set);
+        assertEquals(board[2][0].getPiece().getAllowedCells(
+                new Cell(2,0, new Rook(true)), new Board(board)), set);
     }
 
 }

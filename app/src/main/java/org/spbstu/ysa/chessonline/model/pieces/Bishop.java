@@ -13,8 +13,9 @@ public class Bishop extends Piece {
     }
 
     @Override
-    public Set<Cell> getAllowedCells(int x, int y, Board boardClass) {
-        
+    public Set<Cell> getAllowedCells(Cell cell, Board boardClass) {
+        int x = cell.getX();
+        int y = cell.getY();
         Set<Cell> res = new HashSet<>();
 
         Cell[][] board = boardClass.getData();

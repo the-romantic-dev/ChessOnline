@@ -7,7 +7,7 @@ import java.util.Set;
 
 public class Player {
     private boolean isWhite;
-    private  Board board = new Board();
+    private Board board = new Board();
     private Cell currentCell = null;
     private Set<Cell> allowedMoves = null;
     private boolean turn = true;
@@ -54,41 +54,46 @@ public class Player {
     }
 
     public boolean isCheck() {
-        Cell kingCell = this.findKingCell();
-
-        for (Cell[] column : board.getData()) {
-            for (Cell cell : column) {
-                if (cell.getPiece() != null) {
-                    Set<Cell> allowedMoves = cell.getPiece().getAllowedCells(cell.getX(), cell.getY(), board);
-                    if (allowedMoves.contains(kingCell)) return true;
-                }
-
-
-            }
-        }
-        return false;
+        return board.isCheck(this.isWhite);
     }
 
-    public Cell findKingCell() {
-        for (Cell[] column : board.getData()) {
-            for (Cell cell : column) {
-                if (cell.getPiece().getName().equals("King")) return cell;
-            }
-        }
-        return null;
-    }
 
     public boolean isCheckmate() {
+        Set<Cell> pieces = this.opponentSetOfPieces();
         Set<Cell> allAllowedMoves = new HashSet<>();
 
-        for (Cell[] column : board.getData()) {
-            for (Cell cell : column) {
-                Piece curPiece = cell.getPiece();
-                if (curPiece.isWhite() == this.isWhite)
-                    allAllowedMoves.addAll(curPiece.getAllowedCells(cell.getX(),cell.getY(),board));
-            }
+        for (Cell cell : pieces) {
+            Piece curPiece = cell.getPiece();
+            if (curPiece.isWhite() == this.isWhite)
+                allAllowedMoves.addAll(curPiece.getAllowedCells(cell, board));
         }
+
 
         return this.isCheck() && allAllowedMoves.isEmpty();
     }
+
+    private Set<Cell> friendSetOfPieces() {
+        Set<Cell> res = new HashSet();
+
+        for (Cell[] column : board.getData()) {
+            for (Cell cell : column) {
+                Piece piece = cell.getPiece();
+                if (piece != null && piece.isWhite() == this.isWhite) res.add(cell);
+            }
+        }
+        return res;
+    }
+
+    private Set<Cell> opponentSetOfPieces() {
+        Set<Cell> res = new HashSet();
+
+        for (Cell[] column : board.getData()) {
+            for (Cell cell : column) {
+                Piece piece = cell.getPiece();
+                if (piece != null && piece.isWhite() != this.isWhite) res.add(cell);
+            }
+        }
+        return res;
+    }
 }
+

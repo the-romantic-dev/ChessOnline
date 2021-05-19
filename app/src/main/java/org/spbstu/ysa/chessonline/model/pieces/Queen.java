@@ -12,13 +12,15 @@ public class Queen extends Piece{
     }
 
     @Override
-    public Set<Cell> getAllowedCells(int x, int y, Board boardClass) {
+    public Set<Cell> getAllowedCells(Cell cell, Board boardClass) {
+        int x = cell.getX();
+        int y = cell.getY();
         Set<Cell> res = new HashSet<>();
 
         Cell[][] board = boardClass.getData();
 
-        res.addAll(new Rook(this.isWhite()).getAllowedCells(x,y,boardClass));
-        res.addAll(new Bishop(this.isWhite()).getAllowedCells(x,y,boardClass));
+        res.addAll(new Rook(this.isWhite()).getAllowedCells(cell,boardClass));
+        res.addAll(new Bishop(this.isWhite()).getAllowedCells(cell,boardClass));
         return res;
     }
 

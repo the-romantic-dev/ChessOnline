@@ -1,5 +1,7 @@
 package org.spbstu.ysa.chessonline.model;
 
+import androidx.annotation.NonNull;
+
 import org.spbstu.ysa.chessonline.model.pieces.Piece;
 
 import java.util.Objects;
@@ -49,7 +51,10 @@ public class Cell {
         this.piece = null;
     }
 
-
+    @Override
+    protected Cell clone() throws CloneNotSupportedException {
+        return new Cell(this.getX(), this.getY(), this.getPiece());
+    }
 
     @Override
     public String toString() {

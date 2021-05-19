@@ -13,17 +13,20 @@ public class Rook extends Piece {
     }
 
     @Override
-    public Set<Cell> getAllowedCells(int x, int y, Board boardClass) {
+    public Set<Cell> getAllowedCells(Cell cell, Board boardClass) {
 
-        Set<Cell> res = new HashSet<>();
+        int x = cell.getX();
+        int y = cell.getY();
+
+        Set<Cell> allowedMoves = new HashSet<>();
 
         Cell[][] board = boardClass.getData();
 
         for (int i = x + 1; i < 8; i++) {
             Piece curPiece = board[y][i].getPiece();
-            if (curPiece == null) res.add(new Cell(i, y)) ;
+            if (curPiece == null) allowedMoves.add(new Cell(i, y));
             else {
-                if (curPiece.isWhite() != this.isWhite()) res.add(new Cell(i, y));
+                if (curPiece.isWhite() != this.isWhite()) allowedMoves.add(new Cell(i, y));
                 break;
             }
         }
@@ -31,9 +34,9 @@ public class Rook extends Piece {
 
         for (int i = x - 1; i >= 0; i--) {
             Piece curPiece = board[y][i].getPiece();
-            if (curPiece == null) res.add(new Cell(i, y)) ;
+            if (curPiece == null) allowedMoves.add(new Cell(i, y));
             else {
-                if (curPiece.isWhite() != this.isWhite()) res.add(new Cell(i, y));
+                if (curPiece.isWhite() != this.isWhite()) allowedMoves.add(new Cell(i, y));
                 break;
             }
         }
@@ -41,9 +44,9 @@ public class Rook extends Piece {
 
         for (int i = y + 1; i < 8; i++) {
             Piece curPiece = board[i][x].getPiece();
-            if (curPiece == null) res.add(new Cell(x, i));
+            if (curPiece == null) allowedMoves.add(new Cell(x, i));
             else {
-                if (curPiece.isWhite() != this.isWhite()) res.add(new Cell(x, i));
+                if (curPiece.isWhite() != this.isWhite()) allowedMoves.add(new Cell(x, i));
                 break;
             }
         }
@@ -51,16 +54,18 @@ public class Rook extends Piece {
 
         for (int i = y - 1; i >= 0; i--) {
             Piece curPiece = board[i][x].getPiece();
-            if (curPiece == null) res.add(new Cell(x, i)) ;
+            if (curPiece == null) allowedMoves.add(new Cell(x, i));
             else {
-                if (curPiece.isWhite() != this.isWhite()) res.add(new Cell(x, i));
+                if (curPiece.isWhite() != this.isWhite()) allowedMoves.add(new Cell(x, i));
                 break;
             }
         }
 
+        Set<Cell> res = new HashSet();
 
-        return res;
+        return allowedMoves;
     }
+
 
     @Override
     public String getName() {
