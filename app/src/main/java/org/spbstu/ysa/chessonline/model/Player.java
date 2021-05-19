@@ -2,21 +2,19 @@ package org.spbstu.ysa.chessonline.model;
 
 import org.spbstu.ysa.chessonline.model.pieces.*;
 
-import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class Player {
-    private boolean color;
+    private boolean isWhite;
     private final Cell[][] board = new Cell[8][8];
     private Cell currentCell = null;
     private Set<Cell> allowedMoves = null;
     private boolean turn = true;
 
 
-    public Player(boolean color) {
-        this.color = color;
+    public Player(boolean isWhite) {
+        this.isWhite = isWhite;
         Piece[] whitePieces = new Piece[]{
                 new Rook(true), new Knight(true), new Bishop(true),
                 new Queen(true), new King(true), new Bishop(true),
@@ -82,15 +80,11 @@ public class Player {
     }
 
     public boolean isWhite() {
-        return color;
+        return isWhite;
     }
 
-    public void setColor(boolean color) {
-        this.color = color;
-    }
-
-    public boolean isCheckmate() {
-        return true;
+    public void setColor(boolean isWhite) {
+        this.isWhite = isWhite;
     }
 
     public boolean getTurn() {
@@ -120,5 +114,19 @@ public class Player {
             }
         }
         return null;
+    }
+
+    public boolean isCheckmate() {
+        Set<Cell> allAllowedMoves = new HashSet<>();
+
+        for (Cell[] column : board) {
+            for (Cell cell : column) {
+                Piece curPiece = cell.getPiece();
+                if (curPiece.isWhite() == this.isWhite)
+                    allAllowedMoves.addAll(curPiece.getAllowedCells(cell.getX(),cell.getY(),board));
+            }
+        }
+
+        return this.isCheck() && allAllowedMoves.isEmpty();
     }
 }
