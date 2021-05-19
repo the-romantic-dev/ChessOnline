@@ -17,20 +17,24 @@ import java.util.Random;
 
 public class GameActivity extends AndroidApplication {
     DatabaseReference ref;
-    //ссыль на дб
+    //ссыль на бд
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //здесь нужно инициировать дб
+        //здесь нужно инициировать бд
         super.onCreate(savedInstanceState);
         boolean isWhite = new Random().nextBoolean();
         AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
         boolean isOnline = getIntent().getBooleanExtra("isOnline", false);
-        boolean isCreating = true;
+        boolean isHost = getIntent().getBooleanExtra("isOnline", false);
         if (!isOnline) {
             initialize(new ChessGame(isWhite), config);
         } else {
-            initialize(new ChessGame(ref, isCreating, isWhite), config);
+            if (isHost) initialize(new ChessGame(ref, isHost, isWhite), config);
+            else {
+                //здесь нужно получить цвет с бд и присовоить isWhite
+                initialize(new ChessGame(ref, isHost, isWhite), config);
+            }
         }
 
     }

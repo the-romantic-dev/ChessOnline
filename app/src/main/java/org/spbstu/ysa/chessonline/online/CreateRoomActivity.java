@@ -20,6 +20,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import org.spbstu.ysa.chessonline.R;
+import org.spbstu.ysa.chessonline.ui.GameActivity;
 
 public class CreateRoomActivity extends AppCompatActivity {
     private Button createRoomButton;
@@ -62,6 +63,10 @@ public class CreateRoomActivity extends AppCompatActivity {
                             if (room.getConnection()) {
                                 Toast.makeText(getApplicationContext(), "Соперник найден, подключение..", Toast.LENGTH_SHORT).show();
                                 mDatabase.removeEventListener(this);
+                                Intent startGameActivity = new Intent(CreateRoomActivity.this, GameActivity.class);
+                                startGameActivity.putExtra("isOnline", true);
+                                startGameActivity.putExtra("isHost", true);
+                                startActivity(startGameActivity);
                                 //startGameActivity
                             }
                         }
