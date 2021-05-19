@@ -2,7 +2,9 @@ package org.spbstu.ysa.chessonline.model;
 
 import org.spbstu.ysa.chessonline.model.pieces.*;
 
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class Player {
@@ -97,5 +99,26 @@ public class Player {
 
     public void setTurn(boolean turn) {
         this.turn = turn;
+    }
+
+    public boolean isCheck() {
+        Cell kingCell = this.findKingCell();
+
+        for (Cell[] column : board) {
+            for (Cell cell : column) {
+                Set<Cell> allowedMoves = cell.getPiece().getAllowedCells(cell.getX(), cell.getY(), board);
+                if (allowedMoves.contains(kingCell)) return true;
+            }
+        }
+        return false;
+    }
+
+    public Cell findKingCell() {
+        for (Cell[] column : board) {
+            for (Cell cell : column) {
+                if (cell.getPiece().getName().equals("King")) return cell;
+            }
+        }
+        return null;
     }
 }

@@ -13,12 +13,12 @@ public class Bishop extends Piece {
 
     @Override
     public Set<Cell> getAllowedCells(int x, int y, Cell[][] board) {
-
-        int curX = x + 1;
-        int curY = y + 1;
+        
         Set<Cell> res = new HashSet<>();
         for (int i = 0; i < 2; i++) {
             for (int j = 0; j < 2; j++) {
+                int curX = (int) (x + Math.pow(-1.0, i));
+                int curY = (int) (y + Math.pow(-1.0, j));
                 while (curX >= 0 && curX < 8 && curY >=0 && curY < 8 ){
                     Piece curPiece = board[curY][curX].getPiece();
                     if (curPiece == null) res.add(new Cell(curX, curY));

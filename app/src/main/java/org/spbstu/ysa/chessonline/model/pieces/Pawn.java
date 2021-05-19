@@ -13,7 +13,6 @@ public class Pawn extends Piece {
     public Pawn(boolean color, int x, int y) {
         super(color);
         startCell = new Cell(x, y);
-
     }
 
 
@@ -22,10 +21,26 @@ public class Pawn extends Piece {
         Set<Cell> res = new HashSet<>();
         int i = this.isWhite() ? 1 : -1;
         int curY = y + i;
-        if (curY >= 0 && curY < 8 && board[curY][x].getPiece() == null){
+        if (curY >= 0 && curY < 8 && board[curY][x].getPiece() == null) {
             res.add(new Cell(x, curY));
-            if (x == startCell.getX() && y == startCell.getY() && board[curY + i][x].getPiece() == null) res.add(new Cell(x, curY + i));
+            if (x == startCell.getX() && y == startCell.getY() && board[curY + i][x].getPiece() == null)
+                res.add(new Cell(x, curY + i));
         }
+        // check if Pawn can catch opponent piece from RIGHT cell
+        int curX = x + 1;
+        if (curY >= 0 && curY < 8 && curX >= 0 && curX < 8) {
+            Piece oppositePiece = board[curY][curX].getPiece();
+            if (oppositePiece != null)
+                if (oppositePiece.isWhite() != this.isWhite()) res.add(new Cell(curX, curY));
+        }
+        // check if Pawn can catch opponent piece from LEFT cell
+        curX = x - 1;
+        if (curY >= 0 && curY < 8 && curX >= 0 && curX < 8) {
+            Piece oppositePiece = board[curY][curX].getPiece();
+            if (oppositePiece != null)
+                if (oppositePiece.isWhite() != this.isWhite()) res.add(new Cell(curX, curY));
+        }
+
 
         //реализация на проходе:
         // проверить есть клетка по диагонали
