@@ -95,6 +95,18 @@ public class Board {
         return true;
     }
 
+    public boolean isCheckmate(boolean isPlayerWhite) {
+        if (isCheck(isPlayerWhite)){
+            Set<Cell> allowedMoves = new HashSet();
+            Set<Cell> friendPieceCells = setOfCellsWithPiecesOneColor(isPlayerWhite);
+            for (Cell cell:friendPieceCells){
+                allowedMoves.addAll(cell.getPiece().getAllowedCells(cell, this));
+            }
+            return allowedMoves.isEmpty();
+        }
+        return false;
+    }
+
     public boolean isCheck(boolean isPlayerWhite) {
         Cell kingCell = this.findKingCell(isPlayerWhite);
 

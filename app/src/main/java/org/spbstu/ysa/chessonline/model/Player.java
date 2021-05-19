@@ -59,41 +59,8 @@ public class Player {
 
 
     public boolean isCheckmate() {
-        Set<Cell> pieces = this.opponentSetOfPieces();
-        Set<Cell> allAllowedMoves = new HashSet<>();
-
-        for (Cell cell : pieces) {
-            Piece curPiece = cell.getPiece();
-            if (curPiece.isWhite() == this.isWhite)
-                allAllowedMoves.addAll(curPiece.getAllowedCells(cell, board));
-        }
-
-
-        return this.isCheck() && allAllowedMoves.isEmpty();
+      return board.isCheckmate(isWhite);
     }
 
-    private Set<Cell> friendSetOfPieces() {
-        Set<Cell> res = new HashSet();
-
-        for (Cell[] column : board.getData()) {
-            for (Cell cell : column) {
-                Piece piece = cell.getPiece();
-                if (piece != null && piece.isWhite() == this.isWhite) res.add(cell);
-            }
-        }
-        return res;
-    }
-
-    private Set<Cell> opponentSetOfPieces() {
-        Set<Cell> res = new HashSet();
-
-        for (Cell[] column : board.getData()) {
-            for (Cell cell : column) {
-                Piece piece = cell.getPiece();
-                if (piece != null && piece.isWhite() != this.isWhite) res.add(cell);
-            }
-        }
-        return res;
-    }
 }
 
