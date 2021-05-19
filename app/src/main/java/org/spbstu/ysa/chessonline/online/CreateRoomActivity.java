@@ -27,7 +27,6 @@ public class CreateRoomActivity extends AppCompatActivity {
     private TextView helloText;
     private TextView loadingText;
     private DatabaseReference mDatabase;
-    private boolean connection = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,36 +48,28 @@ public class CreateRoomActivity extends AppCompatActivity {
                 if (TextUtils.isEmpty(pass)) {
                     Toast.makeText(getApplicationContext(), "Пустое поле", Toast.LENGTH_SHORT).show();
                 } else {
-
                     mDatabase.setValue(room);
                     Toast.makeText(getApplicationContext(), "Игра создана", Toast.LENGTH_SHORT).show();
-
                     //блокировать экран и ждать присоединения второго игрока
                     helloText.setVisibility(View.INVISIBLE);
                     loadingText.setVisibility(View.VISIBLE);
                     createRoomButton.setEnabled(false);
 
-                    ValueEventListener roomsListener = new ValueEventListener() {
+                    mDatabase.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             Room room  = dataSnapshot.getValue(Room.class);
                             if (room.getConnection()) {
                                 Toast.makeText(getApplicationContext(), "Соперник найден, подключение..", Toast.LENGTH_SHORT).show();
-                                connection = true;
+                                mDatabase.removeEventListener(this);
+                                //startGameActivity
                             }
                         }
-
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
                             Log.w("dbLog", "findRoomListener:onCancelled", databaseError.toException());
                         }
-                    };
-                    mDatabase.addValueEventListener(roomsListener);
-
-                    if (connection) {
-                        mDatabase.removeEventListener(roomsListener);
-                        //startGameView
-                    }
+                    });
                 }
             }
         });

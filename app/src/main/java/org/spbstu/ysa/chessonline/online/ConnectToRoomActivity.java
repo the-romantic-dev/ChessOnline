@@ -43,46 +43,37 @@ public class ConnectToRoomActivity extends AppCompatActivity {
                 final String pass = edRoomPass.getText().toString();
                 edRoomPass.setText("");
 
-                if (!TextUtils.isEmpty(pass)) {
+                if (TextUtils.isEmpty(pass)) {
+                    Toast.makeText(getApplicationContext(), "Пустое поле", Toast.LENGTH_SHORT).show();
+                } else {
                     helloText.setVisibility(View.INVISIBLE);
                     loadingText.setVisibility(View.VISIBLE);
                     connectToRoomButton.setEnabled(false);
 
-                    ValueEventListener roomsListener = new ValueEventListener() {
+                    mDatabase.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             for (DataSnapshot ds: dataSnapshot.getChildren()) {
                                 Room room = ds.getValue(Room.class);
-                                Log.d("myTag", "Room pass: " + room.getPassword());
-                                Log.d("myTag", "Room key in progress" + roomKey);
+                                //Log.d("myTag", "Room pass: " + room.getPassword());
+                                //Log.d("myTag", "Room key in progress" + roomKey);
                                 if (room.getPassword().equals(pass) && !room.getConnection()) {
                                     roomKey = ds.getKey();
-                                    Log.d("myTag", "Key was found:" + roomKey);
+                                    mDatabase.child(roomKey).child("connection").setValue(true);
+
+                                    Toast.makeText(getApplicationContext(), "Игра найдена", Toast.LENGTH_SHORT).show();
+                                    Log.d("myTag", "Final room key:" + roomKey);
+                                    mDatabase.removeEventListener(this);
+                                    //startGameActivity
                                 }
                             }
                         }
-
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
                             Log.w("dbLog", "findRoomListener:onCancelled", databaseError.toException());
                         }
-                    };
-                    mDatabase.addValueEventListener(roomsListener);
-                    Log.d("myTag", "Room key: " + roomKey);
-
-                    if (roomKey != null) {
-                        Toast.makeText(getApplicationContext(), "Игра найдена", Toast.LENGTH_SHORT).show();
-                        Log.d("myTag", "Final room key:" + roomKey);
-                        mDatabase.removeEventListener(roomsListener);
-                        //startGameActivity
-                    } else {
-                        Toast.makeText(getApplicationContext(), "Игра не найдена", Toast.LENGTH_SHORT).show();
-                    }
-
-                } else {
-                    Toast.makeText(getApplicationContext(), "Пустое поле", Toast.LENGTH_SHORT).show();
+                    });
                 }
-
             }
         });
     }
