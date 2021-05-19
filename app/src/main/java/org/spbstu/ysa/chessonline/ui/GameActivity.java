@@ -28,7 +28,7 @@ public class GameActivity extends AndroidApplication {
         boolean isOnline = getIntent().getBooleanExtra("isOnline", false);
         boolean isHost = getIntent().getBooleanExtra("isOnline", false);
         if (!isOnline) {
-            initialize(new ChessGame(isWhite), config);
+            initialize(new ChessGame(isWhite, GameActivity.this), config);
         } else {
             if (isHost) initialize(new ChessGame(ref, isHost, isWhite), config);
             else {
@@ -44,4 +44,11 @@ public class GameActivity extends AndroidApplication {
         startActivity(new Intent(GameActivity.this, MainActivity.class));
         finish();
     }
+
+    public void backToMenu() {
+        startActivity(new Intent(this, MainActivity.class));
+        finish();
+    }
+
+
 }

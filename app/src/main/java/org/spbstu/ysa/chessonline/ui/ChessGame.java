@@ -8,6 +8,8 @@ import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -37,6 +39,7 @@ public class ChessGame extends ApplicationAdapter {
     GlyphLayout glyph;
 
     DatabaseReference ref;
+    GameActivity gameActivity;
 
 
     @Override
@@ -50,6 +53,8 @@ public class ChessGame extends ApplicationAdapter {
                     chessboard.setCurrentSquare(screenX, Gdx.graphics.getHeight() - screenY);
                     chessboard.tap();
 
+                } else {
+                    gameActivity.backToMenu();
                 }
                 return true;
             }
@@ -93,15 +98,15 @@ public class ChessGame extends ApplicationAdapter {
             Log.d("CHAH", "ШАХ");
         }
         if (player.isCheckmate()) {
-            glyph.setText(font, "Игра\nокончена");
+            isGameFinished = true;
+            Pixmap finishScreenPM = new Pixmap(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), Pixmap.Format.RGBA8888);
+            finishScreenPM.setColor(1, 0, 0, 0.4f);
+            finishScreenPM.fill();
             font.draw(batch, glyph, Gdx.graphics.getWidth() / 2 - glyph.width / 2, Gdx.graphics.getHeight() - 400);
-            Log.d("CHAH", "Игра окончена");
+            Texture finishScreen = new Texture(finishScreenPM);
+            batch.draw(finishScreen, 0, 0);
         }
-
         chessboard.draw();
-        Log.d("CHAH", glyph.width + "");
-
-
         batch.end();
     }
 
@@ -123,7 +128,8 @@ public class ChessGame extends ApplicationAdapter {
         isOnline = true;
     }
 
-    public ChessGame(boolean isWhite) {
+    public ChessGame(boolean isWhite, GameActivity gameActivity) {
         this.isThisPlayerWhite = isWhite;
+        this.gameActivity = gameActivity;
     }
 }
