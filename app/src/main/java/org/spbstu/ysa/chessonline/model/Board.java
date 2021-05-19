@@ -73,7 +73,7 @@ public class Board {
         Piece capturePiece = cell.getPiece();
         Set<Cell> allowedMoves = null;
         try {
-            allowedMoves = capturePiece.filterAllowedMoves(cell,this);
+            allowedMoves = capturePiece.filterAllowedMoves(cell, this);
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
         }
@@ -85,10 +85,17 @@ public class Board {
 
         if (!allowedMoves.contains(cell)) return false;
 
-        if (currentCell.getPiece().getName().equals("Pawn")){
+        Set<Cell> setOfPawns = findAllPawns();
+        for (Cell pawnCell : setOfPawns) {
+            Pawn pawn = (Pawn) pawnCell.getPiece();
+            pawn.isPassantAvailable = false;
+            Log.d("1212", "FALSE");
+        }
+        if (currentCell.getPiece().getName().equals("Pawn")) {
             Pawn curPawn = (Pawn) currentCell.getPiece();
             if (Math.abs(currentCell.getY() - cell.getY()) == 2) {
                 curPawn.isPassantAvailable = true;
+                Log.d("1212", "True");
             }
 
             if (currentCell.getX() != cell.getX() && cell.getPiece() == null)
@@ -101,20 +108,25 @@ public class Board {
         return true;
     }
 
-    public void allPawnsCorrect(){
+    public void allPawnsCorrect() {
         Set<Cell> setOfPawns = findAllPawns();
-        for (Cell pawnCell :setOfPawns) {
+        for (Cell pawnCell : setOfPawns) {
             Pawn pawn = (Pawn) pawnCell.getPiece();
             pawn.isPassantAvailable = false;
+            Log.d("1212", "FALSE");
         }
     }
 
     public boolean isCheckmate(boolean isPlayerWhite) {
-        if (isCheck(isPlayerWhite)){
+        if (isCheck(isPlayerWhite)) {
             Set<Cell> allowedMoves = new HashSet();
             Set<Cell> friendPieceCells = setOfCellsWithPiecesOneColor(isPlayerWhite);
-            for (Cell cell:friendPieceCells){
-                allowedMoves.addAll(cell.getPiece().getAllowedCells(cell, this));
+            for (Cell cell : friendPieceCells) {
+                try {
+                    allowedMoves.addAll(cell.getPiece().filterAllowedMoves(cell, this));
+                } catch (CloneNotSupportedException e) {
+                    e.printStackTrace();
+                }
             }
             return allowedMoves.isEmpty();
         }
@@ -158,20 +170,20 @@ public class Board {
         return res;
     }
 
-    private Set<Cell> findAllOpponentsMoves(boolean isOpponentWhite){
+    private Set<Cell> findAllOpponentsMoves(boolean isOpponentWhite) {
         Set<Cell> setOfOpponentsCells = setOfCellsWithPiecesOneColor(isOpponentWhite);
         Set<Cell> res = new HashSet();
-         for (Cell cell: setOfOpponentsCells){
-             res.addAll(cell.getPiece().getAllowedCells(cell, this));
-         }
-         return res;
+        for (Cell cell : setOfOpponentsCells) {
+            res.addAll(cell.getPiece().getAllowedCells(cell, this));
+        }
+        return res;
     }
 
-    private Set<Cell> findAllPawns(){
+    private Set<Cell> findAllPawns() {
         Set<Cell> setOfPiece = setOfCellsWithPiecesOneColor(true);
         setOfPiece.addAll(setOfCellsWithPiecesOneColor(false));
         Set<Cell> res = new HashSet();
-        for (Cell cell:setOfPiece){
+        for (Cell cell : setOfPiece) {
             if (cell.getPiece().getName().equals("Pawn")) res.add(cell);
         }
         return res;

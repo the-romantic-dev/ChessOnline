@@ -159,7 +159,7 @@ public class Chessboard {
             } else {
                 if (isSelected) {
                     makeMove();
-                    player.getBoard().allPawnsCorrect();
+                   // player.getBoard().allPawnsCorrect();
                 }
             }
         }
