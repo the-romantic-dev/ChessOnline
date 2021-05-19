@@ -81,9 +81,11 @@ public class Board {
         return allowedMoves;
     }
 
-    public boolean putPiece(Cell cell) {
+    public Cell putPiece(Cell cell) {
 
-        if (!allowedMoves.contains(cell)) return false;
+        if (!allowedMoves.contains(cell)) return null;
+
+        Cell res = cell;
 
         Set<Cell> setOfPawns = findAllPawns();
         for (Cell pawnCell : setOfPawns) {
@@ -98,14 +100,16 @@ public class Board {
                 Log.d("1212", "True");
             }
 
-            if (currentCell.getX() != cell.getX() && cell.getPiece() == null)
-                board[cell.getY() - 1][cell.getX()].removePiece();
+            if (currentCell.getX() != cell.getX() && cell.getPiece() == null) {
+                res = board[cell.getY() - 1][cell.getX()];
+                res.removePiece();
+            }
         }
         Piece capturedPiece = currentCell.getPiece();
         currentCell.removePiece();
         cell.setPiece(capturedPiece);
 
-        return true;
+        return res;
     }
 
     public void allPawnsCorrect() {

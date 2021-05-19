@@ -25,7 +25,7 @@ public class Player {
         return board.capturePiece(cell);
     }
 
-    public boolean putPiece(Cell cell) {
+    public Cell putPiece(Cell cell) {
         return board.putPiece(cell);
     }
 
