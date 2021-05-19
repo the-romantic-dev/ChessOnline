@@ -101,7 +101,8 @@ public class Board {
             }
 
             if (currentCell.getX() != cell.getX() && cell.getPiece() == null) {
-                res = board[cell.getY() - 1][cell.getX()];
+                int i =currentCell.getPiece().isWhite()? -1 : 1;
+                res = board[cell.getY() + i][cell.getX()];
                 res.removePiece();
             }
         }
