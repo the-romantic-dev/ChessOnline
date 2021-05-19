@@ -125,7 +125,7 @@ public class Chessboard {
 
     private void modelOfFBWorking() {
         Cell[][] board = new Cell[8][8];
-        Cell[][] cells = player.getBoard();
+        Cell[][] cells = player.getBoard().getData();
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 board[i][j] = cells[7 - i][7 - j];
@@ -159,6 +159,7 @@ public class Chessboard {
             } else {
                 if (isSelected) {
                     makeMove();
+                    player.getBoard().allPawnsCorrect();
                 }
             }
         }
@@ -228,12 +229,12 @@ public class Chessboard {
             nextY += ChessboardSquare.sideLength;
             for (int j = 0; j < 8; j++) {
                 if (!isOnline) {
-                    addedCell = player.getBoard()[i][j];
+                    addedCell = player.getBoard().getData()[i][j];
                 } else {
                     if (player.isWhite()) {
-                        addedCell = player.getBoard()[i][j];
+                        addedCell = player.getBoard().getData()[i][j];
                     } else {
-                        addedCell = player.getBoard()[7 - i][7 - j];
+                        addedCell = player.getBoard().getData()[7 - i][7 - j];
                     }
                 }
 

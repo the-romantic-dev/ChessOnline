@@ -17,8 +17,8 @@ public class Player {
         this.isWhite = isWhite;
     }
 
-    public Cell[][] getBoard() {
-        return this.board.getData();
+    public Board getBoard() {
+        return this.board;
     }
 
     public Set<Cell> capturePiece(Cell cell) {

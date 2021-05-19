@@ -5,9 +5,13 @@ import android.util.Log;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.google.firebase.database.DatabaseReference;
 
 import org.spbstu.ysa.chessonline.model.Cell;
@@ -18,17 +22,22 @@ public class ChessGame extends ApplicationAdapter {
     private int startY = 100;
 
     boolean isCreating;
+    boolean isGameFinished = false;
     SpriteBatch batch;
     boolean isOnline = false;
 
     Player player;
     Chessboard chessboard;
     boolean isThisPlayerWhite;
-    boolean isReady = true;
     int fraps = 0;
-    BitmapFont someText;
+
+    BitmapFont font;
+    FreeTypeFontGenerator generator;
+    FreeTypeFontGenerator.FreeTypeFontParameter parameter;
+    GlyphLayout glyph;
 
     DatabaseReference ref;
+
 
     @Override
     public void create() {
@@ -37,8 +46,11 @@ public class ChessGame extends ApplicationAdapter {
         Gdx.input.setInputProcessor(new InputAdapter() {
             @Override
             public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-                chessboard.setCurrentSquare(screenX, Gdx.graphics.getHeight() - screenY);
-                chessboard.tap();
+                if (!isGameFinished) {
+                    chessboard.setCurrentSquare(screenX, Gdx.graphics.getHeight() - screenY);
+                    chessboard.tap();
+
+                }
                 return true;
             }
         });
@@ -50,7 +62,16 @@ public class ChessGame extends ApplicationAdapter {
         }
         player = new Player(isThisPlayerWhite);
         chessboard = new Chessboard(player, batch, startX, startY, isOnline);
-        someText = new BitmapFont();
+        FileHandle fontFile = Gdx.files.internal("font_1.ttf");
+        Log.d("TTFTTF", fontFile.toString());
+        generator = new FreeTypeFontGenerator(fontFile);
+        parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = 200;
+        parameter.characters = "АБВГДЕЁЖЗИКЛМНОПРСТУФХЧШЩЬЫЪЭЮЯ" + "абвгдеёжзиклмнопрстуфхчшщьыъэюя";
+        parameter.color = Color.RED;
+        font = generator.generateFont(parameter);
+        glyph = new GlyphLayout();
+        glyph.setText(font, "ШАХ");
 
         //здесь при создании доски она сразу отправляется на дб. По идее можешь отправлять не Chessboard, потмоу что
         //там много графики и тяжело будет передаваться. Лучше получить массив клеток
@@ -67,10 +88,18 @@ public class ChessGame extends ApplicationAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
         if (player.isCheck()) {
-            someText.draw(batch, "ШАХ", 0, 0);
+            font.draw(batch, glyph, Gdx.graphics.getWidth() / 2 - glyph.width / 2, Gdx.graphics.getHeight() - 400);
             Log.d("CHAH", "ШАХ");
         }
+        if (player.isCheckmate()) {
+            font.draw(batch, glyph, Gdx.graphics.getWidth() / 2 - glyph.width / 2, Gdx.graphics.getHeight() - 400);
+            Log.d("CHAH", "Игра окончена");
+        }
+
         chessboard.draw();
+        Log.d("CHAH", glyph.width + "");
+
+
         batch.end();
     }
 
