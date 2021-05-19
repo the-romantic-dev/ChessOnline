@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent startGameActivity = new Intent(MainActivity.this, GameActivity.class);
+                startGameActivity.putExtra("isOnline", false);
                 startActivity(startGameActivity);
                 finish();
             }

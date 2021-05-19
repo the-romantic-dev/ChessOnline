@@ -58,8 +58,12 @@ public class Player {
 
         for (Cell[] column : board.getData()) {
             for (Cell cell : column) {
-                Set<Cell> allowedMoves = cell.getPiece().getAllowedCells(cell.getX(), cell.getY(), board);
-                if (allowedMoves.contains(kingCell)) return true;
+                if (cell.getPiece() != null) {
+                    Set<Cell> allowedMoves = cell.getPiece().getAllowedCells(cell.getX(), cell.getY(), board);
+                    if (allowedMoves.contains(kingCell)) return true;
+                }
+
+
             }
         }
         return false;

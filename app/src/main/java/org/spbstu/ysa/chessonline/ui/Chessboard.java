@@ -10,7 +10,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import org.spbstu.ysa.chessonline.model.Cell;
 import org.spbstu.ysa.chessonline.model.Player;
 import org.spbstu.ysa.chessonline.model.pieces.Piece;
-import org.w3c.dom.Text;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,28 +24,29 @@ public class Chessboard {
     private Pixmap overallPixmap;
     private SpriteBatch batch;
     private Texture overallTexture;
+    boolean isOnline;
 
     private ChessboardSquare currentSquare;
     private ChessboardSquare[] currentAllowedSquares;
 
     private ChessboardSquare lastSquare;
-    private ChessboardSquare[] lastAllowedSquares;
 
 
     private Map<Pieces, Pixmap> whitePiecesPM;
     private Map<Pieces, Pixmap> blackPiecesPM;
 
-    public Chessboard(Player player, SpriteBatch batch, int startX, int startY) {
+    public Chessboard(Player player, SpriteBatch batch, int startX, int startY, boolean isOnline) {
         this.batch = batch;
         this.player = player;
         this.startX = startX;
         this.startY = startY;
         whitePiecesPM = new HashMap<>();
         blackPiecesPM = new HashMap<>();
+        this.isOnline = isOnline;
 
         initPiecesPixmaps();
 
-        squaresArray = covertCellsToSquares();
+        squaresArray = convertCellsToSquares();
 
         overallPixmap = makeStartPixmap();
     }
@@ -60,14 +60,20 @@ public class Chessboard {
     public void redrawSquare(ChessboardSquare square) {
         int x;
         int y;
-        if (player.isWhite()) {
+        if (!isOnline) {
             x = square.getCell().getX();
             y = square.getCell().getY();
-
         } else {
-            x = 7 - square.getCell().getX();
-            y = 7 - square.getCell().getY();
+            if (player.isWhite()) {
+                x = square.getCell().getX();
+                y = square.getCell().getY();
+
+            } else {
+                x = 7 - square.getCell().getX();
+                y = 7 - square.getCell().getY();
+            }
         }
+
 
         Piece piece = square.getCell().getPiece();
         if (piece != null) {
@@ -86,7 +92,6 @@ public class Chessboard {
         redrawSquare(currentSquare);
         selectAllowedSquares(currentAllowedSquares);
         lastSquare = currentSquare;
-        lastAllowedSquares = currentAllowedSquares;
     }
 
 
@@ -95,7 +100,6 @@ public class Chessboard {
             for (ChessboardSquare square : line) {
                 if (square.contains(x, y)) {
                     currentSquare = square;
-                    //player.setCurrentCell(square.getCell());
                     return square;
                 }
             }
@@ -109,6 +113,35 @@ public class Chessboard {
         player.putPiece(currentSquare.getCell());
         redrawSquare(lastSquare);
         redrawSquare(currentSquare);
+        if (!isOnline) {
+            player.setTurn(true);
+            player.setColor(!player.isWhite());
+        } else {
+            modelOfFBWorking();
+        }
+
+
+    }
+
+    private void modelOfFBWorking() {
+        Cell[][] board = new Cell[8][8];
+        Cell[][] cells = player.getBoard();
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                board[i][j] = cells[7 - i][7 - j];
+            }
+        }
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                cells[i][j] = board[i][j];
+            }
+        }
+        //player.updateBoard(board);
+        player.setTurn(true);
+        player.setColor(!player.isWhite());
+        //squaresArray = convertCellsToSquares();
+
+
     }
 
 
@@ -118,6 +151,7 @@ public class Chessboard {
         if (currentSquare != null) isSelected = currentSquare.isSelected();
         unselectAll();
         if (currentSquare != null) {
+            Log.d("currentSquare", currentSquare.toString());
             if (currentSquare.getCell().getPiece() != null && isItPLayersPiece()) {
                 if (!isSelected) {
                     selectPieceAndMoves();
@@ -161,11 +195,16 @@ public class Chessboard {
         ChessboardSquare[] result = new ChessboardSquare[cells.size()];
         int k = 0;
         for (Cell cell : cells) {
-            if (player.isWhite()) {
+            if (!isOnline) {
                 result[k] = squaresArray[cell.getY()][cell.getX()];
             } else {
-                result[k] = squaresArray[7 - cell.getY()][7 - cell.getX()];
+                if (player.isWhite()) {
+                    result[k] = squaresArray[cell.getY()][cell.getX()];
+                } else {
+                    result[k] = squaresArray[7 - cell.getY()][7 - cell.getX()];
+                }
             }
+
 
             k++;
         }
@@ -179,7 +218,7 @@ public class Chessboard {
         }
     }
 
-    private ChessboardSquare[][] covertCellsToSquares() {
+    private ChessboardSquare[][] convertCellsToSquares() {
         int nextX;
         int nextY = startY - ChessboardSquare.sideLength;
         ChessboardSquare[][] result = new ChessboardSquare[8][8];
@@ -188,10 +227,14 @@ public class Chessboard {
             nextX = startX;
             nextY += ChessboardSquare.sideLength;
             for (int j = 0; j < 8; j++) {
-                if (player.isWhite()) {
+                if (!isOnline) {
                     addedCell = player.getBoard()[i][j];
                 } else {
-                    addedCell = player.getBoard()[7 - i][7 - j];
+                    if (player.isWhite()) {
+                        addedCell = player.getBoard()[i][j];
+                    } else {
+                        addedCell = player.getBoard()[7 - i][7 - j];
+                    }
                 }
 
                 if (addedCell.getPiece() != null)
