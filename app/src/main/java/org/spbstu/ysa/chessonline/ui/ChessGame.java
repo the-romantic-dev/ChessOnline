@@ -16,7 +16,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.google.firebase.database.DatabaseReference;
 
-import org.spbstu.ysa.chessonline.model.Cell;
 import org.spbstu.ysa.chessonline.model.Player;
 
 public class ChessGame extends ApplicationAdapter {
@@ -33,7 +32,8 @@ public class ChessGame extends ApplicationAdapter {
     boolean isThisPlayerWhite;
     int fraps = 0;
 
-    BitmapFont font;
+    BitmapFont header;
+    BitmapFont endText;
     FreeTypeFontGenerator generator;
     FreeTypeFontGenerator.FreeTypeFontParameter parameter;
     GlyphLayout glyph;
@@ -72,9 +72,12 @@ public class ChessGame extends ApplicationAdapter {
         generator = new FreeTypeFontGenerator(fontFile);
         parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         parameter.size = 200;
-        parameter.characters = "АБВГДЕЁЖЗИКЛМНОПРСТУФХЧШЩЬЫЪЭЮЯ" + "абвгдеёжзиклмнопрстуфхчшщьыъэюя";
+        parameter.characters = "АБВГДЕЁЖЗИКЛМНОПРСТУФХЧШЩЬЫЪЭЮЯ" + "абвгдеёжзиклмнопрстуфхцчшщьыъэюя";
         parameter.color = Color.RED;
-        font = generator.generateFont(parameter);
+        header = generator.generateFont(parameter);
+        parameter.size = 100;
+        parameter.color = Color.BLACK;
+        endText = generator.generateFont(parameter);
         glyph = new GlyphLayout();
 
 
@@ -92,9 +95,10 @@ public class ChessGame extends ApplicationAdapter {
         Gdx.gl.glClearColor(0.4f, 0.6f, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
+        chessboard.draw();
         if (player.isCheck() && !player.isCheckmate()) {
-            glyph.setText(font, "ШАХ");
-            font.draw(batch, glyph, Gdx.graphics.getWidth() / 2 - glyph.width / 2, Gdx.graphics.getHeight() - 400);
+            glyph.setText(header, "ШАХ");
+            header.draw(batch, glyph, Gdx.graphics.getWidth() / 2 - glyph.width / 2, Gdx.graphics.getHeight() - 400);
             Log.d("CHAH", "ШАХ");
         }
         if (player.isCheckmate()) {
@@ -102,11 +106,14 @@ public class ChessGame extends ApplicationAdapter {
             Pixmap finishScreenPM = new Pixmap(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), Pixmap.Format.RGBA8888);
             finishScreenPM.setColor(1, 0, 0, 0.4f);
             finishScreenPM.fill();
-            font.draw(batch, glyph, Gdx.graphics.getWidth() / 2 - glyph.width / 2, Gdx.graphics.getHeight() - 400);
+            glyph.setText(header, "Конец игры");
+            header.draw(batch, glyph, Gdx.graphics.getWidth() / 2 - glyph.width / 2, Gdx.graphics.getHeight() - 400);
+            glyph.setText(endText, "Нажмите на экран");
+            endText.draw(batch, glyph, Gdx.graphics.getWidth() / 2 - glyph.width / 2, 400);
             Texture finishScreen = new Texture(finishScreenPM);
             batch.draw(finishScreen, 0, 0);
         }
-        chessboard.draw();
+
         batch.end();
     }
 
