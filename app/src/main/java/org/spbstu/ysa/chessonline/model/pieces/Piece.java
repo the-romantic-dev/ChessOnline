@@ -2,6 +2,8 @@ package org.spbstu.ysa.chessonline.model.pieces;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import org.spbstu.ysa.chessonline.model.Board;
 import org.spbstu.ysa.chessonline.model.Cell;
 

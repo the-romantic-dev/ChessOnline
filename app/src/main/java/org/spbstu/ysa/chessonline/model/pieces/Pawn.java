@@ -9,11 +9,17 @@ import java.util.Set;
 public class Pawn extends Piece {
 
     private final int BORDER_COORDINATE = this.isWhite() ? 7 : 1;
-    private Cell startCell;
+    public final Cell startCell;
+    public boolean isPassantAvailable = false;
 
     public Pawn(boolean color, int x, int y) {
         super(color);
         startCell = new Cell(x, y);
+    }
+
+    public Pawn(boolean color, Cell cell) {
+        super(color);
+        startCell = cell;
     }
 
 
@@ -36,28 +42,43 @@ public class Pawn extends Piece {
         int curX = x + 1;
         if (curY >= 0 && curY < 8 && curX >= 0 && curX < 8) {
             Piece oppositePiece = board[curY][curX].getPiece();
-            if (oppositePiece != null)
+            if (oppositePiece != null) {
                 if (oppositePiece.isWhite() != this.isWhite()) res.add(new Cell(curX, curY));
+            } else {
+                Piece checkingPiece = board[y][curX].getPiece();
+                if (checkingPiece != null && checkingPiece.getName().equals("Pawn")) {
+                    Pawn checkingPawn = (Pawn) checkingPiece;
+                    if (checkingPawn.isPassantAvailable) res.add(new Cell(curX, curY));
+                }
+            }
+
+
         }
         // check if Pawn can catch opponent piece from LEFT cell
         curX = x - 1;
         if (curY >= 0 && curY < 8 && curX >= 0 && curX < 8) {
             Piece oppositePiece = board[curY][curX].getPiece();
-            if (oppositePiece != null)
+            if (oppositePiece != null) {
                 if (oppositePiece.isWhite() != this.isWhite()) res.add(new Cell(curX, curY));
+            } else {
+                Piece checkingPiece = board[y][curX].getPiece();
+                if (checkingPiece != null && checkingPiece.getName().equals("Pawn")) {
+                    Pawn checkingPawn = (Pawn) checkingPiece;
+                    if (checkingPawn.isPassantAvailable) res.add(new Cell(curX, curY));
+                }
+            }
+
+
+            //реализация на проходе:
+            // проверить есть клетка по диагонали
+            // если есть то передавать и забыть
+            // если нет то проверять НА ПРОХОДЕ
+            // достать фигуру с боку проверить у неё предыдущее поле(precious Cell) и проверить равно ли оно стартовому
+            // если да то срубить
+
         }
-
-
-        //реализация на проходе:
-        // проверить есть клетка по диагонали
-        // если есть то передавать и забыть
-        // если нет то проверять НА ПРОХОДЕ
-        // достать фигуру с боку проверить у неё предыдущее поле(precious Cell) и проверить равно ли оно стартовому
-        // если да то срубить
-
         return res;
     }
-
 
     @Override
     public String getName() {

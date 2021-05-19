@@ -51,9 +51,7 @@ public class Board {
 
     public Board(Cell[][] array) {
         for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                board[i][j] = array[i][j];
-            }
+            System.arraycopy(array[i], 0, board[i], 0, 8);
         }
     }
 
@@ -80,7 +78,6 @@ public class Board {
             e.printStackTrace();
         }
         setAllowedMoves(allowedMoves);
-        //Log.d("PIECES",board[0][6].toString());
         return allowedMoves;
     }
 
@@ -88,11 +85,28 @@ public class Board {
 
         if (!allowedMoves.contains(cell)) return false;
 
+        if (currentCell.getPiece().getName().equals("Pawn")){
+            Pawn curPawn = (Pawn) currentCell.getPiece();
+            if (Math.abs(currentCell.getY() - cell.getY()) == 2) {
+                curPawn.isPassantAvailable = true;
+            }
+
+            if (currentCell.getX() != cell.getX() && cell.getPiece() == null)
+                board[cell.getY() - 1][cell.getX()].removePiece();
+        }
         Piece capturedPiece = currentCell.getPiece();
         currentCell.removePiece();
         cell.setPiece(capturedPiece);
 
         return true;
+    }
+
+    public void allPawnsCorrect(){
+        Set<Cell> setOfPawns = findAllPawns();
+        for (Cell pawnCell :setOfPawns) {
+            Pawn pawn = (Pawn) pawnCell.getPiece();
+            pawn.isPassantAvailable = false;
+        }
     }
 
     public boolean isCheckmate(boolean isPlayerWhite) {
@@ -151,6 +165,16 @@ public class Board {
              res.addAll(cell.getPiece().getAllowedCells(cell, this));
          }
          return res;
+    }
+
+    private Set<Cell> findAllPawns(){
+        Set<Cell> setOfPiece = setOfCellsWithPiecesOneColor(true);
+        setOfPiece.addAll(setOfCellsWithPiecesOneColor(false));
+        Set<Cell> res = new HashSet();
+        for (Cell cell:setOfPiece){
+            if (cell.getPiece().getName().equals("Pawn")) res.add(cell);
+        }
+        return res;
     }
 
     @Override
