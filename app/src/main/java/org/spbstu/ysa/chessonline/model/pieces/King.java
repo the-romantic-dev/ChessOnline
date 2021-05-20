@@ -49,7 +49,7 @@ public class King extends Piece {
 
         Set<Cell> res = new HashSet<>();
         res.addAll(super.filterAllowedMoves(cellOfPiece, board));
-
+        int y = isWhite() ? 0 : 7;
         int x = cellOfPiece.getX();
         List<Integer> listOfIterator = new ArrayList<>();
         listOfIterator.add(-1);
@@ -61,29 +61,29 @@ public class King extends Piece {
                 curX = x + iterator;
                 while (curX >= 0 && curX < 8) {
                     if (curX == 0 || curX == 7) {
-                        if (board.getData()[0][curX].getPiece().getName().equals("Rook")) {
-                            Rook rook = (Rook) board.getData()[0][curX].getPiece();
+                        if (board.getData()[y][curX].getPiece().getName().equals("Rook")) {
+                            Rook rook = (Rook) board.getData()[y][curX].getPiece();
                             if (!rook.isMoved()) {
                                 areAllMovesGood = true;
                                 Set<Cell> moves = new HashSet();
-                                moves.add(board.getData()[0][x + iterator]);
-                                moves.add(board.getData()[0][x + 2 * iterator]);
+                                moves.add(board.getData()[y][x + iterator]);
+                                moves.add(board.getData()[y][x + 2 * iterator]);
                                 for (Cell cell : moves) {
                                     Board newBoard = board.clone();
                                     Cell newCell = newBoard.getData()[cellOfPiece.getY()][cellOfPiece.getX()];
                                     Set<Cell> newAllowedMoves = new HashSet();
-                                    newAllowedMoves.add(newBoard.getData()[0][x + iterator]);
-                                    newAllowedMoves.add(newBoard.getData()[0][x + 2 * iterator]);
+                                    newAllowedMoves.add(newBoard.getData()[y][x + iterator]);
+                                    newAllowedMoves.add(newBoard.getData()[y][x + 2 * iterator]);
                                     newBoard.setCurrentCell(newCell);
                                     newBoard.setAllowedMoves(newAllowedMoves);
                                     newBoard.putPiece(newBoard.getData()[cell.getY()][cell.getX()]);
                                     areAllMovesGood = areAllMovesGood & !newBoard.isCheck(this.isWhite());
                                 }
-                                if (areAllMovesGood) res.add(board.getData()[0][curX]);
+                                if (areAllMovesGood) res.add(board.getData()[y][curX]);
                                 areAllMovesGood = false;
                             }
                         }
-                    } else if (board.getData()[0][curX].getPiece() != null) break;
+                    } else if (board.getData()[y][curX].getPiece() != null) break;
                     curX = curX + iterator;
                 }
             }

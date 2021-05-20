@@ -130,8 +130,9 @@ public class Board {
             Piece swappedRook = cell.getPiece();
             cell.removePiece();
             int i = cell.getX() == 0 ? -1 : 1;
-            Cell newKingCell = board[0][currentCell.getX() + 2 * i];
-            Cell newRookCell = board[0][currentCell.getX() + i];
+            int y = capturedPiece.isWhite() ? 0 : 7;
+            Cell newKingCell = board[y][currentCell.getX() + 2 * i];
+            Cell newRookCell = board[y][currentCell.getX() + i];
             newKingCell.setPiece(capturedPiece);
             newRookCell.setPiece(swappedRook);
             res.add(newKingCell);
@@ -150,7 +151,6 @@ public class Board {
         for (Cell pawnCell : setOfPawns) {
             Pawn pawn = (Pawn) pawnCell.getPiece();
             pawn.isPassantAvailable = false;
-            Log.d("1212", "FALSE");
         }
     }
 
