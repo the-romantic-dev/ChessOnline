@@ -109,41 +109,17 @@ public class Chessboard {
         return null;
     }
 
-    private void makeMove() {
+    public void makeMove() {
         player.setTurn(false);
         Cell changedCell = player.putPiece(currentSquare.getCell());
         ChessboardSquare changedSquare = squaresArray[changedCell.getY()][changedCell.getX()];
         redrawSquare(lastSquare);
         redrawSquare(currentSquare);
         if (!changedSquare.equals(currentSquare)) redrawSquare(changedSquare);
-
         if (!isOnline) {
             player.setTurn(true);
             player.setColor(!player.isWhite());
-        } else {
-            modelOfFBWorking();
         }
-
-
-    }
-
-    private void modelOfFBWorking() {
-        Cell[][] board = new Cell[8][8];
-        Cell[][] cells = player.getBoard().getData();
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                board[i][j] = cells[7 - i][7 - j];
-            }
-        }
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                cells[i][j] = board[i][j];
-            }
-        }
-        //player.updateBoard(board);
-        player.setTurn(true);
-        player.setColor(!player.isWhite());
-        //squaresArray = convertCellsToSquares();
 
 
     }
@@ -163,7 +139,6 @@ public class Chessboard {
             } else {
                 if (isSelected) {
                     makeMove();
-                   // player.getBoard().allPawnsCorrect();
                 }
             }
         }
@@ -308,5 +283,9 @@ public class Chessboard {
 
     public void setLastSquare(ChessboardSquare lastSquare) {
         this.lastSquare = lastSquare;
+    }
+
+    public ChessboardSquare getSquare(int x, int y) {
+        return squaresArray[y][x];
     }
 }

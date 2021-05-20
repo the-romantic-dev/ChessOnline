@@ -82,8 +82,23 @@ public class ChessGame extends ApplicationAdapter {
         glyph = new GlyphLayout();
 
 
-        //здесь при создании доски она сразу отправляется на дб. По идее можешь отправлять не Chessboard, потмоу что
-        //там много графики и тяжело будет передаваться. Лучше получить массив клеток
+        if (isOnline) {
+            if (!isThisPlayerWhite) player.setTurn(false);
+            //вобщем нужно здесь инииализировать Listener того, изменились ли данные на бд, т.е. сделал ли ход оппонент
+            //и обернуть в него нижележащий код
+            //в переменные ниже записать значения с дб
+            int xFrom = 0;
+            int yFrom = 0;
+            int xTo = 0;
+            int yTo = 0;
+            ChessboardSquare squareFrom = chessboard.getSquare(xFrom, yFrom);
+            ChessboardSquare squareTo = chessboard.getSquare(xTo, yTo);
+            chessboard.setCurrentSquare(squareTo);
+            chessboard.setLastSquare(squareFrom);
+            chessboard.makeMove();
+            Gdx.graphics.requestRendering();
+            player.setTurn(true);
+        }
 
 
     }
