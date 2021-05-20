@@ -68,7 +68,7 @@ public class ConnectToRoomActivity extends AppCompatActivity {
                                     Intent startGameActivity = new Intent(ConnectToRoomActivity.this, GameActivity.class);
                                     startGameActivity.putExtra("isOnline", true);
                                     startGameActivity.putExtra("isHost", false);
-                                    startGameActivity.putExtra("creatorIsWhite", room.getCreatorColor());
+                                    startGameActivity.putExtra("creatorIsWhite", !room.getCreatorColor());
                                     startGameActivity.putExtra("roomKey", roomKey);
                                     startActivity(startGameActivity);
                                     //startGameActivity
