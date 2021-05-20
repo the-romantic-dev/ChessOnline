@@ -19,19 +19,22 @@ public class GameActivity extends AndroidApplication {
     protected void onCreate(Bundle savedInstanceState) {
         ref = FirebaseDatabase.getInstance().getReference("games");
         super.onCreate(savedInstanceState);
-        boolean isWhite = new Random().nextBoolean();
+
         AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
         boolean isOnline = getIntent().getBooleanExtra("isOnline", false);
-        boolean isHost = getIntent().getBooleanExtra("isOnline", false);
-        boolean creatorIsWhite = getIntent().getBooleanExtra("creatorIsWhite", false);
-        String roomKey = getIntent().getStringExtra("roomKey");
+
         if (!isOnline) {
+            boolean isWhite = new Random().nextBoolean();
             initialize(new ChessGame(isWhite, GameActivity.this), config);
         } else {
-            if (isHost) initialize(new ChessGame(ref.child(roomKey), isHost, creatorIsWhite), config);
+            boolean isHost = getIntent().getBooleanExtra("isOnline", false);
+            boolean creatorIsWhite = getIntent().getBooleanExtra("creatorIsWhite", false);
+            String roomKey = getIntent().getStringExtra("roomKey");
+            if (isHost)
+                initialize(new ChessGame(ref.child(roomKey), isHost, creatorIsWhite), config);
             else {
                 //здесь нужно получить цвет с бд и присовоить isWhite
-                initialize(new ChessGame(ref.child(roomKey), isHost, creatorIsWhite), config);
+                initialize(new ChessGame(ref.child(roomKey), isHost, !creatorIsWhite), config);
             }
         }
 

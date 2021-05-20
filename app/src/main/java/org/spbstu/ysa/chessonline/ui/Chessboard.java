@@ -27,9 +27,10 @@ public class Chessboard {
     boolean isOnline;
 
     private ChessboardSquare currentSquare;
+    private ChessboardSquare lastSquare;
     private ChessboardSquare[] currentAllowedSquares;
 
-    private ChessboardSquare lastSquare;
+
 
 
     private Map<Pieces, Pixmap> whitePiecesPM;
@@ -299,5 +300,13 @@ public class Chessboard {
 
     private Pixmap getPixmapByImageName(String name) {
         return new Pixmap(Gdx.files.internal(name));
+    }
+
+    public void setCurrentSquare(ChessboardSquare currentSquare) {
+        this.currentSquare = currentSquare;
+    }
+
+    public void setLastSquare(ChessboardSquare lastSquare) {
+        this.lastSquare = lastSquare;
     }
 }
