@@ -2,13 +2,11 @@ package org.spbstu.ysa.chessonline.model.pieces;
 
 import org.spbstu.ysa.chessonline.model.Board;
 import org.spbstu.ysa.chessonline.model.Cell;
-
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.Set;
 
 public abstract class Piece {
-    private boolean color;
+    private final boolean color;
 
     public Piece(boolean color) {
         this.color = color;
@@ -21,7 +19,7 @@ public abstract class Piece {
     public abstract Set<Cell> getAllowedCells(Cell cell, Board board);
 
     public Set<Cell> filterAllowedMoves( Cell cellOfPiece, Board board) throws CloneNotSupportedException{
-        Set<Cell> filteredMoves = new HashSet();
+        Set<Cell> filteredMoves = new HashSet<>();
         Set<Cell> allowedMoves = this.getAllowedCells(cellOfPiece, board);
         for (Cell cell : allowedMoves) {
             Board newBoard = board.clone();

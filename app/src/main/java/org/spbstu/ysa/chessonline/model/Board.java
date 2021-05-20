@@ -89,7 +89,7 @@ public class Board {
 
         String curPieceName = currentCell.getPiece().getName();
 
-        Set<Cell> res = new HashSet();
+        Set<Cell> res = new HashSet<>();
         res.add(currentCell);
         res.add(cell);
         //Passant realisation
@@ -146,17 +146,9 @@ public class Board {
         return res;
     }
 
-    public void allPawnsCorrect() {
-        Set<Cell> setOfPawns = findAllPawns();
-        for (Cell pawnCell : setOfPawns) {
-            Pawn pawn = (Pawn) pawnCell.getPiece();
-            pawn.isPassantAvailable = false;
-        }
-    }
-
     public boolean isCheckmate(boolean isPlayerWhite) {
         if (isCheck(isPlayerWhite)) {
-            Set<Cell> allowedMoves = new HashSet();
+            Set<Cell> allowedMoves = new HashSet<>();
             Set<Cell> friendPieceCells = setOfCellsWithPiecesOneColor(isPlayerWhite);
             for (Cell cell : friendPieceCells) {
                 try {
@@ -196,7 +188,7 @@ public class Board {
     }
 
     private Set<Cell> setOfCellsWithPiecesOneColor(boolean isPlayerWhite) {
-        Set<Cell> res = new HashSet();
+        Set<Cell> res = new HashSet<>();
 
         for (Cell[] column : board) {
             for (Cell cell : column) {
@@ -209,7 +201,7 @@ public class Board {
 
     private Set<Cell> findAllOpponentsMoves(boolean isOpponentWhite) {
         Set<Cell> setOfOpponentsCells = setOfCellsWithPiecesOneColor(isOpponentWhite);
-        Set<Cell> res = new HashSet();
+        Set<Cell> res = new HashSet<>();
         for (Cell cell : setOfOpponentsCells) {
             res.addAll(cell.getPiece().getAllowedCells(cell, this));
         }
@@ -219,7 +211,7 @@ public class Board {
     private Set<Cell> findAllPawns() {
         Set<Cell> setOfPiece = setOfCellsWithPiecesOneColor(true);
         setOfPiece.addAll(setOfCellsWithPiecesOneColor(false));
-        Set<Cell> res = new HashSet();
+        Set<Cell> res = new HashSet<>();
         for (Cell cell : setOfPiece) {
             if (cell.getPiece().getName().equals("Pawn")) res.add(cell);
         }

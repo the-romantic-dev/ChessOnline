@@ -1,8 +1,5 @@
 package org.spbstu.ysa.chessonline.model;
 
-import org.spbstu.ysa.chessonline.model.pieces.*;
-
-import java.util.HashSet;
 import java.util.Set;
 
 public class Player {

@@ -47,16 +47,15 @@ public class King extends Piece {
     @Override
     public Set<Cell> filterAllowedMoves(Cell cellOfPiece, Board board) throws CloneNotSupportedException {
 
-        Set<Cell> res = new HashSet<>();
-        res.addAll(super.filterAllowedMoves(cellOfPiece, board));
+        Set<Cell> res = new HashSet<>(super.filterAllowedMoves(cellOfPiece, board));
         int y = isWhite() ? 0 : 7;
         int x = cellOfPiece.getX();
         List<Integer> listOfIterator = new ArrayList<>();
         listOfIterator.add(-1);
         listOfIterator.add(1);
         if (!this.isMoved) {
-            boolean areAllMovesGood = false;
-            int curX = x;
+            boolean areAllMovesGood;
+            int curX;
             for (int iterator : listOfIterator) {
                 curX = x + iterator;
                 while (curX >= 0 && curX < 8) {
@@ -65,13 +64,13 @@ public class King extends Piece {
                             Rook rook = (Rook) board.getData()[y][curX].getPiece();
                             if (!rook.isMoved()) {
                                 areAllMovesGood = true;
-                                Set<Cell> moves = new HashSet();
+                                Set<Cell> moves = new HashSet<>();
                                 moves.add(board.getData()[y][x + iterator]);
                                 moves.add(board.getData()[y][x + 2 * iterator]);
                                 for (Cell cell : moves) {
                                     Board newBoard = board.clone();
                                     Cell newCell = newBoard.getData()[cellOfPiece.getY()][cellOfPiece.getX()];
-                                    Set<Cell> newAllowedMoves = new HashSet();
+                                    Set<Cell> newAllowedMoves = new HashSet<>();
                                     newAllowedMoves.add(newBoard.getData()[y][x + iterator]);
                                     newAllowedMoves.add(newBoard.getData()[y][x + 2 * iterator]);
                                     newBoard.setCurrentCell(newCell);
@@ -97,13 +96,10 @@ public class King extends Piece {
     }
 
     @Override
-    public Piece clone() throws CloneNotSupportedException {
+    public Piece clone() {
         return new King(isWhite());
     }
 
-    public boolean isMoved() {
-        return isMoved;
-    }
 
     public void setMoved() {
         isMoved = true;
