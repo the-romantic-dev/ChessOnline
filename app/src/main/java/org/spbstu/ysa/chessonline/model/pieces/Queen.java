@@ -23,7 +23,10 @@ public class Queen extends Piece{
         res.addAll(new Bishop(this.isWhite()).getAllowedCells(cell,boardClass));
         return res;
     }
-
+    @Override
+    public Piece clone() throws CloneNotSupportedException {
+        return new Queen(isWhite());
+    }
     @Override
     public String getName() {
         return "Queen";

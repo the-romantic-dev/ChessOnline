@@ -37,6 +37,10 @@ public class Knight extends Piece {
         return "Knight";
     }
 
+    @Override
+    public Piece clone() throws CloneNotSupportedException {
+        return new Knight(isWhite());
+    }
 
     private boolean coordinatesAllow(int x, int y, Cell[][] board) {
         return x >= 0 && x <= 7 && y >= 0 && y <= 7

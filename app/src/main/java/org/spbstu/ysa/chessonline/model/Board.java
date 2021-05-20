@@ -81,35 +81,67 @@ public class Board {
         return allowedMoves;
     }
 
-    public Cell putPiece(Cell cell) {
+    public Set<Cell> putPiece(Cell cell) {
+        Log.d("Castling","putPiece call");
+
 
         if (!allowedMoves.contains(cell)) return null;
 
-        Cell res = cell;
+        String curPieceName = currentCell.getPiece().getName();
 
+        Set<Cell> res = new HashSet();
+        res.add(currentCell);
+        res.add(cell);
+        //Passant realisation
         Set<Cell> setOfPawns = findAllPawns();
         for (Cell pawnCell : setOfPawns) {
             Pawn pawn = (Pawn) pawnCell.getPiece();
             pawn.isPassantAvailable = false;
-            Log.d("1212", "FALSE");
         }
-        if (currentCell.getPiece().getName().equals("Pawn")) {
+        if (curPieceName.equals("Pawn")) {
             Pawn curPawn = (Pawn) currentCell.getPiece();
             if (Math.abs(currentCell.getY() - cell.getY()) == 2) {
                 curPawn.isPassantAvailable = true;
-                Log.d("1212", "True");
             }
 
             if (currentCell.getX() != cell.getX() && cell.getPiece() == null) {
-                int i =currentCell.getPiece().isWhite()? -1 : 1;
-                res = board[cell.getY() + i][cell.getX()];
-                res.removePiece();
+                int i = currentCell.getPiece().isWhite() ? -1 : 1;
+                Cell attackedCell = board[cell.getY() + i][cell.getX()];
+                res.add(attackedCell);
+                attackedCell.removePiece();
             }
         }
-        Piece capturedPiece = currentCell.getPiece();
-        currentCell.removePiece();
-        cell.setPiece(capturedPiece);
+        //Castling realisation(changing isMoved field)
+        if (curPieceName.equals("King")) {
+            King curKing = (King) currentCell.getPiece();
+            curKing.setMoved();
+        }
+        if (curPieceName.equals("Rook")) {
+            Rook curKing = (Rook) currentCell.getPiece();
+            curKing.setMoved();
+        }
 
+        //Castling realisation(make a castling)
+        if (curPieceName.equals("King") && cell.getPiece() != null &&
+                cell.getPiece().isWhite() == currentCell.getPiece().isWhite()) {
+            Log.d("Castling","DONE");
+            Piece capturedPiece = currentCell.getPiece();
+            currentCell.removePiece();
+            Piece swappedRook = cell.getPiece();
+            cell.removePiece();
+            int i = cell.getX() == 0 ? -1 : 1;
+            Cell newKingCell = board[0][currentCell.getX() + 2 * i];
+            Cell newRookCell = board[0][currentCell.getX() + i];
+            newKingCell.setPiece(capturedPiece);
+            newRookCell.setPiece(swappedRook);
+            res.add(newKingCell);
+            res.add(newRookCell);
+        } else {
+            //Standard method
+            Piece capturedPiece = currentCell.getPiece();
+            currentCell.removePiece();
+            cell.setPiece(capturedPiece);
+        }
         return res;
     }
 

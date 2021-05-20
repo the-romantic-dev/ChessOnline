@@ -53,7 +53,9 @@ public class Cell {
 
     @Override
     protected Cell clone() throws CloneNotSupportedException {
-        return new Cell(this.getX(), this.getY(), this.getPiece());
+
+        Piece clonePiece = this.getPiece() == null ? null : this.getPiece().clone();
+        return new Cell(this.getX(), this.getY(),clonePiece );
     }
 
     @Override

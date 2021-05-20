@@ -70,18 +70,14 @@ public class Pawn extends Piece {
                 }
             }
 
-
-            //реализация на проходе:
-            // проверить есть клетка по диагонали
-            // если есть то передавать и забыть
-            // если нет то проверять НА ПРОХОДЕ
-            // достать фигуру с боку проверить у неё предыдущее поле(precious Cell) и проверить равно ли оно стартовому
-            // если да то срубить
-
         }
         return res;
     }
 
+    @Override
+    public Piece clone() throws CloneNotSupportedException {
+        return new Pawn(isWhite(),startCell);
+    }
     @Override
     public String getName() {
         return "Pawn";

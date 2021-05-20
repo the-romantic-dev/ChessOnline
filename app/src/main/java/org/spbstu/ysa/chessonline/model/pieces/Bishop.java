@@ -23,7 +23,7 @@ public class Bishop extends Piece {
             for (int j = 0; j < 2; j++) {
                 int curX = (int) (x + Math.pow(-1.0, i));
                 int curY = (int) (y + Math.pow(-1.0, j));
-                while (curX >= 0 && curX < 8 && curY >=0 && curY < 8 ){
+                while (curX >= 0 && curX < 8 && curY >= 0 && curY < 8) {
                     Piece curPiece = board[curY][curX].getPiece();
                     if (curPiece == null) res.add(new Cell(curX, curY));
                     else {
@@ -40,6 +40,10 @@ public class Bishop extends Piece {
         return res;
     }
 
+    @Override
+    public Piece clone() throws CloneNotSupportedException {
+        return new Bishop(isWhite());
+    }
 
     @Override
     public String getName() {

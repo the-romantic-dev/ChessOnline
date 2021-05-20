@@ -8,6 +8,8 @@ import java.util.Set;
 
 public class Rook extends Piece {
 
+    private boolean isMoved = false;
+
     public Rook(boolean color) {
         super(color);
     }
@@ -70,5 +72,18 @@ public class Rook extends Piece {
     @Override
     public String getName() {
         return "Rook";
+    }
+
+    public boolean isMoved() {
+        return isMoved;
+    }
+
+    @Override
+    public Piece clone() throws CloneNotSupportedException {
+        return new Rook(isWhite());
+    }
+
+    public void setMoved() {
+        isMoved = true;
     }
 }

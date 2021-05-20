@@ -1,12 +1,9 @@
 package org.spbstu.ysa.chessonline.model.pieces;
 
-import android.util.Log;
-
-import androidx.annotation.NonNull;
-
 import org.spbstu.ysa.chessonline.model.Board;
 import org.spbstu.ysa.chessonline.model.Cell;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -39,6 +36,12 @@ public abstract class Piece {
     }
 
     public abstract String getName();
+
+
+    public Piece clone() throws CloneNotSupportedException {
+        return null;
+    }
+
 
     @Override
     public String toString() {
