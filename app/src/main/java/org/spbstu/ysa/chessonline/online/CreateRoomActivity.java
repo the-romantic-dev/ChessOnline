@@ -22,6 +22,8 @@ import com.google.firebase.database.ValueEventListener;
 import org.spbstu.ysa.chessonline.R;
 import org.spbstu.ysa.chessonline.ui.GameActivity;
 
+import java.util.Random;
+
 public class CreateRoomActivity extends AppCompatActivity {
     private Button createRoomButton;
     private EditText edRoomPass;
@@ -44,7 +46,8 @@ public class CreateRoomActivity extends AppCompatActivity {
                 edRoomPass.setText("");
                 //Вместо chessBoard будет класс с состоянием шахматного поля
                 String chessBoard = "data";
-                Room room = new Room(pass, chessBoard, false);
+                final boolean isWhite = new Random().nextBoolean();
+                Room room = new Room(pass, chessBoard, false, isWhite);
 
                 if (TextUtils.isEmpty(pass)) {
                     Toast.makeText(getApplicationContext(), "Пустое поле", Toast.LENGTH_SHORT).show();
@@ -66,6 +69,8 @@ public class CreateRoomActivity extends AppCompatActivity {
                                 Intent startGameActivity = new Intent(CreateRoomActivity.this, GameActivity.class);
                                 startGameActivity.putExtra("isOnline", true);
                                 startGameActivity.putExtra("isHost", true);
+                                startGameActivity.putExtra("creatorIsWhite", isWhite);
+                                startGameActivity.putExtra("roomKey", dataSnapshot.getKey());
                                 startActivity(startGameActivity);
                                 //startGameActivity
                             }

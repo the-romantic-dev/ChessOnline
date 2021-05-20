@@ -5,14 +5,16 @@ public class Room {
     //Вместо chessBoard будет объект с состоянием шахматного поля
     private String chessBoard;
     private Boolean connection;
+    private Boolean creatorIsWhite;
 
     public Room() {
     }
 
-    public Room(String password, String chessBoard, boolean connection) {
+    public Room(String password, String chessBoard, boolean connection, boolean isWhite) {
         this.password = password;
         this.chessBoard = chessBoard;
         this.connection = connection;
+        this.creatorIsWhite = isWhite;
     }
 
     public String getPassword() {
@@ -34,4 +36,12 @@ public class Room {
     public boolean getConnection() { return connection; }
 
     public void setConnection(boolean connection) { this.connection = connection; }
+
+    public Boolean getCreatorColor() {
+        return creatorIsWhite;
+    }
+
+    public void setCreatorColor(Boolean white) {
+        creatorIsWhite = white;
+    }
 }
