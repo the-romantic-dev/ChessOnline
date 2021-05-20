@@ -20,7 +20,7 @@ import org.spbstu.ysa.chessonline.model.Player;
 
 public class ChessGame extends ApplicationAdapter {
     private int startX;
-    private int startY = 100;
+    private int startY;
 
     boolean isCreating;
     boolean isGameFinished = false;
@@ -61,6 +61,7 @@ public class ChessGame extends ApplicationAdapter {
         });
 
         startX = (Gdx.graphics.getWidth() - ChessboardSquare.sideLength * 8) / 2;
+        startY = (Gdx.graphics.getHeight() - ChessboardSquare.sideLength * 8) / 2;
         batch = new SpriteBatch();
         if (!isOnline) {
             isThisPlayerWhite = true;
@@ -98,7 +99,7 @@ public class ChessGame extends ApplicationAdapter {
         chessboard.draw();
         if (player.isCheck() && !player.isCheckmate()) {
             glyph.setText(header, "ШАХ");
-            header.draw(batch, glyph, Gdx.graphics.getWidth() / 2 - glyph.width / 2, Gdx.graphics.getHeight() - 400);
+            header.draw(batch, glyph, Gdx.graphics.getWidth() / 2 - glyph.width / 2, Gdx.graphics.getHeight() - 300);
             Log.d("CHAH", "ШАХ");
         }
         if (player.isCheckmate()) {
@@ -107,7 +108,7 @@ public class ChessGame extends ApplicationAdapter {
             finishScreenPM.setColor(1, 0, 0, 0.4f);
             finishScreenPM.fill();
             glyph.setText(header, "Конец игры");
-            header.draw(batch, glyph, Gdx.graphics.getWidth() / 2 - glyph.width / 2, Gdx.graphics.getHeight() - 400);
+            header.draw(batch, glyph, Gdx.graphics.getWidth() / 2 - glyph.width / 2, Gdx.graphics.getHeight() - 300);
             glyph.setText(endText, "Нажмите на экран");
             endText.draw(batch, glyph, Gdx.graphics.getWidth() / 2 - glyph.width / 2, 400);
             Texture finishScreen = new Texture(finishScreenPM);
