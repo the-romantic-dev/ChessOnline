@@ -135,6 +135,8 @@ public class Chessboard {
             if (currentSquare.getCell().getPiece() != null && isItPLayersPiece()) {
                 if (!isSelected) {
                     selectPieceAndMoves();
+                } else {
+                    makeMove();
                 }
             } else {
                 if (isSelected) {
