@@ -2,6 +2,9 @@ package org.spbstu.ysa.chessonline.ui;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
@@ -14,9 +17,13 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 
 import org.spbstu.ysa.chessonline.model.Player;
+import org.spbstu.ysa.chessonline.online.Room;
 
 public class ChessGame extends ApplicationAdapter {
     private int startX;
@@ -87,17 +94,50 @@ public class ChessGame extends ApplicationAdapter {
             //вобщем нужно здесь инииализировать Listener того, изменились ли данные на бд, т.е. сделал ли ход оппонент
             //и обернуть в него нижележащий код
             //в переменные ниже записать значения с дб
-            int xFrom = 0;
-            int yFrom = 0;
-            int xTo = 0;
-            int yTo = 0;
-            ChessboardSquare squareFrom = chessboard.getSquare(xFrom, yFrom);
-            ChessboardSquare squareTo = chessboard.getSquare(xTo, yTo);
-            chessboard.setCurrentSquare(squareTo);
-            chessboard.setLastSquare(squareFrom);
-            chessboard.makeMove();
-            Gdx.graphics.requestRendering();
-            player.setTurn(true);
+            ChildEventListener listener = new ChildEventListener() {
+                @Override
+                public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+                }
+
+                @Override
+                public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                    Room room = snapshot.getValue(Room.class);
+                    int xFrom = room.getxFrom();
+                    int yFrom = room.getyFrom();
+                    int xTo = room.getxTo();
+                    int yTo = room.getyTo();
+                    //превращение пешки
+                    String pawnTo = room.getPawnTo();
+
+                    if (xFrom != 0 && yFrom != 0 && xTo != 0 && yTo != 0) {
+                        ChessboardSquare squareFrom = chessboard.getSquare(xFrom, yFrom);
+                        ChessboardSquare squareTo = chessboard.getSquare(xTo, yTo);
+                        chessboard.setCurrentSquare(squareTo);
+                        chessboard.setLastSquare(squareFrom);
+                        chessboard.makeMove();
+                        Gdx.graphics.requestRendering();
+                        player.setTurn(true);
+                    }
+                }
+
+                @Override
+                public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+                }
+
+                @Override
+                public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            };
+            ref.addChildEventListener(listener);
+
         }
 
 

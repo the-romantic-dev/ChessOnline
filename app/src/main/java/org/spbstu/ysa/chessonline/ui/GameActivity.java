@@ -27,7 +27,7 @@ public class GameActivity extends AndroidApplication {
             boolean isWhite = new Random().nextBoolean();
             initialize(new ChessGame(isWhite, GameActivity.this), config);
         } else {
-            boolean isHost = getIntent().getBooleanExtra("isOnline", false);
+            boolean isHost = getIntent().getBooleanExtra("isHost", false);
             boolean creatorIsWhite = getIntent().getBooleanExtra("creatorIsWhite", false);
             String roomKey = getIntent().getStringExtra("roomKey");
             if (isHost)

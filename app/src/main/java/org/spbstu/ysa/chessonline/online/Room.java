@@ -2,19 +2,26 @@ package org.spbstu.ysa.chessonline.online;
 
 public class Room {
     private String password;
-    //Вместо chessBoard будет объект с состоянием шахматного поля
-    private String chessBoard;
     private Boolean connection;
     private Boolean creatorIsWhite;
+    private String pawnTo;
+    private int xFrom;
+    private int yFrom;
+    private int xTo;
+    private int yTo;
 
     public Room() {
     }
 
-    public Room(String password, String chessBoard, boolean connection, boolean isWhite) {
+    public Room(String password, boolean connection, boolean isWhite, String pawnTo, int xFrom, int yFrom, int xTo, int yTo) {
         this.password = password;
-        this.chessBoard = chessBoard;
         this.connection = connection;
         this.creatorIsWhite = isWhite;
+        this.pawnTo = pawnTo;
+        this.xFrom = xFrom;
+        this.yFrom = yFrom;
+        this.xTo = xTo;
+        this.yTo = yTo;
     }
 
     public String getPassword() {
@@ -25,12 +32,44 @@ public class Room {
         this.password = password;
     }
 
-    public String getChessBoard() {
-        return chessBoard;
+    public String getPawnTo() {
+        return pawnTo;
     }
 
-    public void setChessBoard(String chessBoard) {
-        this.chessBoard = chessBoard;
+    public void setPawnTo(String pawnTo) {
+        this.pawnTo = pawnTo;
+    }
+
+    public int getxFrom() {
+        return xFrom;
+    }
+
+    public void setxFrom(int xFrom) {
+        this.xFrom = xFrom;
+    }
+
+    public int getyFrom() {
+        return yFrom;
+    }
+
+    public void setyFrom(int yFrom) {
+        this.yFrom = yFrom;
+    }
+
+    public int getxTo() {
+        return xTo;
+    }
+
+    public void setxTo(int xTo) {
+        this.xTo = xTo;
+    }
+
+    public int getyTo() {
+        return yTo;
+    }
+
+    public void setyTo(int yTo) {
+        this.yTo = yTo;
     }
 
     public boolean getConnection() { return connection; }

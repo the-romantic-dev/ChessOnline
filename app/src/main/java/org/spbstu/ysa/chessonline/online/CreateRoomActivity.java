@@ -44,10 +44,8 @@ public class CreateRoomActivity extends AppCompatActivity {
 
                 String pass = edRoomPass.getText().toString();
                 edRoomPass.setText("");
-                //Вместо chessBoard будет класс с состоянием шахматного поля
-                String chessBoard = "data";
                 final boolean isWhite = new Random().nextBoolean();
-                Room room = new Room(pass, chessBoard, false, isWhite);
+                Room room = new Room(pass, false, isWhite, null,  0, 0, 0, 0);
 
                 if (TextUtils.isEmpty(pass)) {
                     Toast.makeText(getApplicationContext(), "Пустое поле", Toast.LENGTH_SHORT).show();
