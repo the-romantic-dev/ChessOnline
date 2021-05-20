@@ -48,7 +48,8 @@ public class Pawn extends Piece {
                 Piece checkingPiece = board[y][curX].getPiece();
                 if (checkingPiece != null && checkingPiece.getName().equals("Pawn")) {
                     Pawn checkingPawn = (Pawn) checkingPiece;
-                    if (checkingPawn.isPassantAvailable) res.add(new Cell(curX, curY));
+                    if (checkingPawn.isPassantAvailable && this.isWhite() != checkingPawn.isWhite())
+                        res.add(new Cell(curX, curY));
                 }
             }
 
@@ -64,7 +65,8 @@ public class Pawn extends Piece {
                 Piece checkingPiece = board[y][curX].getPiece();
                 if (checkingPiece != null && checkingPiece.getName().equals("Pawn")) {
                     Pawn checkingPawn = (Pawn) checkingPiece;
-                    if (checkingPawn.isPassantAvailable) res.add(new Cell(curX, curY));
+                    if (checkingPawn.isPassantAvailable && this.isWhite() != checkingPawn.isWhite())
+                        res.add(new Cell(curX, curY));
                 }
             }
 
