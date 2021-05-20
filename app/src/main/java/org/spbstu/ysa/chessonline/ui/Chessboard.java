@@ -141,7 +141,7 @@ public class Chessboard {
                 if (!isSelected) {
                     selectPieceAndMoves();
                 } else {
-                    if (currentSquare.equals(lastSquare)) makeMove();
+                    if (!currentSquare.equals(lastSquare)) makeMove();
                 }
             } else {
                 if (isSelected) {
