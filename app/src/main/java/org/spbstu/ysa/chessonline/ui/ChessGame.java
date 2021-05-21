@@ -133,13 +133,15 @@ public class ChessGame extends ApplicationAdapter {
 
                 @Override
                 public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                    Room room = snapshot.getValue(Room.class);
-                    int xFrom = room.getMove().getxFrom();
-                    int yFrom = room.getMove().getyFrom();
-                    int xTo = room.getMove().getxTo();
-                    int yTo = room.getMove().getyTo();
+                    Move move = snapshot.getValue(Move.class);
+                    Log.d("myTag", move.toString());
+
+                    int xFrom = move.getxFrom();
+                    int yFrom = move.getyFrom();
+                    int xTo = move.getxTo();
+                    int yTo = move.getyTo();
                     //превращение пешки
-                    String pawnTo = room.getMove().getPawnTo();
+                    String pawnTo = move.getPawnTo();
 
                     if (xFrom != 0 && yFrom != 0 && xTo != 0 && yTo != 0) {
                         ChessboardSquare squareFrom = chessboard.getSquare(xFrom, yFrom);
@@ -171,8 +173,6 @@ public class ChessGame extends ApplicationAdapter {
             ref.addChildEventListener(listener);
 
         }
-
-
     }
 
     private void promote() {
