@@ -11,6 +11,7 @@ public class Board {
     private final Cell[][] board = new Cell[8][8];
     private Cell currentCell = null;
     private Set<Cell> allowedMoves = null;
+    private Cell promotedCell = null;
 
 
     public Board() {
@@ -59,6 +60,10 @@ public class Board {
         return board;
     }
 
+    public Cell getPromotedCell() {
+        return promotedCell;
+    }
+
     public void setCurrentCell(Cell cell) {
         this.currentCell = cell;
     }
@@ -82,8 +87,6 @@ public class Board {
     }
 
     public Set<Cell> putPiece(Cell cell) {
-        Log.d("Castling","putPiece call");
-
 
         if (!allowedMoves.contains(cell)) return null;
 
@@ -92,24 +95,27 @@ public class Board {
         Set<Cell> res = new HashSet<>();
         res.add(currentCell);
         res.add(cell);
-        //Passant realisation
+           //Pawns moves
         Set<Cell> setOfPawns = findAllPawns();
+                                     //Passant realisation
         for (Cell pawnCell : setOfPawns) {
             Pawn pawn = (Pawn) pawnCell.getPiece();
             pawn.isPassantAvailable = false;
         }
         if (curPieceName.equals("Pawn")) {
+                                    //if Pawn made move on 2 cell -> it can be passant
             Pawn curPawn = (Pawn) currentCell.getPiece();
             if (Math.abs(currentCell.getY() - cell.getY()) == 2) {
                 curPawn.isPassantAvailable = true;
-            }
-
+            }                       //Passant move realisation
             if (currentCell.getX() != cell.getX() && cell.getPiece() == null) {
                 int i = currentCell.getPiece().isWhite() ? -1 : 1;
                 Cell attackedCell = board[cell.getY() + i][cell.getX()];
                 res.add(attackedCell);
                 attackedCell.removePiece();
             }
+                                    //Promotion -> if pawn move to BORDER_COORDINATE it have to promoted
+            if(cell.getY() == curPawn.BORDER_COORDINATE) promotedCell = cell;
         }
         //Castling realisation(changing isMoved field)
         if (curPieceName.equals("King")) {
@@ -185,6 +191,11 @@ public class Board {
         }
 
         return null;
+    }
+
+    public void makePromotion(Piece promotingPiece){
+        promotedCell.setPiece(promotingPiece);
+        promotedCell = null;
     }
 
     private Set<Cell> setOfCellsWithPiecesOneColor(boolean isPlayerWhite) {

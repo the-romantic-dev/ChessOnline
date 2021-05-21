@@ -59,6 +59,7 @@ public class ChessGame extends ApplicationAdapter {
                 if (!isGameFinished) {
                     chessboard.setCurrentSquare(screenX, Gdx.graphics.getHeight() - screenY);
                     chessboard.tap();
+                    //тут нужно написать условие Проверять поле
                     if (chessboard.isMoveMaked()) {
                         pushToDB();
                     }

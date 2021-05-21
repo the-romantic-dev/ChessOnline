@@ -8,7 +8,7 @@ import java.util.Set;
 
 public class Pawn extends Piece {
 
-    private final int BORDER_COORDINATE = this.isWhite() ? 7 : 1;
+    public final int BORDER_COORDINATE = this.isWhite() ? 7 : 1;
     public final Cell startCell;
     public boolean isPassantAvailable = false;
 
@@ -40,7 +40,7 @@ public class Pawn extends Piece {
         }
         // check if Pawn can catch opponent piece from RIGHT cell
         int curX = x + 1;
-        if (curY >= 0 && curY < 8 && curX >= 0 && curX < 8) {
+        if (curY >= 0 && curY < 8  && curX < 8) {
             Piece oppositePiece = board[curY][curX].getPiece();
             if (oppositePiece != null) {
                 if (oppositePiece.isWhite() != this.isWhite()) res.add(new Cell(curX, curY));
@@ -57,7 +57,7 @@ public class Pawn extends Piece {
         }
         // check if Pawn can catch opponent piece from LEFT cell
         curX = x - 1;
-        if (curY >= 0 && curY < 8 && curX >= 0 && curX < 8) {
+        if (curY >= 0 && curX >= 0 && curX < 8) {
             Piece oppositePiece = board[curY][curX].getPiece();
             if (oppositePiece != null) {
                 if (oppositePiece.isWhite() != this.isWhite()) res.add(new Cell(curX, curY));
