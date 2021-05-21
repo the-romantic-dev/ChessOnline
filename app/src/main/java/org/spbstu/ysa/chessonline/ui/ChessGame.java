@@ -22,7 +22,9 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 
+import org.spbstu.ysa.chessonline.model.Cell;
 import org.spbstu.ysa.chessonline.model.Player;
+import org.spbstu.ysa.chessonline.model.pieces.Piece;
 import org.spbstu.ysa.chessonline.online.Move;
 import org.spbstu.ysa.chessonline.online.Room;
 
@@ -32,7 +34,7 @@ public class ChessGame extends ApplicationAdapter {
 
     boolean isCreating;
     boolean isGameFinished = false;
-    SpriteBatch batch;
+    boolean isDialog = false;
     boolean isOnline = false;
 
     Player player;
@@ -40,6 +42,7 @@ public class ChessGame extends ApplicationAdapter {
     boolean isThisPlayerWhite;
     int fraps = 0;
 
+    SpriteBatch batch;
     BitmapFont header;
     BitmapFont endText;
     FreeTypeFontGenerator generator;
@@ -49,6 +52,8 @@ public class ChessGame extends ApplicationAdapter {
     DatabaseReference ref;
     GameActivity gameActivity;
 
+    PromotingDialog dialog;
+
 
     @Override
     public void create() {
@@ -57,24 +62,35 @@ public class ChessGame extends ApplicationAdapter {
         Gdx.input.setInputProcessor(new InputAdapter() {
             @Override
             public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-                if (!isGameFinished) {
-                    chessboard.setCurrentSquare(screenX, Gdx.graphics.getHeight() - screenY);
-                    chessboard.tap();
-                    //тут нужно написать условие Проверять поле promotedCell у Board с помощью метода
-                    //getPromotedCell и если оно НЕ null то тогда запускать механизм превращения
-                    // сначала нужно вызвать диол. окно и дать игроку
-                    // выбрпть фигуру (Bishop, Knight, Rook, Queen)
-                    // затем вызвать метод makePromotion у Board и
-                    // перериссовать promotedCell (перед вызовом метода её нужно запомнить)
-                    //
-                    // похожую операцию нгужно сделать ниже (строка  130)
-                    // там после метода makeMove()
-                    if (chessboard.isMoveMaked()) {
-                        pushToDB();
+                if (isDialog) {
+                    Piece choosedPiece = dialog.getPiece(screenX, Gdx.graphics.getHeight() - screenY);
+                    if (choosedPiece != null) {
+                        isDialog = false;
+                        player.getBoard().makePromotion(choosedPiece);
+                        chessboard.redrawSquare(chessboard.getCurrentSquare());
                     }
-
                 } else {
-                    gameActivity.backToMenu();
+                    if (!isGameFinished) {
+                        chessboard.setCurrentSquare(screenX, Gdx.graphics.getHeight() - screenY);
+                        chessboard.tap();
+                        promote();
+
+                        //тут нужно написать условие Проверять поле promotedCell у Board с помощью метода
+                        //getPromotedCell и если оно НЕ null то тогда запускать механизм превращения
+                        // сначала нужно вызвать диол. окно и дать игроку
+                        // выбрпть фигуру (Bishop, Knight, Rook, Queen)
+                        // затем вызвать метод makePromotion у Board и
+                        // перериссовать promotedCell (перед вызовом метода её нужно запомнить)
+                        //
+                        // похожую операцию нгужно сделать ниже (строка  130)
+                        // там после метода makeMove()
+                        if (chessboard.isMoveMaked()) {
+                            pushToDB();
+                        }
+
+                    } else {
+                        gameActivity.backToMenu();
+                    }
                 }
                 return true;
             }
@@ -100,6 +116,8 @@ public class ChessGame extends ApplicationAdapter {
         parameter.color = Color.BLACK;
         endText = generator.generateFont(parameter);
         glyph = new GlyphLayout();
+
+        dialog = new PromotingDialog(batch, (Gdx.graphics.getWidth() - 128 * 4) / 2, startY + ChessboardSquare.sideLength * 8 + 100);
 
 
         if (isOnline) {
@@ -129,6 +147,7 @@ public class ChessGame extends ApplicationAdapter {
                         chessboard.setCurrentSquare(squareTo);
                         chessboard.setLastSquare(squareFrom);
                         chessboard.makeMove();
+                        promote();
                         Gdx.graphics.requestRendering();
                         player.setTurn(true);
                     }
@@ -154,6 +173,14 @@ public class ChessGame extends ApplicationAdapter {
         }
 
 
+    }
+
+    private void promote() {
+        Cell promotedCell = player.getBoard().getPromotedCell();
+        if (promotedCell != null) {
+            isDialog = true;
+            //вызов диалгового окна с выбором фигуры
+        }
     }
 
     private void pushToDB() {
@@ -193,6 +220,9 @@ public class ChessGame extends ApplicationAdapter {
             endText.draw(batch, glyph, Gdx.graphics.getWidth() / 2 - glyph.width / 2, 400);
             Texture finishScreen = new Texture(finishScreenPM);
             batch.draw(finishScreen, 0, 0);
+        }
+        if (isDialog) {
+            dialog.draw();
         }
 
         batch.end();
