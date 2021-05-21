@@ -57,7 +57,7 @@ public class Pawn extends Piece {
         }
         // check if Pawn can catch opponent piece from LEFT cell
         curX = x - 1;
-        if (curY >= 0 && curX >= 0 && curX < 8) {
+        if (curY >= 0 && curY < 8 && curX >= 0) {
             Piece oppositePiece = board[curY][curX].getPiece();
             if (oppositePiece != null) {
                 if (oppositePiece.isWhite() != this.isWhite()) res.add(new Cell(curX, curY));
