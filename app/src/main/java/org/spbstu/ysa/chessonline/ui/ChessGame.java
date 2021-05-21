@@ -59,6 +59,9 @@ public class ChessGame extends ApplicationAdapter {
                 if (!isGameFinished) {
                     chessboard.setCurrentSquare(screenX, Gdx.graphics.getHeight() - screenY);
                     chessboard.tap();
+                    if (chessboard.isMoveMaked()) {
+                        pushToDB();
+                    }
 
                 } else {
                     gameActivity.backToMenu();
@@ -143,8 +146,19 @@ public class ChessGame extends ApplicationAdapter {
 
     }
 
+    private void pushToDB() {
+        //в этом месте надо пушить нижележащие данные на бд
+        int xTo = chessboard.getCurrentSquare().getCell().getX();
+        int yTo = chessboard.getCurrentSquare().getCell().getY();
+        ;
+        int xFrom = chessboard.getLastSquare().getCell().getX();
+        int yFrom = chessboard.getLastSquare().getCell().getY();
+        //пока что смена пешки не сделана, такчт пушить нечего
+        String pawnTo = "";
+    }
+
     @Override
-    public void render () {
+    public void render() {
 
         Log.d("LIFECYCLE", "RENDER " + fraps);
         fraps++;

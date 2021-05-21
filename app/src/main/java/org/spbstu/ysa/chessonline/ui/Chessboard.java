@@ -24,13 +24,12 @@ public class Chessboard {
     private Pixmap overallPixmap;
     private SpriteBatch batch;
     private Texture overallTexture;
-    boolean isOnline;
+    private boolean isOnline;
+    private boolean isMoveMaked;
 
     private ChessboardSquare currentSquare;
     private ChessboardSquare lastSquare;
     private ChessboardSquare[] currentAllowedSquares;
-
-
 
 
     private Map<Pieces, Pixmap> whitePiecesPM;
@@ -44,6 +43,7 @@ public class Chessboard {
         whitePiecesPM = new HashMap<>();
         blackPiecesPM = new HashMap<>();
         this.isOnline = isOnline;
+        boolean isMoveMaked;
 
         initPiecesPixmaps();
 
@@ -131,6 +131,7 @@ public class Chessboard {
 
 
     public void tap() {
+        isMoveMaked = false;
         if (!player.getTurn()) return;
         boolean isSelected = false;
         if (currentSquare != null) isSelected = currentSquare.isSelected();
@@ -141,15 +142,23 @@ public class Chessboard {
                 if (!isSelected) {
                     selectPieceAndMoves();
                 } else {
-                    if (!currentSquare.equals(lastSquare)) makeMove();
+                    if (!currentSquare.equals(lastSquare)) {
+                        isMoveMaked = true;
+                        makeMove();
+                    }
                 }
             } else {
                 if (isSelected) {
+                    isMoveMaked = true;
                     makeMove();
                 }
             }
         }
 
+    }
+
+    public boolean isMoveMaked() {
+        return isMoveMaked;
     }
 
     enum Pieces {
@@ -290,6 +299,14 @@ public class Chessboard {
 
     public void setLastSquare(ChessboardSquare lastSquare) {
         this.lastSquare = lastSquare;
+    }
+
+    public ChessboardSquare getCurrentSquare() {
+        return currentSquare;
+    }
+
+    public ChessboardSquare getLastSquare() {
+        return lastSquare;
     }
 
     public ChessboardSquare getSquare(int x, int y) {
