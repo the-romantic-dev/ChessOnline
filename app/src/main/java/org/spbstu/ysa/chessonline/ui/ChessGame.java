@@ -63,6 +63,7 @@ public class ChessGame extends ApplicationAdapter {
             @Override
             public boolean touchDown(int screenX, int screenY, int pointer, int button) {
                 if (isDialog) {
+                    dialog.setWhite(isThisPlayerWhite);
                     Piece choosedPiece = dialog.getPiece(screenX, Gdx.graphics.getHeight() - screenY);
                     if (choosedPiece != null) {
                         isDialog = false;
@@ -74,17 +75,7 @@ public class ChessGame extends ApplicationAdapter {
                         chessboard.setCurrentSquare(screenX, Gdx.graphics.getHeight() - screenY);
                         chessboard.tap();
                         promote();
-
-                        //тут нужно написать условие Проверять поле promotedCell у Board с помощью метода
-                        //getPromotedCell и если оно НЕ null то тогда запускать механизм превращения
-                        // сначала нужно вызвать диол. окно и дать игроку
-                        // выбрпть фигуру (Bishop, Knight, Rook, Queen)
-                        // затем вызвать метод makePromotion у Board и
-                        // перериссовать promotedCell (перед вызовом метода её нужно запомнить)
-                        //
-                        // похожую операцию нгужно сделать ниже (строка  130)
-                        // там после метода makeMove()
-                        if (chessboard.isMoveMaked()) {
+                        if (chessboard.isMoveMaked() && isOnline) {
                             pushToDB();
                         }
 
@@ -116,8 +107,8 @@ public class ChessGame extends ApplicationAdapter {
         parameter.color = Color.BLACK;
         endText = generator.generateFont(parameter);
         glyph = new GlyphLayout();
+        dialog = new PromotingDialog(batch, (Gdx.graphics.getWidth() - 128 * 4) / 2, startY + ChessboardSquare.sideLength * 8 + 100, isThisPlayerWhite);
 
-        dialog = new PromotingDialog(batch, (Gdx.graphics.getWidth() - 128 * 4) / 2, startY + ChessboardSquare.sideLength * 8 + 100);
 
 
         if (isOnline) {
