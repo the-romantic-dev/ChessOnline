@@ -25,6 +25,7 @@ import com.google.firebase.database.DatabaseReference;
 import org.spbstu.ysa.chessonline.model.Cell;
 import org.spbstu.ysa.chessonline.model.Player;
 import org.spbstu.ysa.chessonline.model.pieces.Piece;
+import org.spbstu.ysa.chessonline.online.Move;
 import org.spbstu.ysa.chessonline.online.Room;
 
 public class ChessGame extends ApplicationAdapter {
@@ -134,12 +135,12 @@ public class ChessGame extends ApplicationAdapter {
                 @Override
                 public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                     Room room = snapshot.getValue(Room.class);
-                    int xFrom = room.getxFrom();
-                    int yFrom = room.getyFrom();
-                    int xTo = room.getxTo();
-                    int yTo = room.getyTo();
+                    int xFrom = room.getMove().getxFrom();
+                    int yFrom = room.getMove().getyFrom();
+                    int xTo = room.getMove().getxTo();
+                    int yTo = room.getMove().getyTo();
                     //превращение пешки
-                    String pawnTo = room.getPawnTo();
+                    String pawnTo = room.getMove().getPawnTo();
 
                     if (xFrom != 0 && yFrom != 0 && xTo != 0 && yTo != 0) {
                         ChessboardSquare squareFrom = chessboard.getSquare(xFrom, yFrom);
@@ -187,11 +188,12 @@ public class ChessGame extends ApplicationAdapter {
         //в этом месте надо пушить нижележащие данные на бд
         int xTo = chessboard.getCurrentSquare().getCell().getX();
         int yTo = chessboard.getCurrentSquare().getCell().getY();
-        ;
+
         int xFrom = chessboard.getLastSquare().getCell().getX();
         int yFrom = chessboard.getLastSquare().getCell().getY();
         //пока что смена пешки не сделана, такчт пушить нечего
         String pawnTo = "";
+        ref.child("move").setValue(new Move(pawnTo, xFrom, yFrom, xTo, yTo));
     }
 
     @Override
