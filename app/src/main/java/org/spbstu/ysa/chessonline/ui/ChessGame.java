@@ -62,6 +62,7 @@ public class ChessGame extends ApplicationAdapter {
             @Override
             public boolean touchDown(int screenX, int screenY, int pointer, int button) {
                 if (isDialog) {
+                    dialog.setWhite(isThisPlayerWhite);
                     Piece choosedPiece = dialog.getPiece(screenX, Gdx.graphics.getHeight() - screenY);
                     if (choosedPiece != null) {
                         isDialog = false;
@@ -115,8 +116,8 @@ public class ChessGame extends ApplicationAdapter {
         parameter.color = Color.BLACK;
         endText = generator.generateFont(parameter);
         glyph = new GlyphLayout();
+        dialog = new PromotingDialog(batch, (Gdx.graphics.getWidth() - 128 * 4) / 2, startY + ChessboardSquare.sideLength * 8 + 100, isThisPlayerWhite);
 
-        dialog = new PromotingDialog(batch, (Gdx.graphics.getWidth() - 128 * 4) / 2, startY + ChessboardSquare.sideLength * 8 + 100);
 
 
         if (isOnline) {
