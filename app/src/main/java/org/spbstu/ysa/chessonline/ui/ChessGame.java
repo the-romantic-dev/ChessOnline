@@ -59,7 +59,15 @@ public class ChessGame extends ApplicationAdapter {
                 if (!isGameFinished) {
                     chessboard.setCurrentSquare(screenX, Gdx.graphics.getHeight() - screenY);
                     chessboard.tap();
-                    //тут нужно написать условие Проверять поле
+                    //тут нужно написать условие Проверять поле promotedCell у Board с помощью метода
+                    //getPromotedCell и если оно НЕ null то тогда запускать механизм превращения
+                    // сначала нужно вызвать диол. окно и дать игроку
+                    // выбрпть фигуру (Bishop, Knight, Rook, Queen)
+                    // затем вызвать метод makePromotion у Board и
+                    // перериссовать promotedCell (перед вызовом метода её нужно запомнить)
+                    //
+                    // похожую операцию нгужно сделать ниже (строка  130)
+                    // там после метода makeMove()
                     if (chessboard.isMoveMaked()) {
                         pushToDB();
                     }
