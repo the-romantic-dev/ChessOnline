@@ -10,8 +10,8 @@ public class Rook extends Piece {
 
     private boolean isMoved = false;
 
-    public Rook(boolean color) {
-        super(color);
+    public Rook(boolean isWhie) {
+        super(isWhie);
     }
 
     @Override

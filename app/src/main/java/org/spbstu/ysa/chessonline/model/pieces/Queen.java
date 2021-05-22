@@ -7,8 +7,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Queen extends Piece{
-    public Queen(boolean color) {
-        super(color);
+    public Queen(boolean isWhite) {
+        super(isWhite);
     }
 
     @Override

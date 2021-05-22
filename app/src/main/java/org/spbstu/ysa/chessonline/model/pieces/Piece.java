@@ -6,14 +6,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 public abstract class Piece {
-    private final boolean color;
+    private final boolean isWhite;
 
-    public Piece(boolean color) {
-        this.color = color;
+    public Piece(boolean isWhite) {
+        this.isWhite = isWhite;
     }
 
     public boolean isWhite() {
-        return this.color;
+        return this.isWhite;
     }
 
     public abstract Set<Cell> getAllowedCells(Cell cell, Board board);
@@ -36,14 +36,14 @@ public abstract class Piece {
     public abstract String getName();
 
 
+    @Override
     public Piece clone() throws CloneNotSupportedException {
-        return null;
+        return (Piece) super.clone();
     }
-
 
     @Override
     public String toString() {
-        String pieceColor = color ? "white" : "black";
+        String pieceColor = isWhite ? "white" : "black";
         return pieceColor + "_" + getName();
     }
 }

@@ -12,8 +12,8 @@ public class King extends Piece {
 
     private boolean isMoved = false;
 
-    public King(boolean color) {
-        super(color);
+    public King(boolean isWhite) {
+        super(isWhite);
     }
 
     @Override
@@ -60,7 +60,8 @@ public class King extends Piece {
                 curX = x + iterator;
                 while (curX >= 0 && curX < 8) {
                     if (curX == 0 || curX == 7) {
-                        if (board.getData()[y][curX].getPiece().getName().equals("Rook")) {
+                        Piece checkingPiece = board.getData()[y][curX].getPiece();
+                        if (checkingPiece != null && checkingPiece.getName().equals("Rook")) {
                             Rook rook = (Rook) board.getData()[y][curX].getPiece();
                             if (!rook.isMoved()) {
                                 areAllMovesGood = true;

@@ -8,12 +8,12 @@ import java.util.Set;
 
 public class Pawn extends Piece {
 
-    public final int BORDER_COORDINATE = this.isWhite() ? 7 : 1;
+    public final int BORDER_COORDINATE = this.isWhite() ? 7 : 0;
     public final Cell startCell;
     public boolean isPassantAvailable = false;
 
-    public Pawn(boolean color, int x, int y) {
-        super(color);
+    public Pawn(boolean isWhite, int x, int y) {
+        super(isWhite);
         startCell = new Cell(x, y);
     }
 
