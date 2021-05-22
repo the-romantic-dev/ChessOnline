@@ -2,14 +2,20 @@ package org.spbstu.ysa.chessonline.ui;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DatabaseReference;
 
 import org.spbstu.ysa.chessonline.model.Cell;
 import org.spbstu.ysa.chessonline.model.Player;
 import org.spbstu.ysa.chessonline.model.pieces.Piece;
+import org.spbstu.ysa.chessonline.online.Move;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,7 +31,7 @@ public class Chessboard {
     private SpriteBatch batch;
     private Texture overallTexture;
     private boolean isOnline;
-    private boolean isMoveMaked;
+    /*private boolean isMoveMaked;*/
 
     private ChessboardSquare currentSquare;
     private ChessboardSquare lastSquare;
@@ -35,6 +41,8 @@ public class Chessboard {
     private Map<Pieces, Pixmap> whitePiecesPM;
     private Map<Pieces, Pixmap> blackPiecesPM;
 
+    DatabaseReference ref;
+
     public Chessboard(Player player, SpriteBatch batch, int startX, int startY, boolean isOnline) {
         this.batch = batch;
         this.player = player;
@@ -43,13 +51,18 @@ public class Chessboard {
         whitePiecesPM = new HashMap<>();
         blackPiecesPM = new HashMap<>();
         this.isOnline = isOnline;
-        boolean isMoveMaked;
+        /*boolean isMoveMaked;*/
 
         initPiecesPixmaps();
 
         squaresArray = convertCellsToSquares();
 
         overallPixmap = makeStartPixmap();
+    }
+
+    public Chessboard(Player player, SpriteBatch batch, int startX, int startY, boolean isOnline, DatabaseReference ref) {
+        this(player, batch, startX, startY, isOnline);
+        this.ref = ref;
     }
 
     public void draw() {
@@ -109,56 +122,70 @@ public class Chessboard {
         return null;
     }
 
-    public void makeMove() {
-        player.setTurn(false);
+    /*public void setMoveMaked(boolean moveMaked) {
+        isMoveMaked = moveMaked;
+    }*/
+
+    public void makeMove(boolean isMoveTapped) {
         Set<Cell> changedCells = player.putPiece(currentSquare.getCell());
         for (Cell cell :
                 changedCells) {
             ChessboardSquare changedSquare = squaresArray[cell.getY()][cell.getX()];
             redrawSquare(changedSquare);
         }
-
-/*        redrawSquare(lastSquare);
+        redrawSquare(lastSquare);
         redrawSquare(currentSquare);
-        if (!changedSquare.equals(currentSquare)) redrawSquare(changedSquare);*/
         if (!isOnline) {
-            player.setTurn(true);
+            player.changeTurn();
             player.setColor(!player.isWhite());
+        } else {
+            if (isMoveTapped) {
+                pushToDB();
+            }
         }
 
 
     }
 
+    private void pushToDB() {
+        int xTo = currentSquare.getCell().getX();
+        int yTo = currentSquare.getCell().getY();
+        int xFrom = lastSquare.getCell().getX();
+        int yFrom = lastSquare.getCell().getY();
+        String pawnTo = "";
+        if (ref != null) {
+
+            ref.child("move").setValue(new Move(pawnTo, xFrom, yFrom, xTo, yTo)).addOnSuccessListener(unused -> {
+                Log.d("DATA_PUSH", "DATA PUSHED SUCCES");
+            }).addOnFailureListener(e -> {
+                Log.d("DATA_PUSH", "DATA PUSH FAILED");
+            });
+        } else Log.d("DATA_PUSH", "DATA IS NOT PUSHED");
+        //player.changeTurn();
+    }
+
 
     public void tap() {
-        isMoveMaked = false;
-        if (!player.getTurn()) return;
+        if (!player.isThisPlayersTurn()) return;
         boolean isSelected = false;
         if (currentSquare != null) isSelected = currentSquare.isSelected();
         unselectAll();
         if (currentSquare != null) {
-            Log.d("currentSquare", currentSquare.toString());
             if (currentSquare.getCell().getPiece() != null && isItPLayersPiece()) {
                 if (!isSelected) {
                     selectPieceAndMoves();
                 } else {
                     if (!currentSquare.equals(lastSquare)) {
-                        isMoveMaked = true;
-                        makeMove();
+                        makeMove(true);
                     }
                 }
             } else {
                 if (isSelected) {
-                    isMoveMaked = true;
-                    makeMove();
+                    makeMove(true);
                 }
             }
         }
 
-    }
-
-    public boolean isMoveMaked() {
-        return isMoveMaked;
     }
 
     enum Pieces {
@@ -295,6 +322,7 @@ public class Chessboard {
 
     public void setCurrentSquare(ChessboardSquare currentSquare) {
         this.currentSquare = currentSquare;
+        player.setCurrentCell(currentSquare.getCell());
     }
 
     public void setLastSquare(ChessboardSquare lastSquare) {
@@ -311,5 +339,15 @@ public class Chessboard {
 
     public ChessboardSquare getSquare(int x, int y) {
         return squaresArray[y][x];
+    }
+
+    public void dispose() {
+        overallPixmap.dispose();
+        overallTexture.dispose();
+        for (Pieces piece :
+                whitePiecesPM.keySet()) {
+            whitePiecesPM.get(piece).dispose();
+            blackPiecesPM.get(piece).dispose();
+        }
     }
 }

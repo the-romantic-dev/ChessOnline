@@ -45,7 +45,7 @@ public class CreateRoomActivity extends AppCompatActivity {
                 String pass = edRoomPass.getText().toString();
                 edRoomPass.setText("");
                 final boolean isWhite = new Random().nextBoolean();
-                Room room = new Room(pass, false, isWhite, null,  0, 0, 0, 0);
+                Room room = new Room(pass, false, isWhite, new Move(null, 0, 0, 0, 0));
 
                 if (TextUtils.isEmpty(pass)) {
                     Toast.makeText(getApplicationContext(), "Пустое поле", Toast.LENGTH_SHORT).show();

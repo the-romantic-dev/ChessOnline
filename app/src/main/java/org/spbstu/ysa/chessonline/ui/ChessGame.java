@@ -8,7 +8,6 @@ import androidx.annotation.Nullable;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -25,67 +24,45 @@ import com.google.firebase.database.DatabaseReference;
 import org.spbstu.ysa.chessonline.model.Cell;
 import org.spbstu.ysa.chessonline.model.Player;
 import org.spbstu.ysa.chessonline.model.pieces.Piece;
-import org.spbstu.ysa.chessonline.online.Room;
+import org.spbstu.ysa.chessonline.online.Move;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class ChessGame extends ApplicationAdapter {
     private int startX;
     private int startY;
+    private final String RUS_LETTERS = "АБВГДЕЁЖЗИКЛМНОПРСТУФХЧШЩЬЫЪЭЮЯ" + "абвгдеёжзиклмнопрстуфхцчшщьыъэюя";
 
-    boolean isCreating;
-    boolean isGameFinished = false;
-    boolean isDialog = false;
-    boolean isOnline = false;
+    private boolean isGameFinished = false;
+    private boolean isDialog = false;
+    private boolean isOnline = false;
+    private boolean isThisPlayerWhite;
 
-    Player player;
-    Chessboard chessboard;
-    boolean isThisPlayerWhite;
-    int fraps = 0;
+    private Player player;
+    private Chessboard chessboard;
+    private DatabaseReference ref;
+    private ChildEventListener eventListener;
+    private GameActivity gameActivity;
+    private PromotingDialog dialog;
 
-    SpriteBatch batch;
-    BitmapFont header;
-    BitmapFont endText;
-    FreeTypeFontGenerator generator;
-    FreeTypeFontGenerator.FreeTypeFontParameter parameter;
-    GlyphLayout glyph;
-
-    DatabaseReference ref;
-    GameActivity gameActivity;
-
-    PromotingDialog dialog;
-
+    private SpriteBatch batch;
+    private BitmapFont header;
+    private BitmapFont infoText;
 
     @Override
     public void create() {
-        Log.d("LIFECYCLE", "CREATE");
         Gdx.graphics.setContinuousRendering(false);
         Gdx.input.setInputProcessor(new InputAdapter() {
             @Override
             public boolean touchDown(int screenX, int screenY, int pointer, int button) {
                 if (isDialog) {
-                    Piece choosedPiece = dialog.getPiece(screenX, Gdx.graphics.getHeight() - screenY);
-                    if (choosedPiece != null) {
-                        isDialog = false;
-                        player.getBoard().makePromotion(choosedPiece);
-                        chessboard.redrawSquare(chessboard.getCurrentSquare());
-                    }
+                    choosePromotingPiece(screenX, screenY);
                 } else {
                     if (!isGameFinished) {
                         chessboard.setCurrentSquare(screenX, Gdx.graphics.getHeight() - screenY);
                         chessboard.tap();
-                        promote();
-
-                        //тут нужно написать условие Проверять поле promotedCell у Board с помощью метода
-                        //getPromotedCell и если оно НЕ null то тогда запускать механизм превращения
-                        // сначала нужно вызвать диол. окно и дать игроку
-                        // выбрпть фигуру (Bishop, Knight, Rook, Queen)
-                        // затем вызвать метод makePromotion у Board и
-                        // перериссовать promotedCell (перед вызовом метода её нужно запомнить)
-                        //
-                        // похожую операцию нгужно сделать ниже (строка  130)
-                        // там после метода makeMove()
-                        if (chessboard.isMoveMaked()) {
-                            pushToDB();
-                        }
+                        isDialog = isPromotingDialogCalled();
 
                     } else {
                         gameActivity.backToMenu();
@@ -98,33 +75,14 @@ public class ChessGame extends ApplicationAdapter {
         startX = (Gdx.graphics.getWidth() - ChessboardSquare.sideLength * 8) / 2;
         startY = (Gdx.graphics.getHeight() - ChessboardSquare.sideLength * 8) / 2;
         batch = new SpriteBatch();
-        if (!isOnline) {
-            isThisPlayerWhite = true;
-        }
         player = new Player(isThisPlayerWhite);
-        chessboard = new Chessboard(player, batch, startX, startY, isOnline);
-        FileHandle fontFile = Gdx.files.internal("font_1.ttf");
-        Log.d("TTFTTF", fontFile.toString());
-        generator = new FreeTypeFontGenerator(fontFile);
-        parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = 200;
-        parameter.characters = "АБВГДЕЁЖЗИКЛМНОПРСТУФХЧШЩЬЫЪЭЮЯ" + "абвгдеёжзиклмнопрстуфхцчшщьыъэюя";
-        parameter.color = Color.RED;
-        header = generator.generateFont(parameter);
-        parameter.size = 100;
-        parameter.color = Color.BLACK;
-        endText = generator.generateFont(parameter);
-        glyph = new GlyphLayout();
-
-        dialog = new PromotingDialog(batch, (Gdx.graphics.getWidth() - 128 * 4) / 2, startY + ChessboardSquare.sideLength * 8 + 100);
-
-
+        if (!isOnline) chessboard = new Chessboard(player, batch, startX, startY, isOnline);
+        else chessboard = new Chessboard(player, batch, startX, startY, isOnline, ref);
+        header = createTextStyle("font_1.ttf", 200, Color.RED);
+        infoText = createTextStyle("font_1.ttf", 100, Color.BLACK);
+        dialog = new PromotingDialog(batch, (Gdx.graphics.getWidth() - 128 * 4) / 2, startY + ChessboardSquare.sideLength * 8 + 100, isThisPlayerWhite);
         if (isOnline) {
-            if (!isThisPlayerWhite) player.setTurn(false);
-            //вобщем нужно здесь инииализировать Listener того, изменились ли данные на бд, т.е. сделал ли ход оппонент
-            //и обернуть в него нижележащий код
-            //в переменные ниже записать значения с дб
-            ChildEventListener listener = new ChildEventListener() {
+            eventListener = new ChildEventListener() {
                 @Override
                 public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
 
@@ -132,24 +90,52 @@ public class ChessGame extends ApplicationAdapter {
 
                 @Override
                 public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                    Room room = snapshot.getValue(Room.class);
-                    int xFrom = room.getxFrom();
-                    int yFrom = room.getyFrom();
-                    int xTo = room.getxTo();
-                    int yTo = room.getyTo();
-                    //превращение пешки
-                    String pawnTo = room.getPawnTo();
+                    Log.d("DATA_GET", "DATA IS CHANGED AND GETTED");
+                    player.changeTurn();
+                    if (player.isThisPlayersTurn()) {
+                        Move move = snapshot.getValue(Move.class);
+                        Log.d("myTag", move.toString());
 
-                    if (xFrom != 0 && yFrom != 0 && xTo != 0 && yTo != 0) {
+                        int xFrom = move.getxFrom();
+                        int yFrom = move.getyFrom();
+                        int xTo = move.getxTo();
+                        int yTo = move.getyTo();
+
+                        if (!player.isWhite()) {
+                            xFrom = 7 - xFrom;
+                            yFrom = 7 - yFrom;
+                            xTo = 7 - xTo;
+                            yTo = 7 - yTo;
+                        }
+                        String pawnTo = move.getPawnTo();
+
+
                         ChessboardSquare squareFrom = chessboard.getSquare(xFrom, yFrom);
                         ChessboardSquare squareTo = chessboard.getSquare(xTo, yTo);
-                        chessboard.setCurrentSquare(squareTo);
-                        chessboard.setLastSquare(squareFrom);
-                        chessboard.makeMove();
-                        promote();
+/*                            chessboard.setCurrentSquare(squareTo);
+                            chessboard.setLastSquare(squareFrom);*/
+
+                        Set<Cell> cellSet = new HashSet<>();
+                        cellSet.add(squareTo.getCell());
+                        player.getBoard().setAllowedMoves(cellSet);
+                        player.getBoard().setCurrentCell(squareFrom.getCell());
+                        Set<Cell> changed = player.putPiece(squareTo.getCell());
+                        if (changed != null && !changed.isEmpty()) {
+                            for (Cell cell :
+                                    changed) {
+                                chessboard.redrawSquare(chessboard.getSquare(cell.getX(), cell.getY()));
+                            }
+                        }
+                        chessboard.redrawSquare(squareFrom);
+                        chessboard.redrawSquare(squareTo);
+                        //chessboard.makeMove(false);
+                        //isDialog = isPromotingDialogCalled();
                         Gdx.graphics.requestRendering();
-                        player.setTurn(true);
+                        if (xFrom != 0 && yFrom != 0 && xTo != 0 && yTo != 0) {
+
+                        }
                     }
+
                 }
 
                 @Override
@@ -167,85 +153,126 @@ public class ChessGame extends ApplicationAdapter {
 
                 }
             };
-            ref.addChildEventListener(listener);
+            /*if (!player.isThisPlayersTurn())*/
+            ref.addChildEventListener(eventListener);
+
 
         }
-
-
-    }
-
-    private void promote() {
-        Cell promotedCell = player.getBoard().getPromotedCell();
-        if (promotedCell != null) {
-            isDialog = true;
-            //вызов диалгового окна с выбором фигуры
-        }
-    }
-
-    private void pushToDB() {
-        //в этом месте надо пушить нижележащие данные на бд
-        int xTo = chessboard.getCurrentSquare().getCell().getX();
-        int yTo = chessboard.getCurrentSquare().getCell().getY();
-        ;
-        int xFrom = chessboard.getLastSquare().getCell().getX();
-        int yFrom = chessboard.getLastSquare().getCell().getY();
-        //пока что смена пешки не сделана, такчт пушить нечего
-        String pawnTo = "";
     }
 
     @Override
     public void render() {
-
-        Log.d("LIFECYCLE", "RENDER " + fraps);
-        fraps++;
         Gdx.gl.glClearColor(0.4f, 0.6f, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
         chessboard.draw();
         if (player.isCheck() && !player.isCheckmate()) {
-            glyph.setText(header, "ШАХ");
-            header.draw(batch, glyph, Gdx.graphics.getWidth() / 2 - glyph.width / 2, Gdx.graphics.getHeight() - 300);
-            Log.d("CHAH", "ШАХ");
+            drawText("ШАХ", header, HorizontalAlignment.CENTER, VerticalAlignment.TOP, 0, 100);
         }
         if (player.isCheckmate()) {
             isGameFinished = true;
             Pixmap finishScreenPM = new Pixmap(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), Pixmap.Format.RGBA8888);
             finishScreenPM.setColor(1, 0, 0, 0.4f);
             finishScreenPM.fill();
-            glyph.setText(header, "Конец игры");
-            header.draw(batch, glyph, Gdx.graphics.getWidth() / 2 - glyph.width / 2, Gdx.graphics.getHeight() - 300);
-            glyph.setText(endText, "Нажмите на экран");
-            endText.draw(batch, glyph, Gdx.graphics.getWidth() / 2 - glyph.width / 2, 400);
+            drawText("Конец игры", header, HorizontalAlignment.CENTER, VerticalAlignment.TOP, 0, 100);
+            drawText("Нажмите на экран", infoText, HorizontalAlignment.CENTER, VerticalAlignment.BOTTOM, 0, 400);
             Texture finishScreen = new Texture(finishScreenPM);
             batch.draw(finishScreen, 0, 0);
         }
         if (isDialog) {
             dialog.draw();
         }
-
         batch.end();
-    }
-
-    @Override
-    public void resume() {
-        Log.d("LIFECYCLE", "RESUME");
-        super.resume();
     }
 
     @Override
     public void dispose() {
         batch.dispose();
+        header.dispose();
+        infoText.dispose();
+        chessboard.dispose();
+        dialog.dispose();
     }
 
-    public ChessGame(DatabaseReference ref, boolean isCreating, boolean color) {
+    private boolean isPromotingDialogCalled() {
+        Cell promotedCell = player.getBoard().getPromotedCell();
+        if (promotedCell != null) {
+            dialog.setWhite(!player.isWhite());
+            return true;
+        }
+        return false;
+    }
+
+    public ChessGame(DatabaseReference ref, boolean isCreating, boolean isWhite) {
         this.ref = ref;
-        this.isCreating = isCreating;
-        this.isThisPlayerWhite = color;
+        this.isThisPlayerWhite = isWhite;
         isOnline = true;
     }
 
     public ChessGame(boolean isWhite, GameActivity gameActivity) {
         this.isThisPlayerWhite = isWhite;
         this.gameActivity = gameActivity;
+    }
+
+    private void choosePromotingPiece(int screenX, int screenY) {
+        Piece choosedPiece = dialog.getPiece(screenX, Gdx.graphics.getHeight() - screenY);
+        if (choosedPiece != null) {
+            isDialog = false;
+            player.getBoard().makePromotion(choosedPiece);
+            chessboard.redrawSquare(chessboard.getCurrentSquare());
+        }
+    }
+
+    private BitmapFont createTextStyle(String fontFileName, int textSize, Color textColor) {
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal(fontFileName));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.characters = RUS_LETTERS;
+
+        parameter.size = textSize;
+        parameter.color = textColor;
+        BitmapFont style = generator.generateFont(parameter);
+        generator.dispose();
+        return style;
+    }
+
+    private void drawText(String text, BitmapFont textStyle, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, float marginX, float marginY) {
+        GlyphLayout glyphLayout = new GlyphLayout(textStyle, text);
+        float x = marginX;
+        float y = marginY;
+        switch (horizontalAlignment) {
+            case CENTER:
+                x = (Gdx.graphics.getWidth() - glyphLayout.width) / 2;
+                break;
+            case LEFT:
+                x = marginX;
+                break;
+            case RIGHT:
+                x = Gdx.graphics.getWidth() - glyphLayout.width - marginX;
+                break;
+        }
+        switch (verticalAlignment) {
+            case CENTER:
+                y = (Gdx.graphics.getHeight() - glyphLayout.height) / 2;
+                break;
+            case TOP:
+                y = Gdx.graphics.getHeight() - glyphLayout.height - marginY;
+                break;
+            case BOTTOM:
+                y = marginY;
+                break;
+        }
+        textStyle.draw(batch, glyphLayout, x, y);
+    }
+
+    enum HorizontalAlignment {
+        CENTER,
+        RIGHT,
+        LEFT
+    }
+
+    enum VerticalAlignment {
+        TOP,
+        CENTER,
+        BOTTOM
     }
 }

@@ -24,8 +24,7 @@ public class GameActivity extends AndroidApplication {
         boolean isOnline = getIntent().getBooleanExtra("isOnline", false);
 
         if (!isOnline) {
-            boolean isWhite = new Random().nextBoolean();
-            initialize(new ChessGame(isWhite, GameActivity.this), config);
+            initialize(new ChessGame(true, GameActivity.this), config);
         } else {
             boolean isHost = getIntent().getBooleanExtra("isHost", false);
             boolean creatorIsWhite = getIntent().getBooleanExtra("creatorIsWhite", false);
@@ -33,7 +32,6 @@ public class GameActivity extends AndroidApplication {
             if (isHost)
                 initialize(new ChessGame(ref.child(roomKey), isHost, creatorIsWhite), config);
             else {
-                //здесь нужно получить цвет с бд и присовоить isWhite
                 initialize(new ChessGame(ref.child(roomKey), isHost, !creatorIsWhite), config);
             }
         }
