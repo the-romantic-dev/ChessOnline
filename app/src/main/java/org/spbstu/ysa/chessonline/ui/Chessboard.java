@@ -109,18 +109,21 @@ public class Chessboard {
         return null;
     }
 
+    public void setMoveMaked(boolean moveMaked) {
+        isMoveMaked = moveMaked;
+    }
+
     public void makeMove() {
         player.setTurn(false);
+        isMoveMaked = true;
         Set<Cell> changedCells = player.putPiece(currentSquare.getCell());
         for (Cell cell :
                 changedCells) {
             ChessboardSquare changedSquare = squaresArray[cell.getY()][cell.getX()];
             redrawSquare(changedSquare);
         }
-
-/*        redrawSquare(lastSquare);
+        redrawSquare(lastSquare);
         redrawSquare(currentSquare);
-        if (!changedSquare.equals(currentSquare)) redrawSquare(changedSquare);*/
         if (!isOnline) {
             player.setTurn(true);
             player.setColor(!player.isWhite());
@@ -137,19 +140,16 @@ public class Chessboard {
         if (currentSquare != null) isSelected = currentSquare.isSelected();
         unselectAll();
         if (currentSquare != null) {
-            Log.d("currentSquare", currentSquare.toString());
             if (currentSquare.getCell().getPiece() != null && isItPLayersPiece()) {
                 if (!isSelected) {
                     selectPieceAndMoves();
                 } else {
                     if (!currentSquare.equals(lastSquare)) {
-                        isMoveMaked = true;
                         makeMove();
                     }
                 }
             } else {
                 if (isSelected) {
-                    isMoveMaked = true;
                     makeMove();
                 }
             }
@@ -295,6 +295,7 @@ public class Chessboard {
 
     public void setCurrentSquare(ChessboardSquare currentSquare) {
         this.currentSquare = currentSquare;
+        player.setCurrentCell(currentSquare.getCell());
     }
 
     public void setLastSquare(ChessboardSquare lastSquare) {
@@ -311,5 +312,15 @@ public class Chessboard {
 
     public ChessboardSquare getSquare(int x, int y) {
         return squaresArray[y][x];
+    }
+
+    public void dispose() {
+        overallPixmap.dispose();
+        overallTexture.dispose();
+        for (Pieces piece :
+                whitePiecesPM.keySet()) {
+            whitePiecesPM.get(piece).dispose();
+            blackPiecesPM.get(piece).dispose();
+        }
     }
 }

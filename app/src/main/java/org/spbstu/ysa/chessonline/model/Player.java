@@ -6,7 +6,7 @@ public class Player {
     private boolean isWhite;
     private Board board = new Board();
     private Cell currentCell = null;
-    private Set<Cell> allowedMoves = null;
+/*    private Set<Cell> allowedMoves = null;*/
     private boolean turn = true;
 
 
@@ -28,6 +28,7 @@ public class Player {
 
     public void setCurrentCell(Cell currentCell) {
         this.currentCell = currentCell;
+        board.setCurrentCell(currentCell);
     }
 
     public Cell getCurrentCell() {

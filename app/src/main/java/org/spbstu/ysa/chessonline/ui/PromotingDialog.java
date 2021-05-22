@@ -11,9 +11,10 @@ import org.spbstu.ysa.chessonline.model.pieces.Knight;
 import org.spbstu.ysa.chessonline.model.pieces.Piece;
 import org.spbstu.ysa.chessonline.model.pieces.Queen;
 import org.spbstu.ysa.chessonline.model.pieces.Rook;
-import org.w3c.dom.Text;
 
 public class PromotingDialog {
+    public static final int cellSize = 128;
+
     private SpriteBatch batch;
     private AvailablePiece[] availablePieces;
     private boolean isWhite;
@@ -30,8 +31,8 @@ public class PromotingDialog {
         public AvailablePiece(PiecesEnum piecesEnum, float x, float y) {
             choosePiece(piecesEnum);
             choosePiecePM(piecesEnum);
-            width = 128;
-            height = 128;
+            width = cellSize;
+            height = cellSize;
             this.x = x;
             this.y = y;
 
@@ -93,22 +94,18 @@ public class PromotingDialog {
     }
 
     private void makeOverallPixmap() {
-        overallPixmap = new Pixmap(128 * 4, 128, Pixmap.Format.RGBA8888);
+        overallPixmap = new Pixmap(cellSize * 4, cellSize, Pixmap.Format.RGBA8888);
         overallPixmap.setColor(0, 1, 0, 1);
         overallPixmap.fill();
         int k = 0;
         for (AvailablePiece piece : availablePieces) {
-            overallPixmap.drawPixmap(piece.piecePM, k * 128, 0);
+            overallPixmap.drawPixmap(piece.piecePM, k * cellSize, 0);
             k++;
         }
     }
 
     public Piece getPiece(int x, int y) {
-        float thisX = 0;
-        float thisY = 0;
         for (AvailablePiece piece : availablePieces) {
-            thisX = piece.getX();
-            thisY = piece.getY();
             if (piece.contains((float) x, (float) y)) {
                 return piece.piece;
             }
@@ -119,9 +116,9 @@ public class PromotingDialog {
     private AvailablePiece[] addAvailablePieces() {
         AvailablePiece[] result = new AvailablePiece[4];
         result[0] = new AvailablePiece(PiecesEnum.QUEEN, startX, startY);
-        result[1] = new AvailablePiece(PiecesEnum.ROOK, startX + 128, startY);
-        result[2] = new AvailablePiece(PiecesEnum.BISHOP, startX + 128 * 2, startY);
-        result[3] = new AvailablePiece(PiecesEnum.KNIGHT, startX + 128 * 3, startY);
+        result[1] = new AvailablePiece(PiecesEnum.ROOK, startX + cellSize, startY);
+        result[2] = new AvailablePiece(PiecesEnum.BISHOP, startX + cellSize * 2, startY);
+        result[3] = new AvailablePiece(PiecesEnum.KNIGHT, startX + cellSize * 3, startY);
         return result;
     }
 
@@ -134,6 +131,16 @@ public class PromotingDialog {
         QUEEN,
         KNIGHT,
         ROOK
+    }
+
+    public void dispose() {
+        if (overallPixmap != null) overallPixmap.dispose();
+        if (availablePieces != null && availablePieces.length != 0) {
+            for (AvailablePiece piece :
+                    availablePieces) {
+                piece.piecePM.dispose();
+            }
+        }
     }
 
 

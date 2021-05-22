@@ -90,14 +90,15 @@ public class Board {
 
         if (!allowedMoves.contains(cell)) return null;
 
-        String curPieceName = currentCell.getPiece().getName();
+        String curPieceName = "";
+        if (currentCell.getPiece() != null) curPieceName = currentCell.getPiece().getName();
 
         Set<Cell> res = new HashSet<>();
         res.add(currentCell);
         res.add(cell);
-           //Pawns moves
+        //Pawns moves
         Set<Cell> setOfPawns = findAllPawns();
-                                     //Passant realisation
+        //Passant realisation
         for (Cell pawnCell : setOfPawns) {
             Pawn pawn = (Pawn) pawnCell.getPiece();
             pawn.isPassantAvailable = false;
