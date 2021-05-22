@@ -131,6 +131,9 @@ class KingTest {
         testBoard3[1][3].setPiece(new Pawn(true,3,1));
         testBoard3[1][4].setPiece(new Pawn(true,4,1));
         testBoard3[1][5].setPiece(new Pawn(true,5,1));
+
+        Cell[][] copy1 = testBoard3.clone();
+        Cell[][] copy2 = testBoard3.clone();
         //  _________________________________
         // 7|___|___|___|___|___|___|___|___|
         // 6|___|___|___|___|___|___|___|___|
@@ -139,7 +142,7 @@ class KingTest {
         // 3|___|___|___|___|___|___|___|___|
         // 2|___|___|___|___|___|___|___|___|
         // 1|___|___|___|_P_|_P_|_P_|___|___|
-        // 0|_R_|___|___|___|_K_|___|___|_R_|
+        // 0|_R_|___|___|_x_|_K_|_x_|___|_R_|
         //    0   1   2   3   4   5   6   7
 
         Set<Cell> expTest3 = new HashSet<>();
@@ -155,7 +158,7 @@ class KingTest {
         }
 
         Cell[][] testBoard4 = createEmptyBoard();
-        Cell testingCell4 = testBoard3[0][4];
+        Cell testingCell4 = testBoard4[0][4];
         testingCell4.setPiece(new King(true));
         testBoard4[0][0].setPiece(new Rook(true));
         testBoard4[0][7].setPiece(new Rook(true));
@@ -170,7 +173,7 @@ class KingTest {
         // 3|___|___|___|___|___|___|___|___|
         // 2|___|___|___|___|___|___|___|___|
         // 1|___|___|___|PaW|PaW|___|___|___|
-        // 0|RoW|___|___|___|KgW|___|___|Row|
+        // 0|RoW|___|___|_x_|KgW|___|___|Row|
         //    0   1   2   3   4   5   6   7
 
         Set<Cell> expTest4 = new HashSet<>();
@@ -178,9 +181,65 @@ class KingTest {
         expTest4.add(new Cell(3,0));
 
         try {
-            assertEquals(expTest4, testingCell4.getPiece().filterAllowedMoves(testingCell3,new Board(testBoard3)));
+            assertEquals(expTest4, testingCell4.getPiece().filterAllowedMoves(testingCell4,new Board(testBoard4)));
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
         }
+        testBoard4[7][5].removePiece();
+        testBoard4[7][6].setPiece(new Rook(false));
+        //  _________________________________
+        // 7|___|___|___|___|___|___|RoB|___|
+        // 6|___|___|___|___|___|___|___|___|
+        // 5|___|___|___|___|___|___|___|___|
+        // 4|___|___|___|___|___|___|___|___|
+        // 3|___|___|___|___|___|___|___|___|
+        // 2|___|___|___|___|___|___|___|___|
+        // 1|___|___|___|PaW|PaW|_x_|___|___|
+        // 0|RoW|___|___|_x_|KgW|_x_|___|Row|
+        //    0   1   2   3   4   5   6   7
+        expTest4.add(new Cell(5,0));
+        expTest4.add(new Cell(5,1));
+
+        try {
+            assertEquals(expTest4, testingCell4.getPiece().filterAllowedMoves(testingCell4,new Board(testBoard4)));
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+
+        Rook rook = (Rook) copy1[0][0].getPiece();
+        rook.setMoved();
+        expTest3.remove(copy1[0][0]);
+
+        try {
+            assertEquals(expTest3, testingCell3.getPiece().filterAllowedMoves(testingCell3,new Board(copy1)));
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+
+        King king = (King) copy2[0][4].getPiece();
+        king.setMoved();
+        expTest3.remove(copy1[0][7]);
+
+        try {
+            assertEquals(expTest3, testingCell3.getPiece().filterAllowedMoves(testingCell3,new Board(copy2)));
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    void testClone() {
+        Cell[][] testBoard = createEmptyBoard();
+        King testingKing = new King(true);
+        testBoard[0][0].setPiece(testingKing);
+        try {
+            Piece copyKing = testBoard[0][0].getPiece().clone();
+            copyKing = null;
+
+            assertEquals(testingKing, testBoard[0][0].getPiece());
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+
     }
 }
