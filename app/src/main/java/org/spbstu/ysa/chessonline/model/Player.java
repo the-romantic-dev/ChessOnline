@@ -6,8 +6,8 @@ public class Player {
     private boolean isWhite;
     private Board board = new Board();
     private Cell currentCell = null;
-/*    private Set<Cell> allowedMoves = null;*/
-    private boolean turn = true;
+    /*    private Set<Cell> allowedMoves = null;*/
+    private boolean isWhitesTurn = true;
 
 
     public Player(boolean isWhite) {
@@ -43,12 +43,20 @@ public class Player {
         this.isWhite = isWhite;
     }
 
-    public boolean getTurn() {
-        return turn;
+    public boolean isWhitesTurn() {
+        return isWhitesTurn;
     }
 
-    public void setTurn(boolean turn) {
-        this.turn = turn;
+    public boolean isThisPlayersTurn() {
+        return isWhitesTurn == isWhite;
+    }
+
+    public void changeTurn() {
+        isWhitesTurn = !isWhitesTurn;
+    }
+
+    public void setWhitesTurn(boolean whitesTurn) {
+        this.isWhitesTurn = whitesTurn;
     }
 
     public boolean isCheck() {
@@ -57,7 +65,7 @@ public class Player {
 
 
     public boolean isCheckmate() {
-      return board.isCheckmate(isWhite);
+        return board.isCheckmate(isWhite);
     }
 
 }

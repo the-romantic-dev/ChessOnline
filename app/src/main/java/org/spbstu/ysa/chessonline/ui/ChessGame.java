@@ -42,6 +42,7 @@ public class ChessGame extends ApplicationAdapter {
     private Player player;
     private Chessboard chessboard;
     private DatabaseReference ref;
+    private ChildEventListener eventListener;
     private GameActivity gameActivity;
     private PromotingDialog dialog;
 
@@ -62,9 +63,6 @@ public class ChessGame extends ApplicationAdapter {
                         chessboard.setCurrentSquare(screenX, Gdx.graphics.getHeight() - screenY);
                         chessboard.tap();
                         isDialog = isPromotingDialogCalled();
-                        if (chessboard.isMoveMaked() && isOnline) {
-                            pushToDB();
-                        }
 
                     } else {
                         gameActivity.backToMenu();
@@ -78,13 +76,13 @@ public class ChessGame extends ApplicationAdapter {
         startY = (Gdx.graphics.getHeight() - ChessboardSquare.sideLength * 8) / 2;
         batch = new SpriteBatch();
         player = new Player(isThisPlayerWhite);
-        chessboard = new Chessboard(player, batch, startX, startY, isOnline);
+        if (!isOnline) chessboard = new Chessboard(player, batch, startX, startY, isOnline);
+        else chessboard = new Chessboard(player, batch, startX, startY, isOnline, ref);
         header = createTextStyle("font_1.ttf", 200, Color.RED);
         infoText = createTextStyle("font_1.ttf", 100, Color.BLACK);
         dialog = new PromotingDialog(batch, (Gdx.graphics.getWidth() - 128 * 4) / 2, startY + ChessboardSquare.sideLength * 8 + 100, isThisPlayerWhite);
         if (isOnline) {
-            if (!isThisPlayerWhite) player.setTurn(false);
-            ChildEventListener listener = new ChildEventListener() {
+            eventListener = new ChildEventListener() {
                 @Override
                 public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
 
@@ -92,7 +90,9 @@ public class ChessGame extends ApplicationAdapter {
 
                 @Override
                 public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                    if (!chessboard.isMoveMaked()) {
+                    Log.d("DATA_GET", "DATA IS CHANGED AND GETTED");
+                    player.changeTurn();
+                    if (player.isThisPlayersTurn()) {
                         Move move = snapshot.getValue(Move.class);
                         Log.d("myTag", move.toString());
 
@@ -100,34 +100,39 @@ public class ChessGame extends ApplicationAdapter {
                         int yFrom = move.getyFrom();
                         int xTo = move.getxTo();
                         int yTo = move.getyTo();
+
+                        if (!player.isWhite()) {
+                            xFrom = 7 - xFrom;
+                            yFrom = 7 - yFrom;
+                            xTo = 7 - xTo;
+                            yTo = 7 - yTo;
+                        }
                         String pawnTo = move.getPawnTo();
 
 
-                        if (xFrom != 0 && yFrom != 0 && xTo != 0 && yTo != 0) {
-                            ChessboardSquare squareFrom = chessboard.getSquare(xFrom, yFrom);
-                            ChessboardSquare squareTo = chessboard.getSquare(xTo, yTo);
-                            chessboard.setCurrentSquare(squareTo);
-                            chessboard.setLastSquare(squareFrom);
-                            if (squareFrom.getCell().getPiece() != null) {
-                                Log.d("GETTED_COORDS", (!isThisPlayerWhite ? "White " : "Black ")
-                                        + squareFrom.getCell().getPiece().getName() + " make move to: " + "X - "
-                                        + squareTo.getCell().getX() + "; Y - " + squareTo.getCell().getY() + ";");
-                            }
-                            if (squareTo.getCell().getPiece() != null) {
-                                Log.d("GETTED_COORDS", (!isThisPlayerWhite ? "White " : "Black ")
-                                        + squareTo.getCell().getPiece().getName() + " make move from: " + "X - "
-                                        + squareFrom.getCell().getX() + "; Y - " + squareFrom.getCell().getY() + ";");
-                            }
+                        ChessboardSquare squareFrom = chessboard.getSquare(xFrom, yFrom);
+                        ChessboardSquare squareTo = chessboard.getSquare(xTo, yTo);
+/*                            chessboard.setCurrentSquare(squareTo);
+                            chessboard.setLastSquare(squareFrom);*/
 
-                            Set<Cell> cellSet = new HashSet<>();
-                            cellSet.add(squareFrom.getCell());
-                            cellSet.add(squareTo.getCell());
-                            player.getBoard().setAllowedMoves(cellSet);
-                            chessboard.makeMove();
-                            isDialog = isPromotingDialogCalled();
-                            Gdx.graphics.requestRendering();
-                            player.setTurn(true);
-                            chessboard.setMoveMaked(true);
+                        Set<Cell> cellSet = new HashSet<>();
+                        cellSet.add(squareTo.getCell());
+                        player.getBoard().setAllowedMoves(cellSet);
+                        player.getBoard().setCurrentCell(squareFrom.getCell());
+                        Set<Cell> changed = player.putPiece(squareTo.getCell());
+                        if (changed != null && !changed.isEmpty()) {
+                            for (Cell cell :
+                                    changed) {
+                                chessboard.redrawSquare(chessboard.getSquare(cell.getX(), cell.getY()));
+                            }
+                        }
+                        chessboard.redrawSquare(squareFrom);
+                        chessboard.redrawSquare(squareTo);
+                        //chessboard.makeMove(false);
+                        //isDialog = isPromotingDialogCalled();
+                        Gdx.graphics.requestRendering();
+                        if (xFrom != 0 && yFrom != 0 && xTo != 0 && yTo != 0) {
+
                         }
                     }
 
@@ -148,7 +153,9 @@ public class ChessGame extends ApplicationAdapter {
 
                 }
             };
-            ref.addChildEventListener(listener);
+            /*if (!player.isThisPlayersTurn())*/
+            ref.addChildEventListener(eventListener);
+
 
         }
     }
@@ -193,16 +200,6 @@ public class ChessGame extends ApplicationAdapter {
             return true;
         }
         return false;
-    }
-
-    private void pushToDB() {
-        int xTo = chessboard.getCurrentSquare().getCell().getX();
-        int yTo = chessboard.getCurrentSquare().getCell().getY();
-        int xFrom = chessboard.getLastSquare().getCell().getX();
-        int yFrom = chessboard.getLastSquare().getCell().getY();
-        String pawnTo = "";
-        ref.child("move").setValue(new Move(pawnTo, xFrom, yFrom, xTo, yTo));
-        chessboard.setMoveMaked(false);
     }
 
     public ChessGame(DatabaseReference ref, boolean isCreating, boolean isWhite) {

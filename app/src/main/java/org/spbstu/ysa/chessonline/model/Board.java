@@ -150,6 +150,7 @@ public class Board {
             currentCell.removePiece();
             cell.setPiece(capturedPiece);
         }
+        Log.d("putPiece", currentCell.toString() + "->" + cell.toString());
         return res;
     }
 
