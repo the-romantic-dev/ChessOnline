@@ -50,6 +50,8 @@ public class ChessGame extends ApplicationAdapter {
     private BitmapFont header;
     private BitmapFont infoText;
 
+    int turn = 0;
+
     @Override
     public void create() {
         Gdx.graphics.setContinuousRendering(false);
@@ -93,6 +95,7 @@ public class ChessGame extends ApplicationAdapter {
                     Log.d("DATA_GET", "DATA IS CHANGED AND GETTED");
                     player.changeTurn();
                     if (player.isThisPlayersTurn()) {
+                        turn++;
                         Move move = snapshot.getValue(Move.class);
                         Log.d("myTag", move.toString());
 
@@ -101,34 +104,37 @@ public class ChessGame extends ApplicationAdapter {
                         int xTo = move.getxTo();
                         int yTo = move.getyTo();
 
-                        if (!player.isWhite()) {
+                        /*if (!player.isWhite()) {
                             xFrom = 7 - xFrom;
                             yFrom = 7 - yFrom;
                             xTo = 7 - xTo;
                             yTo = 7 - yTo;
-                        }
+                        }*/
+
                         String pawnTo = move.getPawnTo();
 
 
-                        ChessboardSquare squareFrom = chessboard.getSquare(xFrom, yFrom);
-                        ChessboardSquare squareTo = chessboard.getSquare(xTo, yTo);
-/*                            chessboard.setCurrentSquare(squareTo);
-                            chessboard.setLastSquare(squareFrom);*/
+                        //ChessboardSquare squareFrom = chessboard.getSquare(xFrom, yFrom);
+                        //ChessboardSquare squareTo = chessboard.getSquare(xTo, yTo);
+                        Cell cellFrom = player.getBoard().getData()[yFrom][xFrom];
+                        Cell cellTo = player.getBoard().getData()[yTo][xTo];
 
                         Set<Cell> cellSet = new HashSet<>();
-                        cellSet.add(squareTo.getCell());
+                        cellSet.add(cellTo);
                         player.getBoard().setAllowedMoves(cellSet);
-                        player.getBoard().setCurrentCell(squareFrom.getCell());
-                        Set<Cell> changed = player.putPiece(squareTo.getCell());
+                        player.getBoard().setCurrentCell(cellFrom);
+                        Set<Cell> changed = player.putPiece(cellTo);
                         if (changed != null && !changed.isEmpty()) {
                             for (Cell cell :
                                     changed) {
                                 chessboard.redrawSquare(chessboard.getSquare(cell.getX(), cell.getY()));
+                                Log.d("REDRAWED_SQUARES", "Turn " + turn + ": " + chessboard.getSquare(cell.getX(), cell.getY()));
                             }
                         }
-                        chessboard.redrawSquare(squareFrom);
+                        /*chessboard.redrawSquare(squareFrom);
+                        Log.d("REDRAWED_SQUARES", "Turn " + turn + ": " + squareFrom.getCell().toString());
                         chessboard.redrawSquare(squareTo);
-                        //chessboard.makeMove(false);
+                        Log.d("REDRAWED_SQUARES","Turn " + turn + ": " + squareTo.getCell().toString());*/
                         //isDialog = isPromotingDialogCalled();
                         Gdx.graphics.requestRendering();
                         if (xFrom != 0 && yFrom != 0 && xTo != 0 && yTo != 0) {

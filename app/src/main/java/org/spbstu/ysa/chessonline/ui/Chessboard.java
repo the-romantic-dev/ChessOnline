@@ -130,12 +130,13 @@ public class Chessboard {
         Set<Cell> changedCells = player.putPiece(currentSquare.getCell());
         for (Cell cell :
                 changedCells) {
-            ChessboardSquare changedSquare = squaresArray[cell.getY()][cell.getX()];
+            ChessboardSquare changedSquare = getSquare(cell.getX(), cell.getY());
             redrawSquare(changedSquare);
         }
         redrawSquare(lastSquare);
         redrawSquare(currentSquare);
         if (!isOnline) {
+            w
             player.changeTurn();
             player.setColor(!player.isWhite());
         } else {
@@ -338,7 +339,13 @@ public class Chessboard {
     }
 
     public ChessboardSquare getSquare(int x, int y) {
-        return squaresArray[y][x];
+        if (isOnline) {
+            if (player.isWhite()) {
+                return squaresArray[y][x];
+            } else {
+                return squaresArray[7 - y][7 - x];
+            }
+        } else return squaresArray[y][x];
     }
 
     public void dispose() {
