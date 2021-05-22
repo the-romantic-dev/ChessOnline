@@ -197,6 +197,7 @@ public class ChessGame extends ApplicationAdapter {
     private boolean isPromotingDialogCalled() {
         Cell promotedCell = player.getBoard().getPromotedCell();
         if (promotedCell != null) {
+            dialog.setWhite(!player.isWhite());
             return true;
         }
         return false;
@@ -214,7 +215,6 @@ public class ChessGame extends ApplicationAdapter {
     }
 
     private void choosePromotingPiece(int screenX, int screenY) {
-        dialog.setWhite(isThisPlayerWhite);
         Piece choosedPiece = dialog.getPiece(screenX, Gdx.graphics.getHeight() - screenY);
         if (choosedPiece != null) {
             isDialog = false;
