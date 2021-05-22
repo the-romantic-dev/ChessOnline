@@ -8,8 +8,8 @@ import java.util.Set;
 
 public class Bishop extends Piece {
 
-    public Bishop(boolean color) {
-        super(color);
+    public Bishop(boolean isWhite) {
+        super(isWhite);
     }
 
     @Override
