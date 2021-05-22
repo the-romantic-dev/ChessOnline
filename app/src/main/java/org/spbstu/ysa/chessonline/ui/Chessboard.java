@@ -136,7 +136,7 @@ public class Chessboard {
         redrawSquare(lastSquare);
         redrawSquare(currentSquare);
         if (!isOnline) {
-            w
+
             player.changeTurn();
             player.setColor(!player.isWhite());
         } else {
