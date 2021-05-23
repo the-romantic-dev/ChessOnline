@@ -18,12 +18,12 @@ public class Board {
         Piece[] whitePieces = new Piece[]{
                 new Rook(true), new Knight(true), new Bishop(true),
                 new Queen(true), new King(true), new Bishop(true),
-                new Knight(true), new Rook(true)
+                new Knight(true), new Rook(true), new Pawn(true)
         };
         Piece[] blackPieces = new Piece[]{
                 new Rook(false), new Knight(false), new Bishop(false),
                 new Queen(false), new King(false), new Bishop(false),
-                new Knight(false), new Rook(false)
+                new Knight(false), new Rook(false), new Pawn(false)
         };
 
         for (int y = 0; y < 8; y++) {
@@ -34,10 +34,10 @@ public class Board {
                         currentPiece = whitePieces[x];
                         break;
                     case 1:
-                        currentPiece = new Pawn(true, x, y);
+                        currentPiece = whitePieces[9];
                         break;
                     case 6:
-                        currentPiece = new Pawn(false, x, y);
+                        currentPiece = blackPieces[9];
                         break;
                     case 7:
                         currentPiece = blackPieces[x];
@@ -106,6 +106,7 @@ public class Board {
         if (curPieceName.equals("Pawn")) {
                                     //if Pawn made move on 2 cell -> it can be passant
             Pawn curPawn = (Pawn) currentCell.getPiece();
+            curPawn.setMoved();
             if (Math.abs(currentCell.getY() - cell.getY()) == 2) {
                 curPawn.isPassantAvailable = true;
             }                       //Passant move realisation

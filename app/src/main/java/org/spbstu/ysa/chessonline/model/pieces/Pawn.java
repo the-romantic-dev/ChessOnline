@@ -9,19 +9,12 @@ import java.util.Set;
 public class Pawn extends Piece {
 
     public final int BORDER_COORDINATE = this.isWhite() ? 7 : 0;
-    public final Cell startCell;
+    private boolean isMoved = false;
     public boolean isPassantAvailable = false;
 
-    public Pawn(boolean isWhite, int x, int y) {
+    public Pawn(boolean isWhite) {
         super(isWhite);
-        startCell = new Cell(x, y);
     }
-
-    public Pawn(boolean color, Cell cell) {
-        super(color);
-        startCell = cell;
-    }
-
 
     @Override
     public Set<Cell> getAllowedCells(Cell cell, Board boardClass) {
@@ -35,7 +28,7 @@ public class Pawn extends Piece {
         int curY = y + i;
         if (curY >= 0 && curY < 8 && board[curY][x].getPiece() == null) {
             res.add(new Cell(x, curY));
-            if (x == startCell.getX() && y == startCell.getY() && board[curY + i][x].getPiece() == null)
+            if (!this.isMoved && board[curY + i][x].getPiece() == null)
                 res.add(new Cell(x, curY + i));
         }
         // check if Pawn can catch opponent piece from RIGHT cell
@@ -74,9 +67,13 @@ public class Pawn extends Piece {
         return res;
     }
 
+    public void setMoved() {
+        isMoved = true;
+    }
+
     @Override
     public Piece clone() throws CloneNotSupportedException {
-        return new Pawn(isWhite(),startCell);
+        return new Pawn(this.isWhite());
     }
     @Override
     public String getName() {

@@ -49,9 +49,9 @@ class KingTest {
         Cell[][] testBoard2 = createEmptyBoard();
         Cell testingCell2 = testBoard2[3][3];
         testingCell2.setPiece(new King(true));
-        testBoard2[3][2].setPiece(new Pawn(true,2,3));
-        testBoard2[3][4].setPiece(new Pawn(true,4,3));
-        testBoard2[4][3].setPiece(new Pawn(false,3,4));
+        testBoard2[3][2].setPiece(new Pawn(true));
+        testBoard2[3][4].setPiece(new Pawn(true));
+        testBoard2[4][3].setPiece(new Pawn(false));
         //  _________________________________
         // 7|___|___|___|___|___|___|___|___|
         // 6|___|___|___|___|___|___|___|___|
@@ -128,9 +128,9 @@ class KingTest {
         testingCell3.setPiece(new King(true));
         testBoard3[0][0].setPiece(new Rook(true));
         testBoard3[0][7].setPiece(new Rook(true));
-        testBoard3[1][3].setPiece(new Pawn(true,3,1));
-        testBoard3[1][4].setPiece(new Pawn(true,4,1));
-        testBoard3[1][5].setPiece(new Pawn(true,5,1));
+        testBoard3[1][3].setPiece(new Pawn(true));
+        testBoard3[1][4].setPiece(new Pawn(true));
+        testBoard3[1][5].setPiece(new Pawn(true));
 
         Cell[][] copy1 = testBoard3.clone();
         Cell[][] copy2 = testBoard3.clone();
@@ -162,8 +162,8 @@ class KingTest {
         testingCell4.setPiece(new King(true));
         testBoard4[0][0].setPiece(new Rook(true));
         testBoard4[0][7].setPiece(new Rook(true));
-        testBoard4[1][3].setPiece(new Pawn(true,3,1));
-        testBoard4[1][4].setPiece(new Pawn(true,4,1));
+        testBoard4[1][3].setPiece(new Pawn(true));
+        testBoard4[1][4].setPiece(new Pawn(true));
         testBoard4[7][5].setPiece(new Rook(false));
         //  _________________________________
         // 7|___|___|___|___|___|RoB|___|___|

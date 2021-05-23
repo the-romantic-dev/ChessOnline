@@ -51,8 +51,8 @@ class KnightTest {
         Cell[][] testBoard2 = createEmptyBoard();
         Cell testingCell2 = testBoard1[3][3];
         testingCell2.setPiece(new Knight(true));
-        testBoard2[5][2].setPiece(new Pawn(true ,2,5));
-        testBoard2[1][4].setPiece(new Pawn(false ,4,1));
+        testBoard2[5][2].setPiece(new Pawn(true));
+        testBoard2[1][4].setPiece(new Pawn(false));
         //  _________________________________
         // 7|___|___|___|___|___|___|___|___|
         // 6|___|___|___|___|___|___|___|___|
@@ -123,7 +123,7 @@ class KnightTest {
         testingCell3.setPiece(new Knight(true));
         testBoard3[0][0].setPiece(new King(true));
         testBoard3[7][7].setPiece(new Knight(false));
-        testBoard3[5][5].setPiece(new Pawn(true,5,5));
+        testBoard3[5][5].setPiece(new Pawn(true));
         //  _________________________________
         // 7|___|___|___|___|___|___|___|BiB|
         // 6|___|___|___|___|___|___|___|___|

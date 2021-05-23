@@ -49,8 +49,8 @@ class BishopTest {
         Cell[][] testBoard2 = createEmptyBoard();
         Cell testingCell2 = testBoard1[3][3];
         testingCell2.setPiece(new Bishop(true));
-        testBoard2[4][2].setPiece(new Pawn(true ,2,4));
-        testBoard2[2][4].setPiece(new Pawn(false ,4,2));
+        testBoard2[4][2].setPiece(new Pawn(true));
+        testBoard2[2][4].setPiece(new Pawn(false));
         //  _________________________________
         // 7|___|___|___|___|___|___|___|_x_|
         // 6|___|___|___|___|___|___|_x_|___|
@@ -130,7 +130,7 @@ class BishopTest {
         testingCell3.setPiece(new Bishop(true));
         testBoard3[0][0].setPiece(new King(true));
         testBoard3[7][7].setPiece(new Bishop(false));
-        testBoard3[5][5].setPiece(new Pawn(true,5,5));
+        testBoard3[5][5].setPiece(new Pawn(true));
         //  _________________________________
         // 7|___|___|___|___|___|___|___|BiB|
         // 6|_x_|___|___|___|___|___|___|___|
