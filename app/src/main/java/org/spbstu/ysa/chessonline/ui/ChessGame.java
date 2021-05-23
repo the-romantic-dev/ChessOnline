@@ -23,7 +23,12 @@ import com.google.firebase.database.DatabaseReference;
 
 import org.spbstu.ysa.chessonline.model.Cell;
 import org.spbstu.ysa.chessonline.model.Player;
+import org.spbstu.ysa.chessonline.model.pieces.Bishop;
+import org.spbstu.ysa.chessonline.model.pieces.King;
+import org.spbstu.ysa.chessonline.model.pieces.Knight;
 import org.spbstu.ysa.chessonline.model.pieces.Piece;
+import org.spbstu.ysa.chessonline.model.pieces.Queen;
+import org.spbstu.ysa.chessonline.model.pieces.Rook;
 import org.spbstu.ysa.chessonline.online.Move;
 
 import java.util.HashSet;
@@ -38,6 +43,7 @@ public class ChessGame extends ApplicationAdapter {
     private boolean isDialog = false;
     private boolean isOnline = false;
     private boolean isThisPlayerWhite;
+    private boolean isPromoting = false;
 
     private Player player;
     private Chessboard chessboard;
@@ -47,7 +53,9 @@ public class ChessGame extends ApplicationAdapter {
     private PromotingDialog dialog;
 
     private SpriteBatch batch;
-    private BitmapFont header;
+    private BitmapFont check;
+    private BitmapFont forBlack;
+    private BitmapFont forWhite;
     private BitmapFont infoText;
 
     int turn = 0;
@@ -59,6 +67,7 @@ public class ChessGame extends ApplicationAdapter {
             @Override
             public boolean touchDown(int screenX, int screenY, int pointer, int button) {
                 if (isDialog) {
+                    Log.d("CHESS_PROMOTING", "Promoting dialog called");
                     choosePromotingPiece(screenX, screenY);
                 } else {
                     if (!isGameFinished) {
@@ -80,7 +89,9 @@ public class ChessGame extends ApplicationAdapter {
         player = new Player(isThisPlayerWhite);
         if (!isOnline) chessboard = new Chessboard(player, batch, startX, startY, isOnline);
         else chessboard = new Chessboard(player, batch, startX, startY, isOnline, ref);
-        header = createTextStyle("font_1.ttf", 200, Color.RED);
+        check = createTextStyle("font_1.ttf", 200, Color.RED);
+        forBlack = createTextStyle("font_1.ttf", 200, Color.BLACK);
+        forWhite = createTextStyle("font_1.ttf", 200, Color.WHITE);
         infoText = createTextStyle("font_1.ttf", 100, Color.BLACK);
         dialog = new PromotingDialog(batch, (Gdx.graphics.getWidth() - 128 * 4) / 2, startY + ChessboardSquare.sideLength * 8 + 100, isThisPlayerWhite);
         if (isOnline) {
@@ -93,29 +104,24 @@ public class ChessGame extends ApplicationAdapter {
                 @Override
                 public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                     Log.d("DATA_GET", "DATA IS CHANGED AND GETTED");
+                    /*if (isPromoting) isPromoting = false;
+                    else */
                     player.changeTurn();
-                    if (player.isThisPlayersTurn()) {
+                    Move move = snapshot.getValue(Move.class);
+
+                    int xFrom = move.getxFrom();
+                    int yFrom = move.getyFrom();
+                    int xTo = move.getxTo();
+                    int yTo = move.getyTo();
+                    String pawnTo = move.getPawnTo();
+                    if (player.isThisPlayersTurn() || !pawnTo.equals("")) {
+                        Log.d("DATA_GET", "THIS PLAYERS TURN");
+                        Log.d("PROMOTE TEST", "Opponent is turned");
                         turn++;
-                        Move move = snapshot.getValue(Move.class);
-                        Log.d("myTag", move.toString());
 
-                        int xFrom = move.getxFrom();
-                        int yFrom = move.getyFrom();
-                        int xTo = move.getxTo();
-                        int yTo = move.getyTo();
-
-                        /*if (!player.isWhite()) {
-                            xFrom = 7 - xFrom;
-                            yFrom = 7 - yFrom;
-                            xTo = 7 - xTo;
-                            yTo = 7 - yTo;
-                        }*/
-
-                        String pawnTo = move.getPawnTo();
+                        Log.d("TOTOTO", xTo + ";" + yTo);
 
 
-                        //ChessboardSquare squareFrom = chessboard.getSquare(xFrom, yFrom);
-                        //ChessboardSquare squareTo = chessboard.getSquare(xTo, yTo);
                         Cell cellFrom = player.getBoard().getData()[yFrom][xFrom];
                         Cell cellTo = player.getBoard().getData()[yTo][xTo];
 
@@ -124,22 +130,24 @@ public class ChessGame extends ApplicationAdapter {
                         player.getBoard().setAllowedMoves(cellSet);
                         player.getBoard().setCurrentCell(cellFrom);
                         Set<Cell> changed = player.putPiece(cellTo);
+                        if (!pawnTo.equals("")) {
+                            Log.d("CHESS_PROMOTING", "Promoting getted from DB");
+                            Log.d("PROMOTE TEST", "Promoting getted from DB");
+                            player.getBoard().setPromotedCell(cellTo);
+                            if (player.isThisPlayersTurn())
+                                player.getBoard().makePromotion(createPromotedPiece(pawnTo, player.isWhite()));
+                            else
+                                player.getBoard().makePromotion(createPromotedPiece(pawnTo, !player.isWhite()));
+                            player.changeTurn();
+                        }
                         if (changed != null && !changed.isEmpty()) {
                             for (Cell cell :
                                     changed) {
                                 chessboard.redrawSquare(chessboard.getSquare(cell.getX(), cell.getY()));
-                                Log.d("REDRAWED_SQUARES", "Turn " + turn + ": " + chessboard.getSquare(cell.getX(), cell.getY()));
+                                //Log.d("REDRAWED_SQUARES", "Turn " + turn + ": " + chessboard.getSquare(cell.getX(), cell.getY()));
                             }
                         }
-                        /*chessboard.redrawSquare(squareFrom);
-                        Log.d("REDRAWED_SQUARES", "Turn " + turn + ": " + squareFrom.getCell().toString());
-                        chessboard.redrawSquare(squareTo);
-                        Log.d("REDRAWED_SQUARES","Turn " + turn + ": " + squareTo.getCell().toString());*/
-                        //isDialog = isPromotingDialogCalled();
                         Gdx.graphics.requestRendering();
-                        if (xFrom != 0 && yFrom != 0 && xTo != 0 && yTo != 0) {
-
-                        }
                     }
 
                 }
@@ -173,20 +181,27 @@ public class ChessGame extends ApplicationAdapter {
         batch.begin();
         chessboard.draw();
         if (player.isCheck() && !player.isCheckmate()) {
-            drawText("ШАХ", header, HorizontalAlignment.CENTER, VerticalAlignment.TOP, 0, 100);
+            drawText("Шах", check, HorizontalAlignment.CENTER, VerticalAlignment.TOP, 0, 0);
+            if (player.isWhite()) {
+                drawText("белым", forWhite, HorizontalAlignment.CENTER, VerticalAlignment.TOP, 0, 150);
+            } else {
+                drawText("чёрным", forBlack, HorizontalAlignment.CENTER, VerticalAlignment.TOP, 0, 150);
+            }
+
         }
         if (player.isCheckmate()) {
             isGameFinished = true;
             Pixmap finishScreenPM = new Pixmap(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), Pixmap.Format.RGBA8888);
             finishScreenPM.setColor(1, 0, 0, 0.4f);
             finishScreenPM.fill();
-            drawText("Конец игры", header, HorizontalAlignment.CENTER, VerticalAlignment.TOP, 0, 100);
+            drawText("Конец игры", check, HorizontalAlignment.CENTER, VerticalAlignment.TOP, 0, 100);
             drawText("Нажмите на экран", infoText, HorizontalAlignment.CENTER, VerticalAlignment.BOTTOM, 0, 400);
             Texture finishScreen = new Texture(finishScreenPM);
             batch.draw(finishScreen, 0, 0);
         }
         if (isDialog) {
             dialog.draw();
+            Log.d("CHESS_PROMOTING", "Promoting dialog drawed");
         }
         batch.end();
     }
@@ -194,7 +209,7 @@ public class ChessGame extends ApplicationAdapter {
     @Override
     public void dispose() {
         batch.dispose();
-        header.dispose();
+        check.dispose();
         infoText.dispose();
         chessboard.dispose();
         dialog.dispose();
@@ -203,7 +218,8 @@ public class ChessGame extends ApplicationAdapter {
     private boolean isPromotingDialogCalled() {
         Cell promotedCell = player.getBoard().getPromotedCell();
         if (promotedCell != null) {
-            dialog.setWhite(!player.isWhite());
+            if (isOnline) dialog.setWhite(player.isWhite());
+            else dialog.setWhite(!player.isWhite());
             return true;
         }
         return false;
@@ -221,12 +237,33 @@ public class ChessGame extends ApplicationAdapter {
     }
 
     private void choosePromotingPiece(int screenX, int screenY) {
+
+        isPromoting = true;
         Piece choosedPiece = dialog.getPiece(screenX, Gdx.graphics.getHeight() - screenY);
+
         if (choosedPiece != null) {
             isDialog = false;
+
+            chessboard.pushToDB(choosedPiece.getName());
             player.getBoard().makePromotion(choosedPiece);
+            Log.d("CHESS_PROMOTING", "Promotion maked");
             chessboard.redrawSquare(chessboard.getCurrentSquare());
         }
+    }
+
+    private Piece createPromotedPiece(String name, boolean isWhite) {
+        Log.d("promoted_piece", name + (isWhite ? " white" : " black"));
+        switch (name) {
+            case "Knight":
+                return new Knight(isWhite);
+            case "Bishop":
+                return new Bishop(isWhite);
+            case "Queen":
+                return new Queen(isWhite);
+            case "Rook":
+                return new Rook(isWhite);
+        }
+        return new King(isWhite);
     }
 
     private BitmapFont createTextStyle(String fontFileName, int textSize, Color textColor) {

@@ -18,6 +18,7 @@ import com.google.firebase.database.ValueEventListener;
 public class GameActivity extends AndroidApplication {
     DatabaseReference ref;
     String roomKey;
+    //ссыль на бд
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
