@@ -53,7 +53,9 @@ public class ChessGame extends ApplicationAdapter {
     private PromotingDialog dialog;
 
     private SpriteBatch batch;
-    private BitmapFont header;
+    private BitmapFont check;
+    private BitmapFont forBlack;
+    private BitmapFont forWhite;
     private BitmapFont infoText;
 
     int turn = 0;
@@ -87,7 +89,9 @@ public class ChessGame extends ApplicationAdapter {
         player = new Player(isThisPlayerWhite);
         if (!isOnline) chessboard = new Chessboard(player, batch, startX, startY, isOnline);
         else chessboard = new Chessboard(player, batch, startX, startY, isOnline, ref);
-        header = createTextStyle("font_1.ttf", 200, Color.RED);
+        check = createTextStyle("font_1.ttf", 200, Color.RED);
+        forBlack = createTextStyle("font_1.ttf", 200, Color.BLACK);
+        forWhite = createTextStyle("font_1.ttf", 200, Color.WHITE);
         infoText = createTextStyle("font_1.ttf", 100, Color.BLACK);
         dialog = new PromotingDialog(batch, (Gdx.graphics.getWidth() - 128 * 4) / 2, startY + ChessboardSquare.sideLength * 8 + 100, isThisPlayerWhite);
         if (isOnline) {
@@ -177,14 +181,20 @@ public class ChessGame extends ApplicationAdapter {
         batch.begin();
         chessboard.draw();
         if (player.isCheck() && !player.isCheckmate()) {
-            drawText("ШАХ", header, HorizontalAlignment.CENTER, VerticalAlignment.TOP, 0, 100);
+            drawText("Шах", check, HorizontalAlignment.CENTER, VerticalAlignment.TOP, 0, 0);
+            if (player.isWhite()) {
+                drawText("белым", forWhite, HorizontalAlignment.CENTER, VerticalAlignment.TOP, 0, 150);
+            } else {
+                drawText("чёрным", forBlack, HorizontalAlignment.CENTER, VerticalAlignment.TOP, 0, 150);
+            }
+
         }
         if (player.isCheckmate()) {
             isGameFinished = true;
             Pixmap finishScreenPM = new Pixmap(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), Pixmap.Format.RGBA8888);
             finishScreenPM.setColor(1, 0, 0, 0.4f);
             finishScreenPM.fill();
-            drawText("Конец игры", header, HorizontalAlignment.CENTER, VerticalAlignment.TOP, 0, 100);
+            drawText("Конец игры", check, HorizontalAlignment.CENTER, VerticalAlignment.TOP, 0, 100);
             drawText("Нажмите на экран", infoText, HorizontalAlignment.CENTER, VerticalAlignment.BOTTOM, 0, 400);
             Texture finishScreen = new Texture(finishScreenPM);
             batch.draw(finishScreen, 0, 0);
@@ -199,7 +209,7 @@ public class ChessGame extends ApplicationAdapter {
     @Override
     public void dispose() {
         batch.dispose();
-        header.dispose();
+        check.dispose();
         infoText.dispose();
         chessboard.dispose();
         dialog.dispose();
