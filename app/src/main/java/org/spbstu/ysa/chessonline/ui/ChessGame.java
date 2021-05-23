@@ -106,50 +106,51 @@ public class ChessGame extends ApplicationAdapter {
                     Log.d("DATA_GET", "DATA IS CHANGED AND GETTED");
                     /*if (isPromoting) isPromoting = false;
                     else */
-                    player.changeTurn();
-                    Move move = snapshot.getValue(Move.class);
+                    if (snapshot.exists()) {
+                        player.changeTurn();
+                        Move move = snapshot.getValue(Move.class);
 
-                    int xFrom = move.getxFrom();
-                    int yFrom = move.getyFrom();
-                    int xTo = move.getxTo();
-                    int yTo = move.getyTo();
-                    String pawnTo = move.getPawnTo();
-                    if (player.isThisPlayersTurn() || !pawnTo.equals("")) {
-                        Log.d("DATA_GET", "THIS PLAYERS TURN");
-                        Log.d("PROMOTE TEST", "Opponent is turned");
-                        turn++;
+                        int xFrom = move.getxFrom();
+                        int yFrom = move.getyFrom();
+                        int xTo = move.getxTo();
+                        int yTo = move.getyTo();
+                        String pawnTo = move.getPawnTo();
+                        if (player.isThisPlayersTurn() || !pawnTo.equals("")) {
+                            Log.d("DATA_GET", "THIS PLAYERS TURN");
+                            Log.d("PROMOTE TEST", "Opponent is turned");
+                            turn++;
 
-                        Log.d("TOTOTO", xTo + ";" + yTo);
+                            Log.d("TOTOTO", xTo + ";" + yTo);
 
 
-                        Cell cellFrom = player.getBoard().getData()[yFrom][xFrom];
-                        Cell cellTo = player.getBoard().getData()[yTo][xTo];
+                            Cell cellFrom = player.getBoard().getData()[yFrom][xFrom];
+                            Cell cellTo = player.getBoard().getData()[yTo][xTo];
 
-                        Set<Cell> cellSet = new HashSet<>();
-                        cellSet.add(cellTo);
-                        player.getBoard().setAllowedMoves(cellSet);
-                        player.getBoard().setCurrentCell(cellFrom);
-                        Set<Cell> changed = player.putPiece(cellTo);
-                        if (!pawnTo.equals("")) {
-                            Log.d("CHESS_PROMOTING", "Promoting getted from DB");
-                            Log.d("PROMOTE TEST", "Promoting getted from DB");
-                            player.getBoard().setPromotedCell(cellTo);
-                            if (player.isThisPlayersTurn())
-                                player.getBoard().makePromotion(createPromotedPiece(pawnTo, player.isWhite()));
-                            else
-                                player.getBoard().makePromotion(createPromotedPiece(pawnTo, !player.isWhite()));
-                            player.changeTurn();
-                        }
-                        if (changed != null && !changed.isEmpty()) {
-                            for (Cell cell :
-                                    changed) {
-                                chessboard.redrawSquare(chessboard.getSquare(cell.getX(), cell.getY()));
-                                //Log.d("REDRAWED_SQUARES", "Turn " + turn + ": " + chessboard.getSquare(cell.getX(), cell.getY()));
+                            Set<Cell> cellSet = new HashSet<>();
+                            cellSet.add(cellTo);
+                            player.getBoard().setAllowedMoves(cellSet);
+                            player.getBoard().setCurrentCell(cellFrom);
+                            Set<Cell> changed = player.putPiece(cellTo);
+                            if (!pawnTo.equals("")) {
+                                Log.d("CHESS_PROMOTING", "Promoting getted from DB");
+                                Log.d("PROMOTE TEST", "Promoting getted from DB");
+                                player.getBoard().setPromotedCell(cellTo);
+                                if (player.isThisPlayersTurn())
+                                    player.getBoard().makePromotion(createPromotedPiece(pawnTo, player.isWhite()));
+                                else
+                                    player.getBoard().makePromotion(createPromotedPiece(pawnTo, !player.isWhite()));
+                                player.changeTurn();
                             }
+                            if (changed != null && !changed.isEmpty()) {
+                                for (Cell cell :
+                                        changed) {
+                                    chessboard.redrawSquare(chessboard.getSquare(cell.getX(), cell.getY()));
+                                    //Log.d("REDRAWED_SQUARES", "Turn " + turn + ": " + chessboard.getSquare(cell.getX(), cell.getY()));
+                                }
+                            }
+                            Gdx.graphics.requestRendering();
                         }
-                        Gdx.graphics.requestRendering();
                     }
-
                 }
 
                 @Override
