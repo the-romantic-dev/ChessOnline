@@ -156,13 +156,23 @@ public class Chessboard {
         String pawnTo = "";
         if (ref != null) {
 
-            ref.child("move").setValue(new Move(pawnTo, xFrom, yFrom, xTo, yTo)).addOnSuccessListener(unused -> {
-                Log.d("DATA_PUSH", "DATA PUSHED SUCCES");
-            }).addOnFailureListener(e -> {
-                Log.d("DATA_PUSH", "DATA PUSH FAILED");
-            });
+            ref.child("move").setValue(new Move(pawnTo, xFrom, yFrom, xTo, yTo)).addOnSuccessListener(unused ->
+                    Log.d("DATA_PUSH", "DATA PUSHED SUCCES")).addOnFailureListener(e ->
+                    Log.d("DATA_PUSH", "DATA PUSH FAILED"));
         } else Log.d("DATA_PUSH", "DATA IS NOT PUSHED");
-        //player.changeTurn();
+    }
+
+    public void pushToDB(String pawnTo) {
+        int xTo = currentSquare.getCell().getX();
+        int yTo = currentSquare.getCell().getY();
+        int xFrom = lastSquare.getCell().getX();
+        int yFrom = lastSquare.getCell().getY();
+        if (ref != null) {
+
+            ref.child("move").setValue(new Move(pawnTo, xFrom, yFrom, xTo, yTo)).addOnSuccessListener(unused ->
+                    Log.d("DATA_PUSH", "DATA PUSHED SUCCES")).addOnFailureListener(e ->
+                    Log.d("DATA_PUSH", "DATA PUSH FAILED"));
+        } else Log.d("DATA_PUSH", "DATA IS NOT PUSHED");
     }
 
 
