@@ -17,7 +17,7 @@ import com.google.firebase.database.ValueEventListener;
 
 public class GameActivity extends AndroidApplication {
     DatabaseReference ref;
-    //ссыль на бд
+    String roomKey;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +32,7 @@ public class GameActivity extends AndroidApplication {
         } else {
             boolean isHost = getIntent().getBooleanExtra("isHost", false);
             boolean creatorIsWhite = getIntent().getBooleanExtra("creatorIsWhite", false);
-            String roomKey = getIntent().getStringExtra("roomKey");
+            roomKey = getIntent().getStringExtra("roomKey");
 
             ref.child(roomKey).child("connection").addValueEventListener(new ValueEventListener() {
                 @Override
@@ -83,7 +83,7 @@ public class GameActivity extends AndroidApplication {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
-                    ref.child("connection").setValue(false);
+                    ref.child(roomKey).child("connection").setValue(false);
                 }
             }
             @Override
