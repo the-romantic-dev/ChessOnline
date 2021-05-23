@@ -63,8 +63,6 @@ public class Rook extends Piece {
             }
         }
 
-        Set<Cell> res = new HashSet();
-
         return allowedMoves;
     }
 

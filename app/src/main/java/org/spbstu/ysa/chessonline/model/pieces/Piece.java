@@ -3,6 +3,7 @@ package org.spbstu.ysa.chessonline.model.pieces;
 import org.spbstu.ysa.chessonline.model.Board;
 import org.spbstu.ysa.chessonline.model.Cell;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 public abstract class Piece {
@@ -45,5 +46,18 @@ public abstract class Piece {
     public String toString() {
         String pieceColor = isWhite ? "white" : "black";
         return pieceColor + "_" + getName();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Piece)) return false;
+        Piece piece = (Piece) o;
+        return this.toString().equals(piece.toString());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(isWhite) + Objects.hash(getName());
     }
 }

@@ -34,10 +34,10 @@ public class Board {
                         currentPiece = whitePieces[x];
                         break;
                     case 1:
-                        currentPiece = whitePieces[9];
+                        currentPiece = whitePieces[8];
                         break;
                     case 6:
-                        currentPiece = blackPieces[9];
+                        currentPiece = blackPieces[8];
                         break;
                     case 7:
                         currentPiece = blackPieces[x];
@@ -98,7 +98,7 @@ public class Board {
         res.add(cell);
         //Pawns moves
         Set<Cell> setOfPawns = findAllPawns();
-        //Passant realisation
+        //Passant realisation: after move all pawns become unpassanted
         for (Cell pawnCell : setOfPawns) {
             Pawn pawn = (Pawn) pawnCell.getPiece();
             pawn.isPassantAvailable = false;
@@ -132,7 +132,6 @@ public class Board {
         //Castling realisation(make a castling)
         if (curPieceName.equals("King") && cell.getPiece() != null &&
                 cell.getPiece().isWhite() == currentCell.getPiece().isWhite()) {
-            Log.d("Castling","DONE");
             Piece capturedPiece = currentCell.getPiece();
             currentCell.removePiece();
             Piece swappedRook = cell.getPiece();
@@ -186,7 +185,7 @@ public class Board {
         return false;
     }
 
-    public Cell findKingCell(boolean isPlayerWhite) {
+    private Cell findKingCell(boolean isPlayerWhite) {
         Set<Cell> pieces = this.setOfCellsWithPiecesOneColor(isPlayerWhite);
         for (Cell cell : pieces) {
             if (cell.getPiece().getName().equals("King")) return cell;

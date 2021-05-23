@@ -14,6 +14,7 @@ public class Cell {
      * получить X или Y координату;
      * Взять фигуру
      * Поставить фигуру
+     * Удалить фигуру
      */
 
     private final int x;
@@ -76,6 +77,6 @@ public class Cell {
 
     @Override
     public int hashCode() {
-        return Objects.hash(x, y);
+        return x + 10 * y;
     }
 }
