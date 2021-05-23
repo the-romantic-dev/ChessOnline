@@ -106,7 +106,7 @@ public class ChessGame extends ApplicationAdapter {
                     Log.d("DATA_GET", "DATA IS CHANGED AND GETTED");
                     /*if (isPromoting) isPromoting = false;
                     else */
-                    if (snapshot.exists()) {
+                    if (!snapshot.getValue(Move.class).getClass().equals(Boolean.class)) {
                         player.changeTurn();
                         Move move = snapshot.getValue(Move.class);
 
