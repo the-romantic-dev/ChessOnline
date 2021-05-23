@@ -11,8 +11,6 @@
         android:theme="@style/AppTheme">
         <activity android:name=".ui.GameActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".ui.SettingsActivity"
-            android:screenOrientation="portrait"/>
 
         <activity android:name=".online.OnlineActivity"
             android:screenOrientation="portrait"/>

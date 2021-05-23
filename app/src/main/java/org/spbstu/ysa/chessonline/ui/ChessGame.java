@@ -58,8 +58,6 @@ public class ChessGame extends ApplicationAdapter {
     private BitmapFont forWhite;
     private BitmapFont infoText;
 
-    int turn = 0;
-
     @Override
     public void create() {
         Gdx.graphics.setContinuousRendering(false);
@@ -67,7 +65,6 @@ public class ChessGame extends ApplicationAdapter {
             @Override
             public boolean touchDown(int screenX, int screenY, int pointer, int button) {
                 if (isDialog) {
-                    Log.d("CHESS_PROMOTING", "Promoting dialog called");
                     choosePromotingPiece(screenX, screenY);
                 } else {
                     if (!isGameFinished) {
@@ -103,7 +100,6 @@ public class ChessGame extends ApplicationAdapter {
 
                 @Override
                 public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                    Log.d("DATA_GET", "DATA IS CHANGED AND GETTED");
                     /*if (isPromoting) isPromoting = false;
                     else */
                     if (true) {
@@ -122,13 +118,6 @@ public class ChessGame extends ApplicationAdapter {
                         int yTo = move.getyTo();
                         String pawnTo = move.getPawnTo();
                         if (player.isThisPlayersTurn() || !pawnTo.equals("")) {
-                            Log.d("DATA_GET", "THIS PLAYERS TURN");
-                            Log.d("PROMOTE TEST", "Opponent is turned");
-                            turn++;
-
-                            Log.d("TOTOTO", xTo + ";" + yTo);
-
-
                             Cell cellFrom = player.getBoard().getData()[yFrom][xFrom];
                             Cell cellTo = player.getBoard().getData()[yTo][xTo];
 
@@ -138,8 +127,6 @@ public class ChessGame extends ApplicationAdapter {
                             player.getBoard().setCurrentCell(cellFrom);
                             Set<Cell> changed = player.putPiece(cellTo);
                             if (!pawnTo.equals("")) {
-                                Log.d("CHESS_PROMOTING", "Promoting getted from DB");
-                                Log.d("PROMOTE TEST", "Promoting getted from DB");
                                 player.getBoard().setPromotedCell(cellTo);
                                 if (player.isThisPlayersTurn())
                                     player.getBoard().makePromotion(createPromotedPiece(pawnTo, player.isWhite()));
@@ -151,7 +138,6 @@ public class ChessGame extends ApplicationAdapter {
                                 for (Cell cell :
                                         changed) {
                                     chessboard.redrawSquare(chessboard.getSquare(cell.getX(), cell.getY()));
-                                    //Log.d("REDRAWED_SQUARES", "Turn " + turn + ": " + chessboard.getSquare(cell.getX(), cell.getY()));
                                 }
                             }
                             Gdx.graphics.requestRendering();
@@ -191,7 +177,6 @@ public class ChessGame extends ApplicationAdapter {
         drawEndScreen();
         if (isDialog) {
             dialog.draw();
-            Log.d("CHESS_PROMOTING", "Promoting dialog drawed");
         }
         batch.end();
     }
@@ -289,13 +274,11 @@ public class ChessGame extends ApplicationAdapter {
 
             chessboard.pushToDB(choosedPiece.getName());
             player.getBoard().makePromotion(choosedPiece);
-            Log.d("CHESS_PROMOTING", "Promotion maked");
             chessboard.redrawSquare(chessboard.getCurrentSquare());
         }
     }
 
     private Piece createPromotedPiece(String name, boolean isWhite) {
-        Log.d("promoted_piece", name + (isWhite ? " white" : " black"));
         switch (name) {
             case "Knight":
                 return new Knight(isWhite);
