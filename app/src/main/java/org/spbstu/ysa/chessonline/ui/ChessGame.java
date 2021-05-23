@@ -19,6 +19,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.DatabaseReference;
 
 import org.spbstu.ysa.chessonline.model.Cell;
@@ -106,9 +107,15 @@ public class ChessGame extends ApplicationAdapter {
                     Log.d("DATA_GET", "DATA IS CHANGED AND GETTED");
                     /*if (isPromoting) isPromoting = false;
                     else */
-                    if (!snapshot.getValue(Move.class).getClass().equals(Boolean.class)) {
+                    if (true) {
                         player.changeTurn();
-                        Move move = snapshot.getValue(Move.class);
+                        Move move = null;
+                        try {
+                            move = snapshot.getValue(Move.class);
+                        } catch (DatabaseException e) {
+                            return;
+                        }
+
 
                         int xFrom = move.getxFrom();
                         int yFrom = move.getyFrom();
