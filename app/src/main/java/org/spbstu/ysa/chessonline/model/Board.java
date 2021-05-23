@@ -243,4 +243,8 @@ public class Board {
         }
         return new Board(cloneBoardData);
     }
+
+    public void setPromotedCell(Cell promotedCell) {
+        this.promotedCell = promotedCell;
+    }
 }

@@ -130,12 +130,13 @@ public class Chessboard {
         Set<Cell> changedCells = player.putPiece(currentSquare.getCell());
         for (Cell cell :
                 changedCells) {
-            ChessboardSquare changedSquare = squaresArray[cell.getY()][cell.getX()];
+            ChessboardSquare changedSquare = getSquare(cell.getX(), cell.getY());
             redrawSquare(changedSquare);
         }
         redrawSquare(lastSquare);
         redrawSquare(currentSquare);
         if (!isOnline) {
+
             player.changeTurn();
             player.setColor(!player.isWhite());
         } else {
@@ -155,13 +156,23 @@ public class Chessboard {
         String pawnTo = "";
         if (ref != null) {
 
-            ref.child("move").setValue(new Move(pawnTo, xFrom, yFrom, xTo, yTo)).addOnSuccessListener(unused -> {
-                Log.d("DATA_PUSH", "DATA PUSHED SUCCES");
-            }).addOnFailureListener(e -> {
-                Log.d("DATA_PUSH", "DATA PUSH FAILED");
-            });
+            ref.child("move").setValue(new Move(pawnTo, xFrom, yFrom, xTo, yTo)).addOnSuccessListener(unused ->
+                    Log.d("DATA_PUSH", "DATA PUSHED SUCCES")).addOnFailureListener(e ->
+                    Log.d("DATA_PUSH", "DATA PUSH FAILED"));
         } else Log.d("DATA_PUSH", "DATA IS NOT PUSHED");
-        //player.changeTurn();
+    }
+
+    public void pushToDB(String pawnTo) {
+        int xTo = currentSquare.getCell().getX();
+        int yTo = currentSquare.getCell().getY();
+        int xFrom = lastSquare.getCell().getX();
+        int yFrom = lastSquare.getCell().getY();
+        if (ref != null) {
+
+            ref.child("move").setValue(new Move(pawnTo, xFrom, yFrom, xTo, yTo)).addOnSuccessListener(unused ->
+                    Log.d("DATA_PUSH", "DATA PUSHED SUCCES")).addOnFailureListener(e ->
+                    Log.d("DATA_PUSH", "DATA PUSH FAILED"));
+        } else Log.d("DATA_PUSH", "DATA IS NOT PUSHED");
     }
 
 
@@ -338,7 +349,13 @@ public class Chessboard {
     }
 
     public ChessboardSquare getSquare(int x, int y) {
-        return squaresArray[y][x];
+        if (isOnline) {
+            if (player.isWhite()) {
+                return squaresArray[y][x];
+            } else {
+                return squaresArray[7 - y][7 - x];
+            }
+        } else return squaresArray[y][x];
     }
 
     public void dispose() {
