@@ -31,7 +31,6 @@ public class Chessboard {
     private SpriteBatch batch;
     private Texture overallTexture;
     private boolean isOnline;
-    /*private boolean isMoveMaked;*/
 
     private ChessboardSquare currentSquare;
     private ChessboardSquare lastSquare;
@@ -155,11 +154,8 @@ public class Chessboard {
         int yFrom = lastSquare.getCell().getY();
         String pawnTo = "";
         if (ref != null) {
-
-            ref.child("move").setValue(new Move(pawnTo, xFrom, yFrom, xTo, yTo)).addOnSuccessListener(unused ->
-                    Log.d("DATA_PUSH", "DATA PUSHED SUCCES")).addOnFailureListener(e ->
-                    Log.d("DATA_PUSH", "DATA PUSH FAILED"));
-        } else Log.d("DATA_PUSH", "DATA IS NOT PUSHED");
+            ref.child("move").setValue(new Move(pawnTo, xFrom, yFrom, xTo, yTo));
+        }
     }
 
     public void pushToDB(String pawnTo) {
@@ -168,11 +164,8 @@ public class Chessboard {
         int xFrom = lastSquare.getCell().getX();
         int yFrom = lastSquare.getCell().getY();
         if (ref != null) {
-
-            ref.child("move").setValue(new Move(pawnTo, xFrom, yFrom, xTo, yTo)).addOnSuccessListener(unused ->
-                    Log.d("DATA_PUSH", "DATA PUSHED SUCCES")).addOnFailureListener(e ->
-                    Log.d("DATA_PUSH", "DATA PUSH FAILED"));
-        } else Log.d("DATA_PUSH", "DATA IS NOT PUSHED");
+            ref.child("move").setValue(new Move(pawnTo, xFrom, yFrom, xTo, yTo));
+        }
     }
 
 

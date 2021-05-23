@@ -59,12 +59,12 @@ public class Player {
         this.isWhitesTurn = whitesTurn;
     }
 
-    public boolean isCheck() {
-        return board.isCheck(this.isWhite);
+    public boolean isCheck(boolean isWhite) {
+        return board.isCheck(isWhite);
     }
 
 
-    public boolean isCheckmate() {
+    public boolean isCheckmate(boolean isWhite) {
         return board.isCheckmate(isWhite);
     }
 

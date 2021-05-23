@@ -13,7 +13,6 @@ import org.spbstu.ysa.chessonline.online.OnlineActivity;
 public class MainActivity extends AppCompatActivity {
 
     Button startGameButton;
-    Button settingsButton;
     Button exitButton;
     Button onlineButton;
 
@@ -23,45 +22,25 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         setViews();
 
-        startGameButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent startGameActivity = new Intent(MainActivity.this, GameActivity.class);
-                startGameActivity.putExtra("isOnline", false);
-                startActivity(startGameActivity);
-                finish();
-            }
+        startGameButton.setOnClickListener(v -> {
+            Intent startGameActivity = new Intent(MainActivity.this, GameActivity.class);
+            startGameActivity.putExtra("isOnline", false);
+            startActivity(startGameActivity);
+            finish();
         });
 
-        onlineButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent startSettingsActivity = new Intent(MainActivity.this, OnlineActivity.class);
-                startActivity(startSettingsActivity);
-                finish();
-            }
+        onlineButton.setOnClickListener(v -> {
+            Intent startSettingsActivity = new Intent(MainActivity.this, OnlineActivity.class);
+            startActivity(startSettingsActivity);
+            finish();
         });
 
-        settingsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent startSettingsActivity = new Intent(MainActivity.this, SettingsActivity.class);
-                startActivity(startSettingsActivity);
-                finish();
-            }
-        });
 
-        exitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        exitButton.setOnClickListener(v -> finish());
     }
 
     private void setViews () {
         startGameButton = findViewById(R.id.start_game);
-        settingsButton = findViewById(R.id.settings);
         exitButton = findViewById(R.id.exit);
         onlineButton = findViewById(R.id.online);
     }

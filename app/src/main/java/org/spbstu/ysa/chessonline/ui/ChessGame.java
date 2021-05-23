@@ -44,7 +44,6 @@ public class ChessGame extends ApplicationAdapter {
     private boolean isDialog = false;
     private boolean isOnline = false;
     private boolean isThisPlayerWhite;
-    private boolean isPromoting = false;
 
     private Player player;
     private Chessboard chessboard;
@@ -59,8 +58,6 @@ public class ChessGame extends ApplicationAdapter {
     private BitmapFont forWhite;
     private BitmapFont infoText;
 
-    int turn = 0;
-
     @Override
     public void create() {
         Gdx.graphics.setContinuousRendering(false);
@@ -68,7 +65,6 @@ public class ChessGame extends ApplicationAdapter {
             @Override
             public boolean touchDown(int screenX, int screenY, int pointer, int button) {
                 if (isDialog) {
-                    Log.d("CHESS_PROMOTING", "Promoting dialog called");
                     choosePromotingPiece(screenX, screenY);
                 } else {
                     if (!isGameFinished) {
@@ -104,14 +100,13 @@ public class ChessGame extends ApplicationAdapter {
 
                 @Override
                 public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                    Log.d("DATA_GET", "DATA IS CHANGED AND GETTED");
                     /*if (isPromoting) isPromoting = false;
                     else */
                     if (true) {
                         player.changeTurn();
                         Move move = null;
                         try {
-                            move = snapshot.getValue(Move.class);
+                             move = snapshot.getValue(Move.class);
                         } catch (DatabaseException e) {
                             return;
                         }
@@ -123,13 +118,6 @@ public class ChessGame extends ApplicationAdapter {
                         int yTo = move.getyTo();
                         String pawnTo = move.getPawnTo();
                         if (player.isThisPlayersTurn() || !pawnTo.equals("")) {
-                            Log.d("DATA_GET", "THIS PLAYERS TURN");
-                            Log.d("PROMOTE TEST", "Opponent is turned");
-                            turn++;
-
-                            Log.d("TOTOTO", xTo + ";" + yTo);
-
-
                             Cell cellFrom = player.getBoard().getData()[yFrom][xFrom];
                             Cell cellTo = player.getBoard().getData()[yTo][xTo];
 
@@ -139,8 +127,6 @@ public class ChessGame extends ApplicationAdapter {
                             player.getBoard().setCurrentCell(cellFrom);
                             Set<Cell> changed = player.putPiece(cellTo);
                             if (!pawnTo.equals("")) {
-                                Log.d("CHESS_PROMOTING", "Promoting getted from DB");
-                                Log.d("PROMOTE TEST", "Promoting getted from DB");
                                 player.getBoard().setPromotedCell(cellTo);
                                 if (player.isThisPlayersTurn())
                                     player.getBoard().makePromotion(createPromotedPiece(pawnTo, player.isWhite()));
@@ -152,7 +138,6 @@ public class ChessGame extends ApplicationAdapter {
                                 for (Cell cell :
                                         changed) {
                                     chessboard.redrawSquare(chessboard.getSquare(cell.getX(), cell.getY()));
-                                    //Log.d("REDRAWED_SQUARES", "Turn " + turn + ": " + chessboard.getSquare(cell.getX(), cell.getY()));
                                 }
                             }
                             Gdx.graphics.requestRendering();
@@ -188,28 +173,10 @@ public class ChessGame extends ApplicationAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
         chessboard.draw();
-        if (player.isCheck() && !player.isCheckmate()) {
-            drawText("Шах", check, HorizontalAlignment.CENTER, VerticalAlignment.TOP, 0, 0);
-            if (player.isWhite()) {
-                drawText("белым", forWhite, HorizontalAlignment.CENTER, VerticalAlignment.TOP, 0, 150);
-            } else {
-                drawText("чёрным", forBlack, HorizontalAlignment.CENTER, VerticalAlignment.TOP, 0, 150);
-            }
-
-        }
-        if (player.isCheckmate()) {
-            isGameFinished = true;
-            Pixmap finishScreenPM = new Pixmap(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), Pixmap.Format.RGBA8888);
-            finishScreenPM.setColor(1, 0, 0, 0.4f);
-            finishScreenPM.fill();
-            drawText("Конец игры", check, HorizontalAlignment.CENTER, VerticalAlignment.TOP, 0, 100);
-            drawText("Нажмите на экран", infoText, HorizontalAlignment.CENTER, VerticalAlignment.BOTTOM, 0, 400);
-            Texture finishScreen = new Texture(finishScreenPM);
-            batch.draw(finishScreen, 0, 0);
-        }
+        drawCheckMessage();
+        drawEndScreen();
         if (isDialog) {
             dialog.draw();
-            Log.d("CHESS_PROMOTING", "Promoting dialog drawed");
         }
         batch.end();
     }
@@ -221,6 +188,61 @@ public class ChessGame extends ApplicationAdapter {
         infoText.dispose();
         chessboard.dispose();
         dialog.dispose();
+    }
+
+    private void drawCheckMessage() {
+        boolean isWhite = player.isWhite();
+        boolean yourCheck = player.isCheck(isWhite) && !player.isCheckmate(isWhite);
+        boolean opponentCheck = player.isCheck(!isWhite) && !player.isCheckmate(!isWhite);
+        if (yourCheck || opponentCheck) {
+            drawText("Шах", check, HorizontalAlignment.CENTER, VerticalAlignment.TOP, 0, 0);
+            if (yourCheck) {
+                if (isWhite) {
+                    drawText("белым", forWhite, HorizontalAlignment.CENTER, VerticalAlignment.TOP, 0, 150);
+                } else {
+                    drawText("чёрным", forBlack, HorizontalAlignment.CENTER, VerticalAlignment.TOP, 0, 150);
+                }
+            }
+            if (opponentCheck) {
+                if (isWhite) {
+                    drawText("чёрным", forBlack, HorizontalAlignment.CENTER, VerticalAlignment.TOP, 0, 150);
+                } else {
+                    drawText("белым", forWhite, HorizontalAlignment.CENTER, VerticalAlignment.TOP, 0, 150);
+                }
+            }
+
+        }
+    }
+
+    private void drawEndScreen() {
+        boolean isWhite = player.isWhite();
+        boolean yourCheckmate = player.isCheckmate(isWhite);
+        boolean opponentCheckmate = player.isCheckmate(!isWhite);
+        if (yourCheckmate || opponentCheckmate) {
+            isGameFinished = true;
+            Pixmap finishScreenPM = new Pixmap(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), Pixmap.Format.RGBA8888);
+            finishScreenPM.setColor(1, 0, 0, 0.4f);
+            finishScreenPM.fill();
+            Texture finishScreen = new Texture(finishScreenPM);
+            batch.draw(finishScreen, 0, 0);
+            drawText("Победили", check, HorizontalAlignment.CENTER, VerticalAlignment.TOP, 0, 0);
+            if (yourCheckmate) {
+                if (isWhite) {
+                    drawText("чёрные", forBlack, HorizontalAlignment.CENTER, VerticalAlignment.TOP, 0, 150);
+                } else {
+                    drawText("белые", forWhite, HorizontalAlignment.CENTER, VerticalAlignment.TOP, 0, 150);
+                }
+            }
+            if (opponentCheckmate) {
+                if (isWhite) {
+                    drawText("белые", forWhite, HorizontalAlignment.CENTER, VerticalAlignment.TOP, 0, 150);
+                } else {
+                    drawText("чёрные", forBlack, HorizontalAlignment.CENTER, VerticalAlignment.TOP, 0, 150);
+                }
+            }
+            drawText("Нажмите на экран", infoText, HorizontalAlignment.CENTER, VerticalAlignment.BOTTOM, 0, 400);
+
+        }
     }
 
     private boolean isPromotingDialogCalled() {
@@ -245,8 +267,6 @@ public class ChessGame extends ApplicationAdapter {
     }
 
     private void choosePromotingPiece(int screenX, int screenY) {
-
-        isPromoting = true;
         Piece choosedPiece = dialog.getPiece(screenX, Gdx.graphics.getHeight() - screenY);
 
         if (choosedPiece != null) {
@@ -254,13 +274,11 @@ public class ChessGame extends ApplicationAdapter {
 
             chessboard.pushToDB(choosedPiece.getName());
             player.getBoard().makePromotion(choosedPiece);
-            Log.d("CHESS_PROMOTING", "Promotion maked");
             chessboard.redrawSquare(chessboard.getCurrentSquare());
         }
     }
 
     private Piece createPromotedPiece(String name, boolean isWhite) {
-        Log.d("promoted_piece", name + (isWhite ? " white" : " black"));
         switch (name) {
             case "Knight":
                 return new Knight(isWhite);
