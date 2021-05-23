@@ -37,19 +37,21 @@ public class GameActivity extends AndroidApplication {
 
             ref.child(roomKey).child("connection").addValueEventListener(new ValueEventListener() {
                 @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    boolean playerIsLeave = !dataSnapshot.getValue(boolean.class);
-                    if (playerIsLeave) {
-                        //удаляем комнату
-                        ref.child(roomKey).removeValue();
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        boolean playerIsLeave = !dataSnapshot.getValue(boolean.class);
+                        if (playerIsLeave) {
+                            //удаляем комнату
+                            ref.child(roomKey).removeValue();
 
-                        //завершаем игру
-                        startActivity(new Intent(GameActivity.this, MainActivity.class));
-                        finish();
+                            //завершаем игру
+                            startActivity(new Intent(GameActivity.this, MainActivity.class));
+                            finish();
+                        }
                     }
                 }
                 @Override
-                public void onCancelled(DatabaseError databaseError) {
+                public void onCancelled(@NonNull DatabaseError databaseError) {
                     Log.w("dbLog", "findRoomListener:onCancelled", databaseError.toException());
                 }
             });
