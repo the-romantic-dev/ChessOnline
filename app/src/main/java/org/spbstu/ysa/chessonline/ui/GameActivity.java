@@ -40,7 +40,7 @@ public class GameActivity extends AndroidApplication {
                     boolean playerIsLeave = !dataSnapshot.getValue(boolean.class);
                     if (playerIsLeave) {
                         //удаляем комнату
-                        ref.removeValue();
+                        ref.child(roomKey).removeValue();
 
                         //завершаем игру
                         startActivity(new Intent(GameActivity.this, MainActivity.class));
