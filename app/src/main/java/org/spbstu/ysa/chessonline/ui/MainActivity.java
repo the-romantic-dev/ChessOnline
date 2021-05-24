@@ -2,6 +2,7 @@ package org.spbstu.ysa.chessonline.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -18,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d("MAIN_ACTIVITY", "IS CREATED");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setViews();
@@ -39,9 +41,15 @@ public class MainActivity extends AppCompatActivity {
         exitButton.setOnClickListener(v -> finish());
     }
 
-    private void setViews () {
+    private void setViews() {
         startGameButton = findViewById(R.id.start_game);
         exitButton = findViewById(R.id.exit);
         onlineButton = findViewById(R.id.online);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d("MAIN_ACTIVITY", "IS DESTROYED");
     }
 }

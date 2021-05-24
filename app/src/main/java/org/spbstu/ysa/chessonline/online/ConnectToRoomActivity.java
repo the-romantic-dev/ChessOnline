@@ -58,7 +58,7 @@ public class ConnectToRoomActivity extends AppCompatActivity {
                                 Room room = ds.getValue(Room.class);
                                 //Log.d("myTag", "Room pass: " + room.getPassword());
                                 //Log.d("myTag", "Room key in progress" + roomKey);
-                                if (room.getPassword().equals(pass) && !room.getConnection()) {
+                                if (room.getPassword() != null && room.getPassword().equals(pass) && !room.getConnection()) {
                                     roomKey = ds.getKey();
                                     mDatabase.child(roomKey).child("connection").setValue(true);
 
@@ -71,6 +71,7 @@ public class ConnectToRoomActivity extends AppCompatActivity {
                                     startGameActivity.putExtra("creatorIsWhite", room.getCreatorColor());
                                     startGameActivity.putExtra("roomKey", roomKey);
                                     startActivity(startGameActivity);
+                                    finish();
                                     //startGameActivity
                                 }
                             }

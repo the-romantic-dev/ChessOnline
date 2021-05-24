@@ -70,6 +70,7 @@ public class CreateRoomActivity extends AppCompatActivity {
                                 startGameActivity.putExtra("creatorIsWhite", isWhite);
                                 startGameActivity.putExtra("roomKey", dataSnapshot.getKey());
                                 startActivity(startGameActivity);
+                                finish();
                                 //startGameActivity
                             }
                         }

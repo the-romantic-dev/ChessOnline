@@ -21,6 +21,8 @@ public class GameActivity extends AndroidApplication {
     //ссыль на бд
     boolean isOnline;
 
+    boolean mainIsCreated = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         ref = FirebaseDatabase.getInstance().getReference("games");
@@ -45,14 +47,18 @@ public class GameActivity extends AndroidApplication {
                             if (playerIsLeave) {
                                 //удаляем комнату
                                 ref.child(roomKey).removeValue();
-
+                                ref.child(roomKey).child("connection").removeEventListener(this);
                                 //завершаем игру
-                                startActivity(new Intent(GameActivity.this, MainActivity.class));
-                                finish();
+                                if (!mainIsCreated) {
+                                    mainIsCreated = true;
+                                    Log.d("MAIN_ACTIVITY", "IS CALLED");
+                                    startActivity(new Intent(GameActivity.this, MainActivity.class));
+                                    finish();
+                                }
+
                             }
                         }
                     }
-
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
                         Log.w("dbLog", "findRoomListener:onCancelled", databaseError.toException());
@@ -73,7 +79,10 @@ public class GameActivity extends AndroidApplication {
 
     @Override
     public void onBackPressed() {
-        startActivity(new Intent(GameActivity.this, MainActivity.class));
+        if (!mainIsCreated) {
+            mainIsCreated = true;
+            startActivity(new Intent(GameActivity.this, MainActivity.class));
+        }
         finish();
     }
 
@@ -94,7 +103,6 @@ public class GameActivity extends AndroidApplication {
                         ref.child(roomKey).child("connection").setValue(false);
                     }
                 }
-
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
                 }
