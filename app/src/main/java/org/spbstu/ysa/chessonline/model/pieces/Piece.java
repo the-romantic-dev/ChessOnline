@@ -38,8 +38,13 @@ public abstract class Piece {
 
 
     @Override
-    public Piece clone() throws CloneNotSupportedException {
-        return (Piece) super.clone();
+    public Piece clone() {
+        try {
+            return (Piece) super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @Override

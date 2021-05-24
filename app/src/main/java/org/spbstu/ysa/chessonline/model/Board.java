@@ -34,10 +34,10 @@ public class Board {
                         currentPiece = whitePieces[x];
                         break;
                     case 1:
-                        currentPiece = whitePieces[8];
+                        currentPiece = whitePieces[8].clone();
                         break;
                     case 6:
-                        currentPiece = blackPieces[8];
+                        currentPiece = blackPieces[8].clone();
                         break;
                     case 7:
                         currentPiece = blackPieces[x];
