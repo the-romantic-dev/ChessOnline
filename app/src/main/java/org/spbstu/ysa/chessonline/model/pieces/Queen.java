@@ -24,7 +24,7 @@ public class Queen extends Piece{
         return res;
     }
     @Override
-    public Piece clone() throws CloneNotSupportedException {
+    public Piece clone() {
         return new Queen(isWhite());
     }
     @Override

@@ -41,7 +41,7 @@ public class Bishop extends Piece {
     }
 
     @Override
-    public Piece clone() throws CloneNotSupportedException {
+    public Piece clone() {
         return new Bishop(isWhite());
     }
 
