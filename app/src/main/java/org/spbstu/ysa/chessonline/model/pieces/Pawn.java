@@ -73,7 +73,10 @@ public class Pawn extends Piece {
 
     @Override
     public Piece clone() {
-        return new Pawn(this.isWhite());
+        Pawn newPawn = new Pawn(this.isWhite());
+        newPawn.isMoved = this.isMoved;
+        newPawn.isPassantAvailable = this.isPassantAvailable;
+        return newPawn;
     }
     @Override
     public String getName() {
