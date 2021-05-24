@@ -19,6 +19,7 @@ public class GameActivity extends AndroidApplication {
     DatabaseReference ref;
     String roomKey;
     //ссыль на бд
+    boolean isOnline;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +27,7 @@ public class GameActivity extends AndroidApplication {
         super.onCreate(savedInstanceState);
 
         AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-        boolean isOnline = getIntent().getBooleanExtra("isOnline", false);
+        isOnline = getIntent().getBooleanExtra("isOnline", false);
 
         if (!isOnline) {
             initialize(new ChessGame(true, GameActivity.this), config);
@@ -35,33 +36,36 @@ public class GameActivity extends AndroidApplication {
             boolean creatorIsWhite = getIntent().getBooleanExtra("creatorIsWhite", false);
             roomKey = getIntent().getStringExtra("roomKey");
 
-            ref.child(roomKey).child("connection").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    if (dataSnapshot.exists()) {
-                        boolean playerIsLeave = !dataSnapshot.getValue(boolean.class);
-                        if (playerIsLeave) {
-                            //удаляем комнату
-                            ref.child(roomKey).removeValue();
+            if (isOnline) {
+                ref.child(roomKey).child("connection").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            boolean playerIsLeave = !dataSnapshot.getValue(boolean.class);
+                            if (playerIsLeave) {
+                                //удаляем комнату
+                                ref.child(roomKey).removeValue();
 
-                            //завершаем игру
-                            startActivity(new Intent(GameActivity.this, MainActivity.class));
-                            finish();
+                                //завершаем игру
+                                startActivity(new Intent(GameActivity.this, MainActivity.class));
+                                finish();
+                            }
                         }
                     }
-                }
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                    Log.w("dbLog", "findRoomListener:onCancelled", databaseError.toException());
-                }
-            });
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Log.w("dbLog", "findRoomListener:onCancelled", databaseError.toException());
+                    }
+                });
+            }
 
 
             if (isHost)
-                initialize(new ChessGame(ref.child(roomKey), isHost, creatorIsWhite), config);
+                initialize(new ChessGame(ref.child(roomKey), isHost, creatorIsWhite, this), config);
 
             else {
-                initialize(new ChessGame(ref.child(roomKey), isHost, !creatorIsWhite), config);
+                initialize(new ChessGame(ref.child(roomKey), isHost, !creatorIsWhite, this), config);
             }
         }
 
@@ -82,17 +86,20 @@ public class GameActivity extends AndroidApplication {
     protected void onDestroy() {
         super.onDestroy();
         //Если комната существует, connection = false;
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    ref.child(roomKey).child("connection").setValue(false);
+        if (isOnline) {
+            ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
+                        ref.child(roomKey).child("connection").setValue(false);
+                    }
                 }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                }
+            });
+        }
 
     }
 }

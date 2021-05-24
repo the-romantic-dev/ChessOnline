@@ -255,10 +255,11 @@ public class ChessGame extends ApplicationAdapter {
         return false;
     }
 
-    public ChessGame(DatabaseReference ref, boolean isCreating, boolean isWhite) {
+    public ChessGame(DatabaseReference ref, boolean isCreating, boolean isWhite, GameActivity gameActivity) {
         this.ref = ref;
         this.isThisPlayerWhite = isWhite;
         isOnline = true;
+        this.gameActivity = gameActivity;
     }
 
     public ChessGame(boolean isWhite, GameActivity gameActivity) {
